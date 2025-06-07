@@ -4,20 +4,25 @@ const Schema = mongoose.Schema;
 const AppointmentSchema = new Schema(
   {
     patientName: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId, ref:"patient",
       require: true,
     },
     doctorName: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId, ref:'doctor',
       require: true,
     },
     appointmentDate: {
       type: Date,
       require: true,
     },
+    note: {
+      type: String,
+      require: true
+    },
     status: {
       type: String,
-      default: null,
+      enum:["Scheduled", "Completed", "Cancelled"],
+      default: "Scheduled",
     },
     deleted: {
       type: Boolean,
