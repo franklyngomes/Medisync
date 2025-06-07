@@ -4,18 +4,18 @@ const Schema = mongoose.Schema
 const PaymentSchema = new Schema({
   patient: {
     type:mongoose.Schema.Types.ObjectId, ref: "patient",
-    require: true
+    required: true
   },
   appointment: {
     type: mongoose.Schema.Types.ObjectId, ref: "appointment",
   },
   notes: {
     type:String,
-    require: true
+    required: true
   },
   amount: {
     type: Number,
-    require: true,
+    required: true,
   },
   status: {
     type: String,

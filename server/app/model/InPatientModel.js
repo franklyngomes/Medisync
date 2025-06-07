@@ -6,12 +6,12 @@ const InPatientSchema = new Schema(
     patient: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "patient",
-      require: true,
+      required: true,
     },
     room: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "room",
-      require: true,
+      required: true,
     },
     doctor: {
       type: mongoose.Schema.Types.ObjectId,
@@ -19,15 +19,15 @@ const InPatientSchema = new Schema(
     },
     admissionDate: {
       type: Date,
-      require: true,
+      required: true,
     },
     dischargeDate: {
       type: Date,
-      require: true,
+      required: true,
     },
     diagnosis: {
       type: String,
-      require: true,
+      required: true,
     },
     deleted: {
       type: Boolean,

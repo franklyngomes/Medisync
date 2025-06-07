@@ -4,24 +4,24 @@ const Schema = mongoose.Schema
 const PatientSchema = new Schema({
   name: {
     type:String,
-    require: true
+    required: true
   },
   gender: {
     type:String,
     enum: ["Male", "Female", "Others"],
-    require: true
+    required: true
   },
   address: {
     type:String,
-    require: true
+    required: true
   },
   phone: {
     type: String,
-    require: true,
+    required: true,
   },
   bloodType: {
     type: String,
-    require: true
+    required: true
   },
   deleted: {
     type: Boolean,

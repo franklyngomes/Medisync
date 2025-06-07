@@ -3,21 +3,21 @@ const Schema = mongoose.Schema;
 
 const AppointmentSchema = new Schema(
   {
-    patientName: {
+    patientId: {
       type: mongoose.Schema.Types.ObjectId, ref:"patient",
-      require: true,
+      required: true,
     },
-    doctorName: {
+    doctorId: {
       type: mongoose.Schema.Types.ObjectId, ref:'doctor',
-      require: true,
+      required: true,
     },
     appointmentDate: {
       type: Date,
-      require: true,
+      required: true,
     },
     note: {
       type: String,
-      require: true
+      required: true
     },
     status: {
       type: String,

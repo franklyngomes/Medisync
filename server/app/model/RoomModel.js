@@ -4,11 +4,11 @@ const Schema = mongoose.Schema
 const RoomSchema = new Schema({
   roomNo: {
     type:String,
-    require: true
+    required: true
   },
   roomName: {
     type:String,
-    require: true
+    required: true
   },
   roomType: {
     type:String,

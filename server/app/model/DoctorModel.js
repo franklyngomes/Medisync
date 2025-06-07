@@ -3,26 +3,42 @@ const Schema = mongoose.Schema;
 
 const DoctorSchema = new Schema(
   {
-    doctorName: {
+    name: {
       type: String,
-      require: true,
+      required: true,
     },
     email: {
       type: String,
-      require: true,
+      required: true,
     },
     phone: {
       type: String,
-      require: true,
+      required: true,
     },
     specialization: {
       type: String,
-      require: true,
+      enum: [
+        "Cardiologist",
+        "Dermatologist",
+        "Oncologist",
+        "Pediatrician",
+        "Orthopaedist",
+        "Pathology",
+        "Pulmonologist",
+        "Psychiatrist",
+        "General Surgery",
+        "Obstetrician-gynecologist",
+      ],
+      required: true,
     },
     status: {
-      type:String,
-      enum: ["Available","Unavailable"],
-      default:"Unavailable"
+      type: String,
+      enum: ["Available", "Unavailable"],
+      default: "Unavailable",
+    },
+    image: {
+      type: String,
+      required: true,
     },
     deleted: {
       type: Boolean,
@@ -32,5 +48,5 @@ const DoctorSchema = new Schema(
   { timestamps: true }
 );
 
-const DoctorModel = mongoose.model('doctor', DoctorSchema)
-module.exports = DoctorModel
+const DoctorModel = mongoose.model("doctor", DoctorSchema);
+module.exports = DoctorModel;
