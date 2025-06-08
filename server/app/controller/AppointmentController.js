@@ -34,7 +34,7 @@ class AppointmentController {
   async GetAllAppointment(req, res){
     try {
       const appointments = await AppointmentModel.find({deleted: false}).populate("patientId").populate("doctorId")
-      if(!appointments){
+      if(appointments.length === 0){
         return res.status(HttpCode.notFound).json({
           status: false,
           message: "No appointments found!"
@@ -67,6 +67,51 @@ class AppointmentController {
           status: true,
           message: "Appointment fetched successfully",
           data: appointment
+        })
+      }
+    } catch (error) {
+      return res.status(HttpCode.serverError).json({
+        status: false,
+        message: error.message
+      })
+    }
+  }
+  async UpdateAppointment(req, res){
+    try{
+      const id = req.params.id
+      const updateData = await AppointmentModel.findByIdAndUpdate(id, req.body)
+      if(!updateData){
+        return res.status(HttpCode.badRequest).json({
+          status: false,
+          message: "Failed to update appointment!"
+        })
+      }else{
+        return res.status(HttpCode.success).json({
+          status: true,
+          message: "Appointment updated successfully",
+          data: updateData
+        })
+      }
+    }catch(error){
+      return res.status(HttpCode.serverError).json({
+        status: false,
+        message: error.message
+      })
+    }
+  }
+  async DeleteAppointment(req, res){
+    try {
+      const id = req.params.id
+      const deleteData = await AppointmentModel.findByIdAndDelete(id)
+      if(!deleteData){
+        return res.status(HttpCode.notFound).json({
+          status: false,
+          message: "Appointment not found"
+        })
+      }else{
+        return res.status(HttpCode.success).json({
+          status: true,
+          message: "Appointment deleted successfully!"
         })
       }
     } catch (error) {

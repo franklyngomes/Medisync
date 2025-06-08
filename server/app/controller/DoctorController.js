@@ -38,7 +38,7 @@ class DoctorController {
   async GetAllDoctors(req, res) {
     try {
       const doctors = await DoctorModel.find({ deleted: false });
-      if (!doctors) {
+      if (doctors.length === 0) {
         return res.status(HttpCode.notFound).json({
           status: false,
           message: "No doctors found",

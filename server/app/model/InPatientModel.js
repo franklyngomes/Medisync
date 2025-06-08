@@ -3,17 +3,17 @@ const Schema = mongoose.Schema;
 
 const InPatientSchema = new Schema(
   {
-    patient: {
+    patientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "patient",
       required: true,
     },
-    room: {
+    roomId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "room",
       required: true,
     },
-    doctor: {
+    doctorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "doctor",
     },
@@ -23,7 +23,7 @@ const InPatientSchema = new Schema(
     },
     dischargeDate: {
       type: Date,
-      required: true,
+      default: null
     },
     diagnosis: {
       type: String,

@@ -1,10 +1,13 @@
 const express = require('express')
 const PatientController = require('../controller/PatientController')
 const DoctorController = require('../controller/DoctorController')
+const AppointmentController = require('../controller/AppointmentController')
+const RoomController = require('../controller/RoomController')
+const InPatientController = require('../controller/InPatientController')
+const PaymentController = require('../controller/PaymentController')
 const ImageUpload = require('../helper/ImageUpload')
 const router = express.Router()
 const multer = require('multer')
-const AppointmentController = require('../controller/AppointmentController')
 const upload = multer()
 
 //Patient Routes
@@ -25,4 +28,27 @@ router.post('/doctor-delete/:id',DoctorController.DeleteDoctor)
 router.post('/appointment-create',upload.none(), AppointmentController.CreateAppointment)
 router.get('/all-appointment', AppointmentController.GetAllAppointment)
 router.get('/appointment-details/:id', AppointmentController.AppointmentDetails)
+router.post('/appointment-update/:id',upload.none(), AppointmentController.UpdateAppointment)
+router.post('/appointment-delete/:id', AppointmentController.DeleteAppointment)
+
+//Room Routes
+router.post('/room-create', upload.none(),RoomController.CreateRoom)
+router.get('/all-room', RoomController.GetAllRooms)
+router.get('/room-details/:id', RoomController.RoomDetails)
+router.post('/room-update/:id', upload.none(), RoomController.UpdateRoom)
+router.post('/room-delete/:id', RoomController.DeleteRoom)
+
+//InPatient Routes
+router.post('/inpatient-create', upload.none(), InPatientController.CreateInPatient)
+router.get('/all-inpatient', InPatientController.GetAllInPatient)
+router.get('/inpatient-details/:id', InPatientController.InPatientDetails)
+router.post('/inpatient-update/:id', upload.none(), InPatientController.UpdateInPatient)
+router.post('/inpatient-delete/:id', InPatientController.DeleteInPatient)
+
+//Payment Routes
+router.post('/payment-create', upload.none(), PaymentController.CreatePayment)
+router.get('/all-payment', PaymentController.GetAllPayment)
+router.get('/payment-details/:id', PaymentController.PaymentDetails)
+router.post('/payment-update/:id', upload.none(), PaymentController.UpdatePayment)
+router.post('/payment-delete/:id', PaymentController.DeletePayment)
 module.exports = router
