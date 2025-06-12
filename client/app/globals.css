@@ -478,6 +478,9 @@ span.flatpickr-weekday,
 .flatpickr-calendar.static {
   @apply right-0;
 }
+.flatpickr-calendar.animate.open.arrowTop.arrowLeft {
+  top: 26% !important;
+}
 
 .fc .fc-view-harness {
   @apply max-w-full overflow-x-auto custom-scrollbar;

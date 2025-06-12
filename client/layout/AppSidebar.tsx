@@ -29,35 +29,35 @@ const navItems: NavItem[] = [
     name: "Dashboard",
     path: "/",
   },
-    {
-    icon: <PatientIcon/>,
-    name: "Patient",
-    path: "/patient",
-  },
-    {
+  {
     icon: <AppointmentIcon />,
     name: "Appointments",
     path: "/appointments",
   },
-    {
-    icon: <DoctorIcon />,
-    name: "Doctor",
-    path: "/doctor",
+  {
+  icon: <RoomIcon />,
+  name: "Rooms",
+  path: "/rooms",
   },
+  {
+  icon: <PaymentIcon />,
+  name: "Payment",
+  path: "/payment",
+  },
+  {
+  icon: <DoctorIcon />,
+  name: "Doctor",
+  path: "/doctor",
+},
+  {
+  icon: <PatientIcon/>,
+  name: "Patient",
+  path: "/patient",
+},
     {
     icon: <InpatientIcon />,
     name: "Inpatient",
     path: "/inpatient",
-  },
-    {
-    icon: <RoomIcon />,
-    name: "Rooms",
-    path: "/rooms",
-  },
-    {
-    icon: <PaymentIcon />,
-    name: "Payment",
-    path: "/payment",
   },
 ];
 const othersItems: NavItem[] = [

@@ -5,7 +5,6 @@ class AppointmentController {
   async CreateAppointment(req, res) {
     try {
       const { patientId, doctorId, appointmentDate, note } = req.body;
-      console.log(req.body);
       if (!patientId || !doctorId || !appointmentDate || !note) {
         return res.status(HttpCode.notFound).json({
           status: false,
