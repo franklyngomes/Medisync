@@ -1,5 +1,5 @@
 "use client"
-import { AppointmentCreateQuery, AppointmentDetailsQuery, AppointmentListQuery, AppointmentUpdateQuery } from "../../../api/query/AppointmentQuery";
+import { AppointmentCreateQuery, AppointmentDeleteQuery, AppointmentDetailsQuery, AppointmentListQuery, AppointmentUpdateQuery } from "../../../api/query/AppointmentQuery";
 import ComponentCard from "../../../components/common/ComponentCard";
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import BasicTable from "../../../components/tables/BasicTable";
@@ -19,7 +19,7 @@ import Badge from "../../../components/ui/badge/Badge";
 import { format } from 'date-fns';
 import { useStore } from "../../../store/store";
 import Input from "../../../components/form/input/InputField";
-
+import toast from "react-hot-toast";
 
 
 const Appointment = () => {
@@ -38,7 +38,7 @@ const Appointment = () => {
   const { data: details } = AppointmentDetailsQuery(editId, !!editId)
   const appointmentDetails = details?.data.data
   const { mutateAsync: update } = AppointmentUpdateQuery()
-  console.log(isEditing)
+  const { mutateAsync: deleteAppointment } = AppointmentDeleteQuery()
 
   const tableColumns = [
     { label: "Sl No.", render: (_: any, index: number) => index + 1 },
@@ -103,10 +103,28 @@ const Appointment = () => {
     formdata.append("note", note)
     formdata.append("status", status)
     formdata.append("appointmentDate", appointmentDate)
-    update({editId, formdata},{
-      onSuccess: () => {
-        closeModal()
-        setIsEditing(false)
+    update({ editId, formdata }, {
+      onSuccess: (res) => {
+        if (res.data.status === true) {
+          toast.success(res.data.message)
+          closeModal()
+          setIsEditing(false)
+        } else {
+          toast.error(res.data.message)
+        }
+      }
+    })
+  }
+  const onDelete = (id : string) => {
+    deleteAppointment(id, {
+      onSuccess: (res) => {
+        if (res.data.status === true) {
+          toast.success(res.data.message)
+          closeModal()
+          setIsEditing(false)
+        } else {
+          toast.error(res.data.message)
+        }
       }
     })
   }
@@ -159,7 +177,7 @@ const Appointment = () => {
         </div>
         <div className="space-y-6">
           <ComponentCard title="Appointments">
-            <BasicTable data={appointments} tableColumns={tableColumns} />
+            <BasicTable data={appointments} tableColumns={tableColumns} onDelete={onDelete}/>
           </ComponentCard>
         </div>
       </div>

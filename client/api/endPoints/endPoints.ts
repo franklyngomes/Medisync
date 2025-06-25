@@ -19,6 +19,12 @@ export const endPoints = {
     doctor_details: "/doctor-details/",
     doctor_update: "/doctor-update/",
     doctor_delete: "/doctor-delete/"
+  },
+  rooms: {
+    room_create: "/room-create",
+    room_list: "/all-room",
+    room_details: "/room-details/",
+    room_update: "/room-update/",
+    room_delete: "/room-delete/"
   }
-
 }

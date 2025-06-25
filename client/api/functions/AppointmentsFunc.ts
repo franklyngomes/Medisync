@@ -2,35 +2,44 @@ import { AppointmentListProps } from "../../types/types";
 import { axiosInstance } from "../axios/axiosInstance";
 import { endPoints } from "../endPoints/endPoints";
 
-export const ListAppointment = () => {
+export const ListAppointment = async () => {
   try {
-    const response = axiosInstance.get(endPoints.appointments.appointment_list)
+    const response = await axiosInstance.get(endPoints.appointments.appointment_list)
     return response
   } catch (error) {
-    console.log(error)
+    return error
   }
 }
-export const CreateAppointment = (formData : AppointmentListProps) => {
+export const CreateAppointment = async (formData: AppointmentListProps) => {
   try {
-    const response = axiosInstance.post(endPoints.appointments.appointment_create, formData)
+    const response = await axiosInstance.post(endPoints.appointments.appointment_create, formData)
     return response
   } catch (error) {
-    console.log(error)
+    return error
+
   }
 }
-export const AppointmentDetails = (id: string) => {
+export const AppointmentDetails = async (id: string) => {
   try {
-    const response = axiosInstance.get(endPoints.appointments.appointment_details+id)
+    const response = await axiosInstance.get(endPoints.appointments.appointment_details + id)
     return response
   } catch (error) {
-    console.log(error)
+    return error
   }
 }
-export const AppointmentUpdate = ({editId, formdata} : {editId: string, formdata: FormData}) => {
+export const AppointmentUpdate = async ({ editId, formdata }: { editId: string, formdata: FormData }) => {
   try {
-    const response = axiosInstance.post(endPoints.appointments.appointment_update+editId, formdata)
+    const response = await axiosInstance.post(endPoints.appointments.appointment_update + editId, formdata)
     return response
   } catch (error) {
-    console.log(error)
+    return error
+  }
+}
+export const AppointmentDelete = async (id: string) => {
+  try {
+    const response = await axiosInstance.post(endPoints.appointments.appointment_delete + id)
+    return response
+  } catch (error) {
+    return error
   }
 }

@@ -9,12 +9,11 @@ import {
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { AppointmentListProps } from "../../types/types";
 import { MoreDotIcon } from "../../icons";
 import { useStore } from "../../store/store";
 import { useModal } from "../../hooks/useModal";
 
-export default function BasicTable({ tableColumns, data }: { tableColumns: any, data: AppointmentListProps[] }) {
+export default function BasicTable({ tableColumns, data, onDelete }: { tableColumns: any, data : any, onDelete: any }) {
   const { editId, isEditing, setIsEditing, setEditId } = useStore();
   const { isOpen, openModal, closeModal } = useModal();
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
@@ -28,7 +27,7 @@ export default function BasicTable({ tableColumns, data }: { tableColumns: any, 
   }
 
   //Function to dynamically access nested object values
-  function getValueByKeyPath(obj: any, path: string): any {
+  function getValueByKeyPath(obj: any, path: string){
     return path.split('.').reduce((acc, key) => acc?.[key], obj);
   }
   return (
@@ -62,7 +61,7 @@ export default function BasicTable({ tableColumns, data }: { tableColumns: any, 
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {data && data.length > 0 ? (
-                data.map((item, index) => (
+                data.map((item, index : number) => (
                   <TableRow key={index} className="dark:hover:bg-gray-700 hover:bg-gray-100">
                     {tableColumns.map((col: any, colIndex: number) => (
                       <TableCell
@@ -100,7 +99,10 @@ export default function BasicTable({ tableColumns, data }: { tableColumns: any, 
                               Edit
                             </DropdownItem>
                             <DropdownItem
-                              onItemClick={closeDropdown}
+                              onItemClick={() => {
+                                onDelete(item._id)
+                                closeDropdown()
+                              }}
                               className="flex w-full font-normal text-left rounded-lg text-red-500 hover:text-red-500 hover:bg-gray-100 dark:hover:bg-white/5"
                             >
                               Delete
