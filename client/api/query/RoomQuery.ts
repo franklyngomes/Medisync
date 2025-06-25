@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { RoomCreate, RoomList } from "../functions/RoomFunc"
+import { RoomCreate, RoomDelete, RoomDetails, RoomList, RoomUpdate } from "../functions/RoomFunc"
 
 export const AllRoomQuery = () => {
   return useQuery({
@@ -13,6 +13,31 @@ export const CreateRoomQuery = () => {
     mutationFn: (formdata: FormData) => RoomCreate(formdata),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["RoomList"] })
+    }
+  })
+}
+export const RoomDetailsQuery = (id:string, enabled: boolean) => {
+  return useQuery({
+    queryKey: ["Room-Details", id],
+    queryFn:() => RoomDetails(id),
+    enabled
+  })
+}
+export const RoomUpdateQuery = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({editId, formData} : {editId: string, formData: FormData}) => RoomUpdate({editId, formData}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ["RoomList"]})
+    }
+  })
+}
+export const RoomDeleteQuery = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => RoomDelete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ["RoomList"]})
     }
   })
 }

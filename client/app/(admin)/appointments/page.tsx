@@ -273,10 +273,10 @@ const Appointment = () => {
                           id="date-picker"
                           label="Appointment Date"
                           placeholder="Select a date"
-                          defaultDate={value ? new Date(value) : undefined} // 🧠 this ensures default is shown
+                          defaultDate={value ? new Date(value) : undefined} // this ensures default is shown
                           onChange={([selectedDate]) => {
                             if (selectedDate) {
-                              onChange(selectedDate.toISOString()); // 🧠 store ISO string in form state
+                              onChange(selectedDate.toISOString()); // store ISO string in form state
                             }
                           }}
                         />
