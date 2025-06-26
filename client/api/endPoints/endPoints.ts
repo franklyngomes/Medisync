@@ -26,5 +26,19 @@ export const endPoints = {
     room_details: "/room-details/",
     room_update: "/room-update/",
     room_delete: "/room-delete/"
+  },
+  inpatients: {
+    inpatient_create: "/inpatient-create",
+    inpatient_list: "/all-inpatient",
+    inpatient_details: "/inpatient-details/",
+    inpatient_update: "/inpatient-update/",
+    inpatient_delete: "/inpatient-delete/"
+  },
+   payment: {
+    payment_create: "/payment-create",
+    payment_list: "/all-payment",
+    payment_details: "/payment-details/",
+    payment_update: "/payment-update/",
+    payment_delete: "/payment-delete/"
   }
 }

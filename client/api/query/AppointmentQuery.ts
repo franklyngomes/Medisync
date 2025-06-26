@@ -31,6 +31,7 @@ export const AppointmentUpdateQuery = () => {
     mutationFn: ({editId, formdata} : {editId: string; formdata: FormData}) => AppointmentUpdate({editId, formdata}),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["AppointmentList"]})
+      queryClient.invalidateQueries({queryKey:["AppointmentDetails"]})
     }
   })
 }

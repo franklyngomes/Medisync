@@ -18,7 +18,7 @@ export const CreateRoomQuery = () => {
 }
 export const RoomDetailsQuery = (id:string, enabled: boolean) => {
   return useQuery({
-    queryKey: ["Room-Details", id],
+    queryKey: ["RoomDetails", id],
     queryFn:() => RoomDetails(id),
     enabled
   })
@@ -29,6 +29,7 @@ export const RoomUpdateQuery = () => {
     mutationFn: ({editId, formData} : {editId: string, formData: FormData}) => RoomUpdate({editId, formData}),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["RoomList"]})
+      queryClient.invalidateQueries({queryKey: ["RoomDetails"]})
     }
   })
 }

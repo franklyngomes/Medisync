@@ -4,7 +4,7 @@ import { endPoints } from "../endPoints/endPoints";
 export const RoomList = async () => {
   try {
     const response = await axiosInstance.get(endPoints.rooms.room_list)
-    return response
+    return response.data
   } catch (error) {
     return error
   }
@@ -35,7 +35,7 @@ export const RoomUpdate = async ({ editId, formData }: { editId: string, formDat
 }
 export const RoomDelete = async(id: string) => {
   try {
-    const response = await axiosInstance.delete(endPoints.rooms.room_delete+id)
+    const response = await axiosInstance.post(endPoints.rooms.room_delete+id)
     return response
   } catch (error) {
     return error

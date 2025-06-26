@@ -33,8 +33,8 @@ const DoctorSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["Available", "Unavailable"],
-      default: "Unavailable",
+      enum: ["Available", "Unavailable", "On Leave"],
+      default: "Available",
     },
     image: {
       type: String,

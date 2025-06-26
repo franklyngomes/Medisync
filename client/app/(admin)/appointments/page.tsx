@@ -236,7 +236,7 @@ const Appointment = () => {
                             <ChevronDownIcon />
                           </span>
                         </>
-                        : <Input defaultValue={appointmentDetails?.patientId.name} disabled />}
+                        : <Input value={appointmentDetails?.patientId.name ?? ""} disabled />}
                     </div>
                   </div>
                   <div>
@@ -260,7 +260,7 @@ const Appointment = () => {
                             <ChevronDownIcon />
                           </span>
                         </>
-                        : <Input defaultValue={appointmentDetails?.doctorId.name} disabled />
+                        : <Input value={appointmentDetails?.doctorId.name ?? ""} disabled />
                       }
                     </div>
                   </div>

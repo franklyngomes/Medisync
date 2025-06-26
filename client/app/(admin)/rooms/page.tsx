@@ -19,7 +19,8 @@ import toast from "react-hot-toast";
 
 const Room = () => {
   const { data } = AllRoomQuery()
-  const rooms = data?.data?.data
+  const rooms = data?.data
+  console.log(rooms)
   const { isOpen, openModal, closeModal } = useModal();
   const { handleSubmit, reset, control, setValue } = useForm();
   const { mutateAsync } = CreateRoomQuery()
@@ -155,7 +156,7 @@ const Room = () => {
     <>
       <div>
         <div className="flex flex-wrap justify-between items-center">
-          <PageBreadcrumb pageTitle="Appointment List" breadCrumbTitle="Appointments" />
+          <PageBreadcrumb pageTitle="Room List" breadCrumbTitle="Rooms" />
           <Button size="sm" variant="primary" startIcon={<RoomIcon />} onClick={openModal}>
             Create Room
           </Button>

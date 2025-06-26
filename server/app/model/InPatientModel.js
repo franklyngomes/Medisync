@@ -16,6 +16,7 @@ const InPatientSchema = new Schema(
     doctorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "doctor",
+      required: true,
     },
     admissionDate: {
       type: Date,
