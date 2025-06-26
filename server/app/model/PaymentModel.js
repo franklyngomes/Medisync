@@ -6,8 +6,9 @@ const PaymentSchema = new Schema({
     type:mongoose.Schema.Types.ObjectId, ref: "patient",
     required: true
   },
-  appointmentId: {
-    type: mongoose.Schema.Types.ObjectId, ref: "appointment",
+  doctorId: {
+    type: mongoose.Schema.Types.ObjectId, ref: "doctor",
+    required: true
   },
   notes: {
     type:String,

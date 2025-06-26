@@ -20,7 +20,7 @@ export const InPatientCreate = async (formData: FormData) => {
 export const InPatientDetails = async (id: string) => {
   try {
     const response = await axiosInstance.get(endPoints.inpatients.inpatient_details + id)
-    return response
+    return response.data
   } catch (error) {
     return error
   }

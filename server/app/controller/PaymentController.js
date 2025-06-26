@@ -4,8 +4,8 @@ const HttpCode = require("../helper/HttpCode");
 class PaymentController {
   async CreatePayment(req, res) {
     try {
-      const { patientId, appointmentId, notes, amount } = req.body;
-      if (!patientId || !appointmentId || !notes || !amount) {
+      const { patientId, doctorId, notes, amount } = req.body;
+      if (!patientId || !doctorId || !notes || !amount) {
         return res.status(HttpCode.notFound).json({
           status: false,
           message: "All fields are required!",
@@ -13,7 +13,7 @@ class PaymentController {
       }
       const paymentData = new PaymentModel({
         patientId,
-        appointmentId,
+        doctorId,
         notes,
         amount,
       });
@@ -34,7 +34,7 @@ class PaymentController {
     try {
       const payments = await PaymentModel.find({ deleted: false })
         .populate("patientId")
-        .populate("appointmentId")
+        .populate("doctorId")
       if (payments.length === 0) {
         return res.status(HttpCode.notFound).json({
           status: false,
@@ -59,7 +59,7 @@ class PaymentController {
       const id = req.params.id;
       const payment = await PaymentModel.findById(id)
         .populate("patientId")
-        .populate("appointmentId")
+        .populate("doctorId")
       if (!payment) {
         return res.status(HttpCode.notFound).json({
           status: false,
