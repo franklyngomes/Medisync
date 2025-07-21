@@ -27,9 +27,36 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    deleted: {
+    role: {
+      type: String,
+      enum: ["admin" , "doctor" , "staff"] 
+    },
+    designation: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+    },
+    verified: {
       type: Boolean,
       default: false,
+    },
+    verificationCode: {
+      type: String,
+      select: false,
+    },
+    verificationCodeValidation: {
+      type: Number,
+      select: false,
+    },
+    forgotPasswordCode: {
+      type: String,
+      select: false,
+    },
+    forgotPasswordCodeValidation: {
+      type: Number,
+      select: false,
     },
     deletedAt: {
       type: Date,
@@ -39,5 +66,5 @@ const UserSchema = new Schema(
   { timestamps: true }
 );
 
-const UserModel = mongoose.model('users', UserSchema)
-module.exports = UserModel
+const UserModel = mongoose.model("users", UserSchema);
+module.exports = UserModel;

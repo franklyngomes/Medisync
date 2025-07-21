@@ -1,11 +1,13 @@
 const express = require('express')
+const UserController = require('../controller/UserController')
 const PatientController = require('../controller/PatientController')
 const DoctorController = require('../controller/DoctorController')
 const AppointmentController = require('../controller/AppointmentController')
 const RoomController = require('../controller/RoomController')
 const InPatientController = require('../controller/InPatientController')
 const PaymentController = require('../controller/PaymentController')
-const ImageUpload = require('../helper/ImageUpload')
+const DoctorImageUpload = require('../helper/DoctorImageUpload')
+const UserImageUpload = require('../helper/UserImageUpload')
 const router = express.Router()
 const multer = require('multer')
 const upload = multer()
@@ -18,10 +20,10 @@ router.post('/patient-update/:id',upload.none(), PatientController.UpdatePatient
 router.post('/patient-delete/:id', PatientController.DeletePatient)
 
 //Doctor Routes
-router.post('/doctor-create',ImageUpload.single('image'), DoctorController.CreateDoctor)
+router.post('/doctor-create',DoctorImageUpload.single('image'), DoctorController.CreateDoctor)
 router.get('/all-doctor', DoctorController.GetAllDoctors)
 router.get('/doctor-details/:id', DoctorController.DoctorDetails)
-router.post('/doctor-update/:id',ImageUpload.single('image'), DoctorController.UpdateDoctor)
+router.post('/doctor-update/:id',DoctorImageUpload.single('image'), DoctorController.UpdateDoctor)
 router.post('/doctor-delete/:id',DoctorController.DeleteDoctor)
 
 //Appointment Routes
@@ -51,4 +53,9 @@ router.get('/all-payment', PaymentController.GetAllPayment)
 router.get('/payment-details/:id', PaymentController.PaymentDetails)
 router.post('/payment-update/:id', upload.none(), PaymentController.UpdatePayment)
 router.post('/payment-delete/:id', PaymentController.DeletePayment)
+
+//User Routes
+router.post('/signup', UserImageUpload.single('image'), UserController.Signup)
+router.post('/verify-email',upload.none(), UserController.VerifyEmail)
+router.post('/signin',upload.none(), UserController.Signin)
 module.exports = router
