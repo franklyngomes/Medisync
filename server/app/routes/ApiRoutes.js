@@ -5,7 +5,7 @@ const DoctorController = require('../controller/DoctorController')
 const AppointmentController = require('../controller/AppointmentController')
 const RoomController = require('../controller/RoomController')
 const InPatientController = require('../controller/InPatientController')
-const PaymentController = require('../controller/PaymentController')
+// const PaymentController = require('../controller/PaymentController')
 const DoctorImageUpload = require('../helper/DoctorImageUpload')
 const UserImageUpload = require('../helper/UserImageUpload')
 const router = express.Router()
@@ -48,11 +48,11 @@ router.post('/inpatient-update/:id', upload.none(), InPatientController.UpdateIn
 router.post('/inpatient-delete/:id', InPatientController.DeleteInPatient)
 
 //Payment Routes
-router.post('/payment-create', upload.none(), PaymentController.CreatePayment)
-router.get('/all-payment', PaymentController.GetAllPayment)
-router.get('/payment-details/:id', PaymentController.PaymentDetails)
-router.post('/payment-update/:id', upload.none(), PaymentController.UpdatePayment)
-router.post('/payment-delete/:id', PaymentController.DeletePayment)
+// router.post('/payment-create', upload.none(), PaymentController.CreatePayment)
+// router.get('/all-payment', PaymentController.GetAllPayment)
+// router.get('/payment-details/:id', PaymentController.PaymentDetails)
+// router.post('/payment-update/:id', upload.none(), PaymentController.UpdatePayment)
+// router.post('/payment-delete/:id', PaymentController.DeletePayment)
 
 //User Routes
 router.post('/signup', UserImageUpload.single('image'), UserController.Signup)

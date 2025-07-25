@@ -31,6 +31,14 @@ const DoctorSchema = new Schema(
       ],
       required: true,
     },
+    fees: {
+      consultation: {
+        type: Number,
+      },
+      surgery: {
+        type: Number
+      }
+    },
     status: {
       type: String,
       enum: ["Available", "Unavailable", "On Leave"],
