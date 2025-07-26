@@ -43,7 +43,7 @@ export default function BasicTable({ tableColumns, data, onDelete }: { tableColu
                     <TableCell
                       key={index}
                       isHeader
-                      className="px-5 py-3 font-medium text-gray-600 text-start text-theme-sm dark:text-gray-200"
+                      className="px-3 py-3 font-medium text-gray-800 text-start text-theme-xs dark:text-gray-200"
                     >
                       {item.label}
                     </TableCell>
@@ -51,7 +51,7 @@ export default function BasicTable({ tableColumns, data, onDelete }: { tableColu
                 }
                 <TableCell
                   isHeader
-                  className="px-5 py-3 font-medium text-gray-600 text-start text-theme-sm dark:text-gray-400"
+                  className="px-3 py-3 font-medium text-gray-800 text-start text-theme-xs dark:text-gray-200"
                 >
                   Actions
                 </TableCell>
@@ -66,7 +66,7 @@ export default function BasicTable({ tableColumns, data, onDelete }: { tableColu
                     {tableColumns.map((col: any, colIndex: number) => (
                       <TableCell
                         key={colIndex}
-                        className="px-4 py-3 text-gray-600 text-start text-theme-sm dark:text-gray-200"
+                        className="px-3 py-3 text-gray-800 text-start text-theme-xs dark:text-gray-200"
                       >
                         {col.render
                           ? col.render(item, index)
@@ -77,9 +77,9 @@ export default function BasicTable({ tableColumns, data, onDelete }: { tableColu
                       <button
                         type="button"
                         onClick={() => toggleDropdown(index)}
-                        className="text-sm text-center"
+                        className="text-xs text-center"
                       >
-                        <MoreDotIcon className="text-gray-400 dark:text-gray-200" />
+                        <MoreDotIcon className="text-gray-800 dark:text-gray-200" />
                       </button>
                       {openDropdownIndex === index && (
                         <div className="absolute right-0 top-[-40px] z-50">

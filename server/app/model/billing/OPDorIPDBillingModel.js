@@ -6,7 +6,7 @@ const OPDorIPDBillingSchema = new Schema(
     type: {
       type: String,
       enum: ["OPD", "IPD"],
-      required: true
+      required: true,
     },
     patientId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -31,11 +31,11 @@ const OPDorIPDBillingSchema = new Schema(
       type: String,
       required: true,
     },
-    amount: {
+    standardCharge: {
       type: Number,
       required: true,
     },
-    standardCharge: {
+    appliedCharge: {
       type: Number,
       required: true,
     },

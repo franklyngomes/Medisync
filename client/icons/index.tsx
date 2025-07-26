@@ -57,6 +57,10 @@ import PatientIcon from "./patient.svg"
 import InpatientIcon from "./inpatient.svg"
 import PaymentIcon from "./payment.svg"
 import RoomIcon from "./room.svg"
+import ReportsIcons from "./reports.svg"
+import PathologyIcon from "./pathology.svg"
+import RadiologyIcon from "./radiology.svg"
+import OutpatientIcon from "./outpatient.svg"
 
 export {
   DownloadIcon,
@@ -117,5 +121,9 @@ export {
   PatientIcon,
   InpatientIcon,
   PaymentIcon,
-  RoomIcon
+  RoomIcon,
+  ReportsIcons,
+  OutpatientIcon,
+  PathologyIcon,
+  RadiologyIcon
 };

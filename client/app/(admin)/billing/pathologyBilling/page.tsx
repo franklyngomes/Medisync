@@ -1,27 +1,27 @@
 "use client"
-import ComponentCard from "../../../components/common/ComponentCard";
-import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
-import BasicTable from "../../../components/tables/BasicTable";
+import ComponentCard from "../../../../components/common/ComponentCard";
+import PageBreadcrumb from "../../../../components/common/PageBreadCrumb";
+import BasicTable from "../../../../components/tables/BasicTable";
 import React from "react";
-import Button from "../../../components/ui/button/Button";
-import { PaymentIcon, ChevronDownIcon } from "../../../icons";
-import { useModal } from "../../../hooks/useModal";
-import { Modal } from "../../../components/ui/modal";
-import Label from "../../../components/form/Label";
-import Select from "../../../components/form/Select";
+import Button from "../../../../components/ui/button/Button";
+import { PaymentIcon, ChevronDownIcon } from "../../../../icons";
+import { useModal } from "../../../../hooks/useModal";
+import { Modal } from "../../../../components/ui/modal";
+import Label from "../../../../components/form/Label";
+import Select from "../../../../components/form/Select";
 import { useForm, Controller } from "react-hook-form";
-import { useStore } from "../../../store/store";
-import Input from "../../../components/form/input/InputField";
+import { useStore } from "../../../../store/store";
+import Input from "../../../../components/form/input/InputField";
 import toast from "react-hot-toast";
-import DatePicker from "../../../components/form/date-picker";
+import DatePicker from "../../../../components/form/date-picker";
 import { format } from 'date-fns';
-import { PatientListQuery } from "../../../api/query/PatientQuery";
-import { CreatePaymentsQuery, PaymentDeleteQuery, PaymentDetailsQuery, PaymentListQuery, PaymentUpdateQuery } from "../../../api/query/PaymentQuery";
-import { DoctorListQuery } from "../../../api/query/DoctorQuery";
-import Badge from "../../../components/ui/badge/Badge";
+import { PatientListQuery } from "../../../../api/query/PatientQuery";
+import { CreatePaymentsQuery, PaymentDeleteQuery, PaymentDetailsQuery, PaymentListQuery, PaymentUpdateQuery } from "../../../../api/query/PaymentQuery";
+import { DoctorListQuery } from "../../../../api/query/DoctorQuery";
+import Badge from "../../../../components/ui/badge/Badge";
 
 
-const Payment = () => {
+const PathologyBilling = () => {
   const [patientOption, setPatientOption] = React.useState<{ label: string; value: string }[]>([])
   const { data: patientsList } = PatientListQuery()
   const [doctorOption, setDoctorOption] = React.useState<{ label: string, value: string }[]>([])
@@ -40,10 +40,17 @@ const Payment = () => {
   const { mutateAsync: deletePayment } = PaymentDeleteQuery()
 
   const tableColumns = [
+    {
+      label: "Date", key: "reportingDate", render: (item: any) => item.date ? format(new Date(item.date), "dd-MM-yyyy") : "---"
+    },
+    { label: "Bill No.", key: "billNo" },
+    { label: "Case Id", key: "caseId" },
     { label: "Patient Name", key: "patientId.name" },
-    { label: "Doctor Name", key: "doctorId.name" },
-    { label: "Note", key: "notes" },
+    { label: "Reference Doctor", key: "doctorId.name" },
+    { label: "Discount", key: "discount" },
     { label: "Amount", key: "amount" },
+    { label: "Paid Amount", key: "paidAmount" },
+    { label: "Balance Amount", key: "balanceAmount" },
     {
       label: "Status",
       key: "status",
@@ -61,9 +68,6 @@ const Payment = () => {
           {item.status}
         </Badge>
       )
-    },
-    {
-      label: "Date", key: "date", render: (item: any) => item.date ? format(new Date(item.date), "dd-MM-yyyy") : "---"
     },
   ]
 
@@ -168,13 +172,13 @@ const Payment = () => {
     <>
       <div>
         <div className="flex flex-wrap justify-between items-center">
-          <PageBreadcrumb pageTitle="Payment List" breadCrumbTitle="Payment" />
+          <PageBreadcrumb pageTitle="Pathology Billing" breadCrumbTitle="Pathology Billing" />
           <Button size="sm" variant="primary" startIcon={<PaymentIcon />} onClick={openModal}>
-            Add New Payment
+            New Bill
           </Button>
         </div>
         <div className="space-y-6">
-          <ComponentCard title="Payments">
+          <ComponentCard title="Generated Bills">
             <BasicTable data={payments} tableColumns={tableColumns} onDelete={onDelete} />
           </ComponentCard>
         </div>
@@ -186,7 +190,7 @@ const Payment = () => {
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-2xl bg-white p-5 dark:bg-gray-900">
           <div className="px-2 pr-14">
             <h4 className="mb-5 text-2xl font-semibold text-gray-800 dark:text-white/90">
-              {!isEditing ? "Add new payment" : "Edit payment"}
+              {!isEditing ? "Add new bill" : "Edit Bill"}
             </h4>
           </div>
           <form className="flex flex-col" onSubmit={isEditing ? handleSubmit(onUpdate) : handleSubmit(onSubmit)}>
@@ -337,4 +341,4 @@ const Payment = () => {
   )
 }
 
-export default Payment
+export default PathologyBilling

@@ -22,11 +22,11 @@ const AppointmentBillingSchema = new Schema(
       type: String,
       required: true,
     },
-    amount: {
+    standardCharge: {
       type: Number,
       required: true,
     },
-    standardCharge: {
+    appliedCharge: {
       type: Number,
       required: true,
     },

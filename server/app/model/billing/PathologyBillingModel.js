@@ -9,8 +9,8 @@ const PathologyBillSchema = new Schema({
     type: String,
   },
   reportingDate: {
-    type: String,
-    required: true,
+    type: Date,
+    default: Date.now,
   },
   patientName: {
     type: mongoose.Schema.Types.ObjectId,
@@ -20,7 +20,6 @@ const PathologyBillSchema = new Schema({
   referenceDoctor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "doctor",
-    required: true,
   },
   discount: {
     type: Number,
@@ -37,6 +36,11 @@ const PathologyBillSchema = new Schema({
   balanceAmount: {
     type: Number,
   },
-});
-const PathologyBillModel = mongoose.model('pathologyBill', PathologyBillSchema)
-module.exports = PathologyBillModel
+  status: {
+      type: String,
+      enum: ["Paid", "Pending", "Failed"],
+      default: "Pending",
+    },
+}, {timestamps: true});
+const PathologyBillModel = mongoose.model("pathologyBill", PathologyBillSchema);
+module.exports = PathologyBillModel;
