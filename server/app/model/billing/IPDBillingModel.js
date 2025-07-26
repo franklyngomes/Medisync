@@ -1,11 +1,19 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const AppointmentBillingSchema = new Schema(
+const IPDBillingSchema = new Schema(
   {
-    appointmentId: {
+    type: {
+      type: String,
+      default: "IPD",
+    },
+    inPatientId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "appointment",
+      ref: "inpatients",
+      required: true,
+    },
+    chargeName: {
+      type: String,
       required: true,
     },
     chargeType: {
@@ -25,16 +33,21 @@ const AppointmentBillingSchema = new Schema(
       type: Number,
       required: true,
     },
+    tpaCharge: {
+      type: Number,
+      required: true,
+    },
     discount: {
       type: Number,
       required: true,
     },
     tax: {
       type: Number,
-      default: 18
+      required: true,
     },
     amount: {
       type: Number,
+      required: true,
     },
     status: {
       type: String,
@@ -53,8 +66,8 @@ const AppointmentBillingSchema = new Schema(
   { timestamps: true }
 );
 
-const AppointmentBillingModel = mongoose.model(
-  "appointmentBill",
-  AppointmentBillingSchema
+const IPDBillingModel = mongoose.model(
+  "ipdbills",
+  IPDBillingSchema
 );
-module.exports = AppointmentBillingModel;
+module.exports = IPDBillingModel;

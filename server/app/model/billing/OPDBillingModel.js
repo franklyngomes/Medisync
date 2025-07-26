@@ -1,21 +1,15 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const OPDorIPDBillingSchema = new Schema(
+const OPDBillingSchema = new Schema(
   {
     type: {
       type: String,
-      enum: ["OPD", "IPD"],
-      required: true,
+      default: "OPD",
     },
-    patientId: {
+    outPatientId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "patient",
-      required: true,
-    },
-    doctorId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "doctor",
+      ref: "outpatients",
       required: true,
     },
     chargeName: {
@@ -27,8 +21,8 @@ const OPDorIPDBillingSchema = new Schema(
       enum: ["consultation", "surgery"],
       required: true,
     },
-    quantity: {
-      type: String,
+    noOfHour: {
+      type: Number,
       required: true,
     },
     standardCharge: {
@@ -72,8 +66,8 @@ const OPDorIPDBillingSchema = new Schema(
   { timestamps: true }
 );
 
-const OPDorIPDBillingModel = mongoose.model(
-  "OPDorIPD Bill",
-  OPDorIPDBillingSchema
+const OPDBillingModel = mongoose.model(
+  "OPDBill",
+  OPDBillingSchema
 );
-module.exports = OPDorIPDBillingModel;
+module.exports = OPDBillingModel;

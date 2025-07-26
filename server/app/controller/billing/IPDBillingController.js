@@ -1,18 +1,18 @@
-const AppointmentBillingModel = require('../../model/billing/AppointmentBillingModel')
+const IPDBillingModel = require('../../model/billing/IPDBillingModel')
 const HttpCode = require("../../helper/HttpCode");
 
-class AppointmentBillingController {
-  async CreateAppointmentBill(req, res) {
+class IPDBillingController {
+  async CreateIPDBill(req, res) {
     try {
-      const { appointmentId, chargeType, noOfHour, standardCharge,tpaCharge, tax, discount } = req.body;
-      if (!appointmentId || !chargeType || !noOfHour || !standardCharge || !tpaCharge || !discount) {
+      const { inPatientId, chargeName, chargeType, noOfHour, standardCharge,tpaCharge, tax, discount } = req.body;
+      if (!inPatientId || !chargeType || !noOfHour || !chargeName|| !standardCharge || !tpaCharge || !discount) {
         return res.status(HttpCode.notFound).json({
           status: false,
           message: "Some important fields are missing!",
         });
       }
-      const billData = new AppointmentBillingModel({
-       appointmentId, chargeType, noOfHour, standardCharge,tpaCharge, tax, discount
+      const billData = new IPDBillingModel({
+      inPatientId, chargeName, chargeType, noOfHour, standardCharge,tpaCharge, tax, discount
       });
       const appliedCharge = standardCharge * noOfHour
       billData.appliedCharge = appliedCharge
@@ -25,8 +25,9 @@ class AppointmentBillingController {
       const data = await billData.save();
       return res.status(HttpCode.create).json({
         status: true,
-        message: "Appointment bill created successfully",
+        message: "IPD bill  created successfully",
         data: data,
+
       });
     } catch (error) {
       return res.status(HttpCode.serverError).json({
@@ -35,18 +36,18 @@ class AppointmentBillingController {
       });
     }
   }
-  async GetAllAppointmentBills(req, res){
+  async GetAllIPDBills(req, res){
     try {
-      const bills = await AppointmentBillingModel.find({deleted: false})
+      const bills = await IPDBillingModel.find({deleted: false})
       if(bills.length === 0){
         return res.status(HttpCode.notFound).json({
           status: false,
-          message: "No bills found!"
+          message: "No IPD bill found!"
         })
       }else{
         return res.status(HttpCode.success).json({
           status: true,
-          message: "Appointment bills fetched successfully",
+          message: "IPD bills fetched successfully",
           data: bills
         })
       }
@@ -57,19 +58,19 @@ class AppointmentBillingController {
       })
     }
   }
-  async AppointmentBillDetails(req, res){
+  async IPDBillDetails(req, res){
     try {
       const id = req.params.id
-      const bill = await AppointmentBillingModel.findById(id)
+      const bill = await IPDBillingModel.findById(id)
       if(!id){
         return res.status(HttpCode.notFound).json({
           status: false,
-          message: 'Appointment bill not found'
+          message: 'IPD bill  not found'
         })
       }else{
         return res.status(HttpCode.success).json({
           status: true,
-          message: "Appointment bill fetched successfully",
+          message: "IPD bill  fetched successfully",
           data: bill
         })
       }
@@ -80,10 +81,10 @@ class AppointmentBillingController {
       })
     }
   }
-  async UpdateAppointmentBill(req, res){
+  async UpdateIPDBill(req, res){
     try{
       const id = req.params.id
-      const {tax, standardCharge, noOfHour, discount} = req.body
+      const {tax, standardCharge, noOfHour, discount ,status} = req.body
       const appliedCharge = standardCharge * noOfHour
       req.body.appliedCharge = appliedCharge
       const amount = standardCharge * (1 + tax / 100)
@@ -92,17 +93,17 @@ class AppointmentBillingController {
       }else{
          req.body.amount = amount
       }
-      const updateData = await AppointmentBillingModel.findByIdAndUpdate(id, req.body)
+      const updateData = await IPDBillingModel.findByIdAndUpdate(id, req.body)
 
       if(!updateData){
         return res.status(HttpCode.badRequest).json({
           status: false,
-          message: "Failed to update appointment bill!"
+          message: "Failed to update IPD bill!"
         })
       }else{
         return res.status(HttpCode.success).json({
           status: true,
-          message: "Appointment bill updated successfully",
+          message: "IPD bill  updated successfully",
           data: updateData
         })
       }
@@ -113,19 +114,19 @@ class AppointmentBillingController {
       })
     }
   }
-  async DeleteAppointmentBill(req, res){
+  async DeleteIPDBill(req, res){
     try {
       const id = req.params.id
-      const deleteData = await AppointmentBillingModel.findByIdAndDelete(id)
+      const deleteData = await IPDBillingModel.findByIdAndDelete(id)
       if(!deleteData){
         return res.status(HttpCode.notFound).json({
           status: false,
-          message: "Appointment bill not found"
+          message: "IPD bill  not found!"
         })
       }else{
         return res.status(HttpCode.success).json({
           status: true,
-          message: "Appointment bill deleted successfully!"
+          message: "IPD bill  deleted successfully"
         })
       }
     } catch (error) {
@@ -136,4 +137,4 @@ class AppointmentBillingController {
     }
   }
 }
-module.exports = new AppointmentBillingController();
+module.exports = new IPDBillingController();

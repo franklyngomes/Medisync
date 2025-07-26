@@ -5,9 +5,11 @@ const DoctorController = require('../controller/DoctorController')
 const AppointmentController = require('../controller/AppointmentController')
 const RoomController = require('../controller/RoomController')
 const InPatientController = require('../controller/InPatientController')
-// const PaymentController = require('../controller/PaymentController')
 const PathologyTestController = require('../controller/PathologyTestController')
 const RadiologyTestController = require("../controller/RadiologyTestController")
+const AppointmentBillController = require("../controller/billing/AppointmentBillingController")
+const IPDBillController = require("../controller/billing/IPDBillingController")
+const OPDBillController = require("../controller/billing/OPDBillingController")
 const DoctorImageUpload = require('../helper/DoctorImageUpload')
 const UserImageUpload = require('../helper/UserImageUpload')
 const router = express.Router()
@@ -63,12 +65,34 @@ router.get('/radiology-test-details/:id', RadiologyTestController.RadiologyTestD
 router.post('/radiology-test-update/:id', upload.none(), RadiologyTestController.UpdateRadiologyTest)
 router.post('/radiology-test-delete/:id', RadiologyTestController.DeleteRadiologyTest)
 
-//Payment Routes
-// router.post('/payment-create', upload.none(), PaymentController.CreatePayment)
-// router.get('/all-payment', PaymentController.GetAllPayment)
-// router.get('/payment-details/:id', PaymentController.PaymentDetails)
-// router.post('/payment-update/:id', upload.none(), PaymentController.UpdatePayment)
-// router.post('/payment-delete/:id', PaymentController.DeletePayment)
+//AppointmentBill Routes
+router.post('/appointment-bill-create', upload.none(), AppointmentBillController.CreateAppointmentBill)
+router.get('/all-appointment-bill', AppointmentBillController.GetAllAppointmentBills)
+router.get('/appointment-bill-details/:id', AppointmentBillController.AppointmentBillDetails)
+router.post('/appointment-bill-update/:id', upload.none(), AppointmentBillController.UpdateAppointmentBill)
+router.post('/appointment-bill-delete/:id', AppointmentBillController.DeleteAppointmentBill)
+
+//IPDBill Routes
+router.post('/ipd-bill-create', upload.none(), IPDBillController.CreateIPDBill)
+router.get('/all-ipd-bill', IPDBillController.GetAllIPDBills)
+router.get('/ipd-bill-details/:id', IPDBillController.IPDBillDetails)
+router.post('/ipd-bill-update/:id', upload.none(), IPDBillController.UpdateIPDBill)
+router.delete('/ipd-bill-delete/:id', IPDBillController.DeleteIPDBill)
+
+//IPDBill Routes
+router.post('/ipd-bill-create', upload.none(), IPDBillController.CreateIPDBill)
+router.get('/all-ipd-bill', IPDBillController.GetAllIPDBills)
+router.get('/ipd-bill-details/:id', IPDBillController.IPDBillDetails)
+router.post('/ipd-bill-update/:id', upload.none(), IPDBillController.UpdateIPDBill)
+router.delete('/ipd-bill-delete/:id', IPDBillController.DeleteIPDBill)
+
+//OPDBill Routes
+router.post('/opd-bill-create', upload.none(), OPDBillController.CreateOPDBill)
+router.get('/all-opd-bill', OPDBillController.GetAllOPDBills)
+router.get('/opd-bill-details/:id', OPDBillController.OPDBillDetails)
+router.post('/opd-bill-update/:id', upload.none(), OPDBillController.UpdateOPDBill)
+router.delete('/opd-bill-delete/:id', OPDBillController.DeleteOPDBill)
+
 
 //User Routes
 router.post('/signup', UserImageUpload.single('image'), UserController.Signup)
