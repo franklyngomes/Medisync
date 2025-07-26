@@ -11,7 +11,6 @@ const RadiologyTestSchema = new Schema({
   },
   testType: {
     type: String,
-    required: true,
   },
   category: {
     type: String,
@@ -19,10 +18,6 @@ const RadiologyTestSchema = new Schema({
       "X-RAY LUMBOSACRAL SPINE AP AND LAT VIEWS",
       "X-RAY CHEST PA VIEW",
     ],
-    required: true,
-  },
-  method: {
-    type: String,
     required: true,
   },
   reportDays: {
@@ -41,6 +36,19 @@ const RadiologyTestSchema = new Schema({
     type: Number,
     required: true,
   },
+  deleted: {
+    type: Boolean,
+    default: false
+  }
+}, {timestamps: true});
+RadiologyTestSchema.pre("save", function (next) {
+  if (this.isModified("testName") || !this.slug) {
+    this.slug = this.testName
+      .split(/[\s\-]+/)
+      .map((word) => word[0]?.toUpperCase())
+      .join("");
+  }
+  next();
 });
 const RadiologyTestModel = mongoose.model('radiologyTest', RadiologyTestSchema)
 module.exports = RadiologyTestModel

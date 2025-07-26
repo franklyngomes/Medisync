@@ -6,6 +6,8 @@ const AppointmentController = require('../controller/AppointmentController')
 const RoomController = require('../controller/RoomController')
 const InPatientController = require('../controller/InPatientController')
 // const PaymentController = require('../controller/PaymentController')
+const PathologyTestController = require('../controller/PathologyTestController')
+const RadiologyTestController = require("../controller/RadiologyTestController")
 const DoctorImageUpload = require('../helper/DoctorImageUpload')
 const UserImageUpload = require('../helper/UserImageUpload')
 const router = express.Router()
@@ -46,6 +48,20 @@ router.get('/all-inpatient', InPatientController.GetAllInPatient)
 router.get('/inpatient-details/:id', InPatientController.InPatientDetails)
 router.post('/inpatient-update/:id', upload.none(), InPatientController.UpdateInPatient)
 router.post('/inpatient-delete/:id', InPatientController.DeleteInPatient)
+
+//PathologyTest Routes
+router.post('/pathology-test-create', upload.none(), PathologyTestController.CreatePathologyTest)
+router.get('/all-pathology-test', PathologyTestController.GetAllPathologyTest)
+router.get('/pathology-test-details/:id', PathologyTestController.PathologyTestDetails)
+router.post('/pathology-test-update/:id', upload.none(), PathologyTestController.UpdatePathologyTest)
+router.post('/pathology-test-delete/:id', PathologyTestController.DeletePathologyTest)
+
+//RadiologyTest Routes
+router.post('/radiology-test-create', upload.none(), RadiologyTestController.CreateRadiologyTest)
+router.get('/all-radiology-test', RadiologyTestController.GetAllRadiologyTest)
+router.get('/radiology-test-details/:id', RadiologyTestController.RadiologyTestDetails)
+router.post('/radiology-test-update/:id', upload.none(), RadiologyTestController.UpdateRadiologyTest)
+router.post('/radiology-test-delete/:id', RadiologyTestController.DeleteRadiologyTest)
 
 //Payment Routes
 // router.post('/payment-create', upload.none(), PaymentController.CreatePayment)
