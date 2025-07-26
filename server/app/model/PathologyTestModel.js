@@ -55,5 +55,5 @@ PathologyTestSchema.pre("save", function (next) {
   }
   next();
 });
-const PathologyTestModel = mongoose.model("pathologyTest", PathologyTestSchema);
+const PathologyTestModel = mongoose.model("pathologytests", PathologyTestSchema);
 module.exports = PathologyTestModel;

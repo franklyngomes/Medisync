@@ -10,6 +10,8 @@ const RadiologyTestController = require("../controller/RadiologyTestController")
 const AppointmentBillController = require("../controller/billing/AppointmentBillingController")
 const IPDBillController = require("../controller/billing/IPDBillingController")
 const OPDBillController = require("../controller/billing/OPDBillingController")
+const PathologyBillController = require("../controller/billing/PathologyBillingController")
+const RadiologyBillController = require("../controller/billing/RadiologyBillingController")
 const DoctorImageUpload = require('../helper/DoctorImageUpload')
 const UserImageUpload = require('../helper/UserImageUpload')
 const router = express.Router()
@@ -79,19 +81,26 @@ router.get('/ipd-bill-details/:id', IPDBillController.IPDBillDetails)
 router.post('/ipd-bill-update/:id', upload.none(), IPDBillController.UpdateIPDBill)
 router.delete('/ipd-bill-delete/:id', IPDBillController.DeleteIPDBill)
 
-//IPDBill Routes
-router.post('/ipd-bill-create', upload.none(), IPDBillController.CreateIPDBill)
-router.get('/all-ipd-bill', IPDBillController.GetAllIPDBills)
-router.get('/ipd-bill-details/:id', IPDBillController.IPDBillDetails)
-router.post('/ipd-bill-update/:id', upload.none(), IPDBillController.UpdateIPDBill)
-router.delete('/ipd-bill-delete/:id', IPDBillController.DeleteIPDBill)
-
 //OPDBill Routes
 router.post('/opd-bill-create', upload.none(), OPDBillController.CreateOPDBill)
 router.get('/all-opd-bill', OPDBillController.GetAllOPDBills)
 router.get('/opd-bill-details/:id', OPDBillController.OPDBillDetails)
 router.post('/opd-bill-update/:id', upload.none(), OPDBillController.UpdateOPDBill)
 router.delete('/opd-bill-delete/:id', OPDBillController.DeleteOPDBill)
+
+//Pathology Bill Routes
+router.post('/pathology-bill-create', upload.none(), PathologyBillController.CreatePathologyBill)
+router.get('/all-pathology-bill', PathologyBillController.GetAllPathologyBills)
+router.get('/pathology-bill-details/:id', PathologyBillController.PathologyBillDetails)
+router.post('/pathology-bill-update/:id', upload.none(), PathologyBillController.UpdatePathologyBill)
+router.delete('/pathology-bill-delete/:id', PathologyBillController.DeletePathologyBill)
+
+//Radiology Bill Routes
+router.post('/radiology-bill-create', upload.none(), RadiologyBillController.CreateRadiologyBill)
+router.get('/all-radiology-bill', RadiologyBillController.GetAllRadiologyBills)
+router.get('/radiology-bill-details/:id', RadiologyBillController.RadiologyBillDetails)
+router.post('/radiology-bill-update/:id', upload.none(), RadiologyBillController.UpdateRadiologyBill)
+router.delete('/radiology-bill-delete/:id', PathologyBillController.DeletePathologyBill)
 
 
 //User Routes
