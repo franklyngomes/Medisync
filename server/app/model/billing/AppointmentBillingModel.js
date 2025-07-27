@@ -8,6 +8,14 @@ const AppointmentBillingSchema = new Schema(
       ref: "appointment",
       required: true,
     },
+    patientId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "patient",
+    },
+    doctorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "doctor",
+    },
     chargeType: {
       type: String,
       enum: ["consultation", "surgery"],
@@ -15,15 +23,14 @@ const AppointmentBillingSchema = new Schema(
     },
     noOfHour: {
       type: Number,
+      default:1,
       required: true,
     },
     standardCharge: {
       type: Number,
-      required: true,
     },
     appliedCharge: {
       type: Number,
-      required: true,
     },
     discount: {
       type: Number,
@@ -31,10 +38,20 @@ const AppointmentBillingSchema = new Schema(
     },
     tax: {
       type: Number,
-      default: 18
+      default: 18,
     },
     amount: {
       type: Number,
+    },
+    source: {
+      type: String,
+      enum: ["Online", "Offline"],
+      required: true
+    },
+    paymentMethod: {
+      type: String,
+      enum: ["UPI", "Cash", "Card"],
+      required: true
     },
     status: {
       type: String,

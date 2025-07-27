@@ -4,15 +4,15 @@ const HttpCode = require("../../helper/HttpCode");
 class IPDBillingController {
   async CreateIPDBill(req, res) {
     try {
-      const { inPatientId, chargeName, chargeType, noOfHour, standardCharge,tpaCharge, tax, discount } = req.body;
-      if (!inPatientId || !chargeType || !noOfHour || !chargeName|| !standardCharge || !tpaCharge || !discount) {
+      const { inPatientId, chargeName, chargeType, noOfHour, standardCharge,tpaCharge, tax, discount, source, paymentMethod } = req.body;
+      if (!inPatientId || !chargeType || !noOfHour || !chargeName|| !standardCharge || !tpaCharge || !discount || source || !paymentMethod) {
         return res.status(HttpCode.notFound).json({
           status: false,
           message: "Some important fields are missing!",
         });
       }
       const billData = new IPDBillingModel({
-      inPatientId, chargeName, chargeType, noOfHour, standardCharge,tpaCharge, tax, discount
+      inPatientId, chargeName, chargeType, noOfHour, standardCharge,tpaCharge, tax, discount, source, paymentMethod
       });
       const appliedCharge = standardCharge * noOfHour
       billData.appliedCharge = appliedCharge

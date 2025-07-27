@@ -26,6 +26,21 @@ const RadiologyBillSchema = new Schema(
       type: Number,
       required: true,
     },
+    source: {
+      type: String,
+      enum: ["Online", "Offline"],
+      required: true,
+    },
+    paymentMethod: {
+      type: String,
+      enum: ["UPI", "Cash", "Card"],
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["Paid", "Pending", "Failed"],
+      default: "Pending",
+    },
     deleted: {
       type: Boolean,
       default: false,

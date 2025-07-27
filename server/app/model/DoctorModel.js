@@ -34,10 +34,12 @@ const DoctorSchema = new Schema(
     fees: {
       consultation: {
         type: Number,
+        required: true,
       },
       surgery: {
-        type: Number
-      }
+        type: Number,
+        required: true,
+      },
     },
     status: {
       type: String,

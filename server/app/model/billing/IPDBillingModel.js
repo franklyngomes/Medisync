@@ -49,6 +49,16 @@ const IPDBillingSchema = new Schema(
       type: Number,
       required: true,
     },
+    source: {
+      type: String,
+      enum: ["Online", "Offline"],
+      required: true,
+    },
+    paymentMethod: {
+      type: String,
+      enum: ["UPI", "Cash", "Card"],
+      required: true,
+    },
     status: {
       type: String,
       enum: ["Paid", "Pending", "Failed"],
@@ -66,8 +76,5 @@ const IPDBillingSchema = new Schema(
   { timestamps: true }
 );
 
-const IPDBillingModel = mongoose.model(
-  "ipdbills",
-  IPDBillingSchema
-);
+const IPDBillingModel = mongoose.model("ipdbills", IPDBillingSchema);
 module.exports = IPDBillingModel;

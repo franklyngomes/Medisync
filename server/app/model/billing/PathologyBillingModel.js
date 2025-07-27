@@ -30,6 +30,16 @@ const PathologyBillSchema = new Schema(
     amount: {
       type: Number,
     },
+    source: {
+      type: String,
+      enum: ["Online", "Offline"],
+      required: true,
+    },
+    paymentMethod: {
+      type: String,
+      enum: ["UPI", "Cash", "Card"],
+      required: true,
+    },
     status: {
       type: String,
       enum: ["Paid", "Pending", "Failed"],
@@ -37,8 +47,8 @@ const PathologyBillSchema = new Schema(
     },
     deleted: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   { timestamps: true }
 );

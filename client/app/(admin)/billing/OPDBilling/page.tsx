@@ -21,7 +21,7 @@ import { DoctorListQuery } from "../../../../api/query/DoctorQuery";
 import Badge from "../../../../components/ui/badge/Badge";
 
 
-const OPDorIPDBilling = () => {
+const OPDBilling = () => {
   const [patientOption, setPatientOption] = React.useState<{ label: string; value: string }[]>([])
   const { data: patientsList } = PatientListQuery()
   const [doctorOption, setDoctorOption] = React.useState<{ label: string, value: string }[]>([])
@@ -344,4 +344,4 @@ const OPDorIPDBilling = () => {
   )
 }
 
-export default OPDorIPDBilling
+export default OPDBilling

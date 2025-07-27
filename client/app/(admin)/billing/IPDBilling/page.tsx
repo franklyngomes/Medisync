@@ -1,4 +1,5 @@
 "use client"
+import ComponentCard from "../../../../components/common/ComponentCard";
 import PageBreadcrumb from "../../../../components/common/PageBreadCrumb";
 import BasicTable from "../../../../components/tables/BasicTable";
 import React from "react";
@@ -14,41 +15,45 @@ import Input from "../../../../components/form/input/InputField";
 import toast from "react-hot-toast";
 import DatePicker from "../../../../components/form/date-picker";
 import { format } from 'date-fns';
-import { AppointmentBillCreateQuery, AppointmentBillDeleteQuery, AppointmentBillDetailsQuery, AppointmentBillListQuery, AppointmentBillUpdateQuery } from "../../../../api/query/billing/AppointmentBillQuery";
-import { AppointmentListQuery } from "../../../../api/query/AppointmentQuery"
+import { PatientListQuery } from "../../../../api/query/PatientQuery";
+import { CreatePaymentsQuery, PaymentDeleteQuery, PaymentDetailsQuery, PaymentListQuery, PaymentUpdateQuery } from "../../../../api/query/PaymentQuery";
+import { DoctorListQuery } from "../../../../api/query/DoctorQuery";
 import Badge from "../../../../components/ui/badge/Badge";
 
 
-const AppointmentBilling = () => {
-  const [appointmentOption, setAppointmentOption] = React.useState<{ label: string; value: string }[]>([])
-  const { data: appointmentList } = AppointmentListQuery()
-  const appointments = appointmentList?.data.data
-  const { data } = AppointmentBillListQuery()
-  const bills = data?.data?.data
+const IPDBilling = () => {
+  const [patientOption, setPatientOption] = React.useState<{ label: string; value: string }[]>([])
+  const { data: patientsList } = PatientListQuery()
+  const [doctorOption, setDoctorOption] = React.useState<{ label: string, value: string }[]>([])
+  const { data: doctorList } = DoctorListQuery()
+  const doctors = doctorList?.data.data
+  const patients = patientsList?.data.data
+  const { data } = PaymentListQuery()
+  const payments = data?.data?.data
   const { isOpen, openModal, closeModal } = useModal();
   const { handleSubmit, reset, control } = useForm();
-  const { mutateAsync } = AppointmentBillCreateQuery()
+  const { mutateAsync } = CreatePaymentsQuery()
   const { editId, isEditing, setIsEditing } = useStore();
-  const { data: details } = AppointmentBillDetailsQuery(editId, !!editId)
-  const appointmentBillDetails = details?.data.data
-  const { mutateAsync: update } = AppointmentBillUpdateQuery()
-  const { mutateAsync: deletePayment } = AppointmentBillDeleteQuery()
+  const { data: details } = PaymentDetailsQuery(editId, !!editId)
+  const paymentDetails = details?.data.data
+  const { mutateAsync: update } = PaymentUpdateQuery()
+  const { mutateAsync: deletePayment } = PaymentDeleteQuery()
 
   const tableColumns = [
-    { label: "Appointment No.", key: "appointmentId.appointmentNo" },
     {
       label: "Date", key: "date", render: (item: any) => item.date ? format(new Date(item.date), "dd-MM-yyyy") : "---"
     },
-    { label: "Patient", key: "appointmentId.patientId.name" },
-    { label: "Doctor", key: "appointmentId.doctorId.name" },
+    { label: "Patient Name", key: "patientId.name" },
+    { label: "Doctor Name", key: "doctorId.name" },
+    { label: "Charge Name", key: "Charge Type" },
     { label: "Charge Type", key: "chargeType" },
-    { label: "Standard Charge($)", key: "standardCharge" },
-    { label: "No Of Hr", key: "noOfHour" },
-    { label: "Applied Charge($)", key: "appliedCharge" },
-    // { label: "TPA Charge", key: "tpaCharge" },
+    { label: "Qty", key: "quantity" },
+    { label: "Standard Charge", key: "standardCharge" },
+    { label: "Applied Charge", key: "appliedCharge" },
+    { label: "TPA Charge", key: "tpaCharge" },
     { label: "Discount", key: "discount" },
-    { label: "Tax(%)", key: "tax" },
-    { label: "Amount($)", key: "amount" },
+    { label: "Tax", key: "tax" },
+    { label: "Amount", key: "amount" },
     {
       label: "Status",
       key: "status",
@@ -68,16 +73,7 @@ const AppointmentBilling = () => {
       )
     },
   ]
-  const chargeTypeOptions = [
-    {
-      label: "Consultation",
-      value: "consultation",
-    },
-    {
-      label: "Surgery",
-      value: "surgery"
-    }
-  ]
+
   const statusOptions = [
     {
       label: "Paid",
@@ -92,39 +88,13 @@ const AppointmentBilling = () => {
       value: "Failed"
     }
   ]
-  const sourceOptions = [
-    {
-      label: "Online",
-      value: "Online",
-    },
-    {
-      label: "Offline",
-      value: "Offline"
-    },
-  ]
-  const paymentOptions = [
-    {
-      label: "UPI",
-      value: "UPI",
-    },
-    {
-      label: "Cash",
-      value: "Cash",
-    },
-    {
-      label: "Card",
-      value: "Card",
-    },
-  ]
   const onSubmit = (data: any) => {
-    const { appointmentId, noOfHour, discount, chargeType, source, paymentMethod } = data
+    const { patientId, doctorId, notes, amount } = data
     const formdata = new FormData()
-    formdata.append("appointmentId", appointmentId)
-    formdata.append("noOfHour", noOfHour)
-    formdata.append("discount", discount)
-    formdata.append("chargeType", chargeType)
-    formdata.append("source", source)
-    formdata.append("paymentMethod", paymentMethod)
+    formdata.append("patientId", patientId)
+    formdata.append("doctorId", doctorId)
+    formdata.append("notes", notes)
+    formdata.append("amount", amount)
     mutateAsync(formdata, {
       onSuccess: () => {
         reset()
@@ -133,12 +103,13 @@ const AppointmentBilling = () => {
     })
   }
   const onUpdate = (data: any) => {
-    const { chargeType, noOfHour, discount, status, source, paymentMethod } = data;
-
-    const payload = {
-      chargeType, noOfHour, discount, status, source, paymentMethod
-    };
-    update({ editId, payload }, {
+    const { notes, amount, status, date } = data
+    const formData = new FormData()
+    formData.append("notes", notes)
+    formData.append("amount", amount)
+    formData.append("status", status)
+    formData.append("date", date)
+    update({ editId, formData }, {
       onSuccess: (res) => {
         if (res.data.status === true) {
           toast.success(res.data.message)
@@ -172,48 +143,47 @@ const AppointmentBilling = () => {
 
   // useEffect to reset form values when editing
   React.useEffect(() => {
-    if (isEditing && appointmentBillDetails) {
+    if (isEditing && paymentDetails) {
       reset({
-        appointmentId: appointmentBillDetails.appointmentId?.appointmentNo,
-        chargeType: appointmentBillDetails.chargeType,
-        standardCharge: appointmentBillDetails.standardCharge,
-        noOfHour: appointmentBillDetails.noOfHour,
-        discount: appointmentBillDetails.discount,
-        status: appointmentBillDetails.status,
-        source: appointmentBillDetails?.source,
-        paymentMethod: appointmentBillDetails.paymentMethod,
-        date: appointmentBillDetails?.date ? new Date(appointmentBillDetails.date) : null,
+        patientId: paymentDetails.patientId,
+        doctorId: paymentDetails.doctorId,
+        notes: paymentDetails.notes,
+        amount: paymentDetails.amount,
+        status: paymentDetails.status,
+        date: paymentDetails?.date ? new Date(paymentDetails.date) : null,
       });
     } else {
       reset({
-        appointmentId: "",
-        chargeType: "",
-        standardCharge: "",
-        discount: "",
+        patientId: "",
+        doctorId: "",
+        notes: "",
+        amount: "",
         status: "",
-        source: "",
-        paymentMethod: "",
         date: null,
       })
     }
-  }, [isEditing, appointmentBillDetails, reset]);
-
+  }, [isEditing, paymentDetails, reset]);
   React.useEffect(() => {
-    if (appointments && Array.isArray(appointments)) {
-      setAppointmentOption(appointments.map((item) => ({ label: item?.appointmentNo || item.patientId.name, value: item._id })));
+    if (patients && Array.isArray(patients)) {
+      setPatientOption(patients.map((patient) => ({ label: patient.name, value: patient._id })));
     }
-  }, [appointments])
+    if (doctors && Array.isArray(doctors)) {
+      setDoctorOption(doctors.map((item) => ({ label: item.name, value: item._id })))
+    }
+  }, [patients, doctors])
   return (
     <>
       <div>
         <div className="flex flex-wrap justify-between items-center">
-          <PageBreadcrumb pageTitle="Appointment Billing" breadCrumbTitle="Appointment Billing" />
+          <PageBreadcrumb pageTitle="OPD/IPD Billing" breadCrumbTitle="Appointment Billing" />
           <Button size="sm" variant="primary" startIcon={<PaymentIcon />} onClick={openModal}>
             New Bill
           </Button>
         </div>
         <div className="space-y-6">
-          <BasicTable data={bills} tableColumns={tableColumns} onDelete={onDelete} />
+          <ComponentCard title="Generated Bills">
+            <BasicTable data={payments} tableColumns={tableColumns} onDelete={onDelete} />
+          </ComponentCard>
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={() => {
@@ -231,18 +201,18 @@ const AppointmentBilling = () => {
               <div>
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div>
-                    <Label>{!isEditing ? "Select Appointment" : "Appointment No"}</Label>
+                    <Label>{!isEditing ? "Select Patient" : "Patient Name"}</Label>
                     <div className="relative">
                       {!isEditing ?
                         <>
                           <Controller
                             control={control}
-                            name="appointmentId"
+                            name="patientId"
                             render={({ field }) => (
                               <Select
                                 {...field}
-                                options={appointmentOption}
-                                placeholder="Select Appointment"
+                                options={patientOption}
+                                placeholder="Select Patient"
                                 className="dark:bg-dark-900"
                               />
                             )}
@@ -251,99 +221,53 @@ const AppointmentBilling = () => {
                             <ChevronDownIcon />
                           </span>
                         </>
-                        : <Input value={appointmentBillDetails ? appointmentBillDetails.appointmentId?.appointmentNo : ""} disabled />}
+                        : <Input value={paymentDetails?.patientId.name ?? ""} disabled />}
                     </div>
                   </div>
                   <div>
-                    <Label>No of hours</Label>
+                    <Label>{!isEditing ? "Select Doctor" : "Doctor Name"}</Label>
+                    <div className="relative">
+                      {!isEditing ?
+                        <>
+                          <Controller
+                            control={control}
+                            name="doctorId"
+                            render={({ field }) => (
+                              <Select
+                                {...field}
+                                options={doctorOption}
+                                placeholder="Select Doctor"
+                                className="dark:bg-dark-900"
+                              />
+                            )}
+                          />
+                          <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                            <ChevronDownIcon />
+                          </span>
+                        </>
+                        : <Input value={paymentDetails?.doctorId.name ?? ""} disabled />}
+                    </div>
+                  </div>
+                  <div>
+                    <Label>Notes</Label>
                     <div className="relative">
                       <Controller
                         control={control}
-                        name="noOfHour"
+                        name="notes"
                         render={({ field }) => (
                           <Input {...field}
                             value={field.value ?? ""}
-                            type="number"
                           />
                         )}
                       />
                     </div>
                   </div>
                   <div>
-                    <Label>Charge Type</Label>
-                    <div className="relative">
-                      <>
-                        <Controller
-                          control={control}
-                          name="chargeType"
-                          render={({ field }) => (
-                            <Select
-                              {...field}
-                              value={field.value ?? ""}
-                              options={chargeTypeOptions}
-                              placeholder="Select charge Type"
-                              className="dark:bg-dark-900"
-                            />
-                          )}
-                        />
-                        <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-                          <ChevronDownIcon />
-                        </span>
-                      </>
-                    </div>
-                  </div>
-                  <div>
-                    <Label>Source</Label>
-                    <div className="relative">
-                      <>
-                        <Controller
-                          control={control}
-                          name="source"
-                          render={({ field }) => (
-                            <Select
-                              {...field}
-                              value={field.value ?? ""}
-                              options={sourceOptions}
-                              placeholder="Select source"
-                              className="dark:bg-dark-900"
-                            />
-                          )}
-                        />
-                        <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-                          <ChevronDownIcon />
-                        </span>
-                      </>
-                    </div>
-                  </div>
-                  <div>
-                    <Label>Payment Methods</Label>
-                    <div className="relative">
-                      <>
-                        <Controller
-                          control={control}
-                          name="paymentMethod"
-                          render={({ field }) => (
-                            <Select
-                              {...field}
-                              value={field.value ?? ""}
-                              options={paymentOptions}
-                              placeholder="Select method"
-                              className="dark:bg-dark-900"
-                            />
-                          )}
-                        />
-                        <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-                          <ChevronDownIcon />
-                        </span>
-                      </>
-                    </div>
-                  </div>
-                  <div>
-                    <Label>Discount($)</Label>
+                    <Label>Amount</Label>
                     <div className="relative">
                       <Controller
                         control={control}
-                        name="discount"
+                        name="amount"
                         render={({ field }) => (
                           <Input {...field}
                             value={field.value ?? ""}
@@ -402,14 +326,6 @@ const AppointmentBilling = () => {
                 </div>
               </div>
             </div>
-            {isEditing &&
-              <div className="mt-3">
-                <Label>Total payable amount</Label>
-                <h4 className="mb-5 text-2xl font-semibold text-gray-800 dark:text-white/90">
-                  ${isEditing ? appointmentBillDetails?.amount : ""}
-                </h4>
-              </div>
-            }
             <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
               <Button size="sm" variant="outline" onClick={() => {
                 setIsEditing(false)
@@ -428,4 +344,4 @@ const AppointmentBilling = () => {
   )
 }
 
-export default AppointmentBilling
+export default IPDBilling

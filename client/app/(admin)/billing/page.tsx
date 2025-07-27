@@ -14,9 +14,14 @@ const Billing = () => {
       route: "/billing/appointmentBilling"
     },
     {
-      title: "OPD/IPD",
+      title: "OPD - Outpatient",
       icon: <OutpatientIcon className="text-gray-800 size-6 dark:text-white/90" />,
-      route: "/billing/OPDorIPDBilling"
+      route: "/billing/OPDBilling"
+    },
+    {
+      title: "IPD - Inpatient",
+      icon: <InpatientIcon className="text-gray-800 size-6 dark:text-white/90" />,
+      route: "/billing/IPDBilling"
     },
     {
       title: "Pathology",

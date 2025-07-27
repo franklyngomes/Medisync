@@ -36,6 +36,9 @@ const Doctor = () => {
     { label: "Name", key: "name" },
     { label: "Specialization", key: "specialization" },
     { label: "Phone", key: "phone" },
+    { label: "Consultation Charge", key: "fees.consultation" },
+    { label: "Surgery Charge", key: "fees.surgery" },
+    { label: "Phone", key: "phone" },
     {
       label: "Status",
       key: "status",
@@ -117,12 +120,16 @@ const Doctor = () => {
   // }
   console.log(image)
   const onSubmit = (data: any) => {
-    const { name, specialization, phone, email, image } = data
+    const { name, specialization, phone, email, consultation, surgery, image } = data
     const formdata = new FormData()
     formdata.append("name", name)
     formdata.append("specialization", specialization)
     formdata.append("phone", phone)
     formdata.append("email", email)
+    formdata.append("fees", JSON.stringify({
+      "consultation": consultation,
+      "surgery": surgery
+    }))
     if(image) formdata.append("image", image)
     mutateAsync(formdata, {
       onSuccess: () => {
@@ -132,16 +139,20 @@ const Doctor = () => {
     })
   }
   const onUpdate = (data: any) => {
-    const { name, specialization, phone, email, status } = data
+    const { name, specialization, phone, email,consultation, surgery, status } = data
     const formData = new FormData()
     formData.append("name", name)
     formData.append("specialization", specialization)
     formData.append("phone", phone)
     formData.append("email", email)
     formData.append("status", status)
+    formData.append("fees", JSON.stringify({
+      "consultation": consultation,
+      "surgery": surgery
+    }))
     formData.append("image", image)
     update({ editId, formData }, {
-      onSuccess: (res) => {
+      onSuccess: (res : any) => {
         if (res.data.status === true) {
           toast.success(res.data.message)
           closeModal()
@@ -154,7 +165,7 @@ const Doctor = () => {
   }
   const onDelete = (id: string) => {
     deleteDoctor(id, {
-      onSuccess: (res) => {
+      onSuccess: (res : any) => {
         if (res.data.status === true) {
           toast.success(res.data.message)
           closeModal()
@@ -180,6 +191,8 @@ const Doctor = () => {
         specialization: doctorDetails.specialization,
         phone: doctorDetails.phone,
         email: doctorDetails.email,
+        consultation: doctorDetails.fees?.consultation || 0,
+        surgery: doctorDetails.fees?.surgery || 0,
         status: doctorDetails.status,
         image: doctorDetails.image
       });
@@ -316,6 +329,36 @@ const Doctor = () => {
                         render={({ field }) => (
                           <Input {...field}
                             value={field.value ?? ""}
+                          />
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label>Consultation Charge</Label>
+                    <div className="relative">
+                      <Controller
+                        control={control}
+                        name="consultation"
+                        render={({ field }) => (
+                          <Input {...field}
+                            value={field.value ?? ""}
+                            type="number"
+                          />
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label>Surgery Charge</Label>
+                    <div className="relative">
+                      <Controller
+                        control={control}
+                        name="surgery"
+                        render={({ field }) => (
+                          <Input {...field}
+                            value={field.value ?? ""}
+                            type="number"
                           />
                         )}
                       />

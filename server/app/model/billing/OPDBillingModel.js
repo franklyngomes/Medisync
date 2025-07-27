@@ -49,6 +49,16 @@ const OPDBillingSchema = new Schema(
       type: Number,
       required: true,
     },
+    source: {
+      type: String,
+      enum: ["Online", "Offline"],
+      required: true,
+    },
+    paymentMethod: {
+      type: String,
+      enum: ["UPI", "Cash", "Card"],
+      required: true,
+    },
     status: {
       type: String,
       enum: ["Paid", "Pending", "Failed"],
@@ -66,8 +76,5 @@ const OPDBillingSchema = new Schema(
   { timestamps: true }
 );
 
-const OPDBillingModel = mongoose.model(
-  "OPDBill",
-  OPDBillingSchema
-);
+const OPDBillingModel = mongoose.model("OPDBill", OPDBillingSchema);
 module.exports = OPDBillingModel;

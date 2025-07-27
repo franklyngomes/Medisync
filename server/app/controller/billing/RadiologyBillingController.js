@@ -5,15 +5,15 @@ const HttpCode = require("../../helper/HttpCode");
 class RadiologyBillController {
   async CreateRadiologyBill(req, res) {
     try {
-      const {patientId, referenceDoctor,testId, discount} = req.body;
-      if (!patientId || !testId || !discount) {
+      const {patientId, referenceDoctor,testId, discount, source, paymentMethod} = req.body;
+      if (!patientId || !testId || !discount || !source || !paymentMethod) {
         return res.status(HttpCode.notFound).json({
           status: false,
           message: "Some important fields are missing!",
         });
       }
       const billData = new RadiologyBillModel({
-       patientId, referenceDoctor,testId, discount
+       patientId, referenceDoctor,testId, discount, source, paymentMethod
       });
       const testDetails = await RadiologyTestModel.findById(testId)
       if(!testDetails){

@@ -6,8 +6,9 @@ const fs = require("fs").promises;
 class DoctorController {
   async CreateDoctor(req, res) {
     try {
-      const { name, email, phone, specialization } = req.body;
-      if (!name && !email && !phone && !specialization) {
+      const { name, email, phone, specialization,} = req.body;
+      const fees = JSON.parse(req.body.fees)
+      if (!name || !email || !phone || !specialization || !fees) {
         return res.status(HttpCode.notFound).json({
           status: false,
           message: "All fields are required!",
@@ -18,6 +19,10 @@ class DoctorController {
         email,
         phone,
         specialization,
+        fees : {
+          consultation: fees.consultation,
+          surgery: fees.surgery
+        }
       });
       if (req.file) {
         doctorData.image = req.file.path;

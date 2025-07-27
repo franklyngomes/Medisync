@@ -34,11 +34,43 @@ export const endPoints = {
     inpatient_update: "/inpatient-update/",
     inpatient_delete: "/inpatient-delete/"
   },
-   payment: {
-    payment_create: "/payment-create",
-    payment_list: "/all-payment",
-    payment_details: "/payment-details/",
-    payment_update: "/payment-update/",
-    payment_delete: "/payment-delete/"
+  billing: {
+    appointments: {
+      appointment_bill_create: "/appointment-bill-create",
+      appointment_bill_list: "/all-appointment-bill",
+      appointment_bill_details: "/appointment-bill-details/",
+      appointment_bill_update: "/appointment-bill-update/",
+      appointment_bill_delete: "/appointment-bill-delete/"
+    },
+    ipd: {
+      ipd_bill_create: "/ipd-bill-create",
+      ipd_bill_list: "/all-ipd-bill",
+      ipd_bill_details: "/ipd-bill-details/",
+      ipd_bill_update: "/ipd-bill-update/",
+      ipd_bill_delete: "/ipd-bill-delete/"
+    },
+    opd: {
+      opd_bill_create: "/opd-bill-create",
+      opd_bill_list: "/all-opd-bill",
+      opd_bill_details: "/opd-bill-details/",
+      opd_bill_update: "/opd-bill-update/",
+      opd_bill_delete: "/opd-bill-delete/"
+    },
+    pathology: {
+      pathology_bill_create: "/pathology-bill-create",
+      pathology_bill_list: "/all-pathology-bill",
+      pathology_bill_details: "/pathology-bill-details/",
+      pathology_bill_update: "/pathology-bill-update/",
+      pathology_bill_delete: "/pathology-bill-delete/"
+    },
+    radiology: {
+      radiology_bill_create: "/radiology-bill-create",
+      radiology_bill_list: "/all-radiology-bill",
+      radiology_bill_details: "/radiology-bill-details/",
+      radiology_bill_update: "/radiology-bill-update/",
+      radiology_bill_delete: "/radiology-bill-delete/"
+    },
+
   }
+
 }

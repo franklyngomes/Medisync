@@ -71,8 +71,8 @@ router.post('/radiology-test-delete/:id', RadiologyTestController.DeleteRadiolog
 router.post('/appointment-bill-create', upload.none(), AppointmentBillController.CreateAppointmentBill)
 router.get('/all-appointment-bill', AppointmentBillController.GetAllAppointmentBills)
 router.get('/appointment-bill-details/:id', AppointmentBillController.AppointmentBillDetails)
-router.post('/appointment-bill-update/:id', upload.none(), AppointmentBillController.UpdateAppointmentBill)
-router.post('/appointment-bill-delete/:id', AppointmentBillController.DeleteAppointmentBill)
+router.post('/appointment-bill-update/:id', AppointmentBillController.UpdateAppointmentBill)
+router.delete('/appointment-bill-delete/:id', AppointmentBillController.DeleteAppointmentBill)
 
 //IPDBill Routes
 router.post('/ipd-bill-create', upload.none(), IPDBillController.CreateIPDBill)

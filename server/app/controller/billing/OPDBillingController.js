@@ -4,15 +4,15 @@ const HttpCode = require("../../helper/HttpCode");
 class OPDBillingController {
   async CreateOPDBill(req, res) {
     try {
-      const { outPatientId, chargeName, chargeType, noOfHour, standardCharge,tpaCharge, tax, discount } = req.body;
-      if (!inPatientId || !chargeType || !noOfHour || !chargeName|| !standardCharge || !tpaCharge || !discount) {
+      const { outPatientId, chargeName, chargeType, noOfHour, standardCharge,tpaCharge, tax, discount, source, paymentMethod } = req.body;
+      if (!inPatientId || !chargeType || !noOfHour || !chargeName|| !standardCharge || !tpaCharge || !discount || !source || paymentMethod) {
         return res.status(HttpCode.notFound).json({
           status: false,
           message: "Some important fields are missing!",
         });
       }
       const billData = new OPDBillingModel({
-      outPatientId, chargeName, chargeType, noOfHour, standardCharge,tpaCharge, tax, discount
+      outPatientId, chargeName, chargeType, noOfHour, standardCharge,tpaCharge, tax, discount, source, paymentMethod
       });
       const appliedCharge = standardCharge * noOfHour
       billData.appliedCharge = appliedCharge
