@@ -6,8 +6,8 @@ const hashPassword = (password) => {
   const hashedPassword = bcryptjs.hashSync(password, salt);
   return hashedPassword;
 };
-const comparePassword = async (password, hashPassword) => {
-  return await bcryptjs.compareSync(password, hashPassword);
+const comparePassword = (password, hashPassword) => {
+  return bcryptjs.compareSync(password, hashPassword);
 };
 const AuthCheck = () => {};
 const hmacProcess = (value, key) => {

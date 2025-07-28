@@ -104,7 +104,9 @@ router.delete('/radiology-bill-delete/:id', PathologyBillController.DeletePathol
 
 
 //User Routes
-router.post('/signup', UserImageUpload.single('image'), UserController.Signup)
-router.post('/verify-email',upload.none(), UserController.VerifyEmail)
-router.post('/signin',upload.none(), UserController.Signin)
+router.post('/signup',UserController.Signup)
+router.post('/verify-email',UserController.VerifyEmail)
+router.post('/signin',UserController.Signin)
+router.post('/forgot-password',UserController.forgotPassword)
+router.post('/reset-password',UserController.resetPassword)
 module.exports = router

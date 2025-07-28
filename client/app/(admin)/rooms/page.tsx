@@ -26,7 +26,7 @@ const Room = () => {
   const { mutateAsync } = CreateRoomQuery()
   const { editId, isEditing, setIsEditing } = useStore();
   const { data: details } = RoomDetailsQuery(editId, !!editId)
-  const roomDetails = details?.data.data
+  const roomDetails = details?.data?.data
   const { mutateAsync: update } = RoomUpdateQuery()
   const { mutateAsync: deleteRoom } = RoomDeleteQuery()
 

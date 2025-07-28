@@ -8,7 +8,7 @@ const {
 } = require("../middleware/Auth");
 const transport = require("../helper/SendMail");
 const dayjs = require("dayjs");
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
 class UserController {
   async Signup(req, res) {
@@ -42,9 +42,6 @@ class UserController {
         role,
         designation,
       });
-      if (req.file) {
-        userData.image = req.file.path;
-      }
 
       const codeValue = Math.floor(Math.random() * 1000000).toString();
       const sendVerificationCode = await transport.sendMail({
@@ -139,43 +136,137 @@ class UserController {
       });
     }
   }
-  async Signin(req, res){
+  async Signin(req, res) {
     try {
-      const {email, password} = req.body
-      if(!email || !password){
+      const { email, password } = req.body;
+      if (!email || !password) {
         return res.status(HttpCode.badRequest).json({
           status: false,
-          message: "All fields are required"
-        })
+          message: "All fields are required",
+        });
       }
-      const user = await UserModel.findOne({email})
-      if(!user){
+      const user = await UserModel.findOne({ email });
+      if (!user) {
         return res.status(HttpCode.notFound).json({
           status: false,
-          message: "User not found!"
+          message: "User not found!",
         });
       }
-      const verifyPassword = comparePassword(password, user.password)
-      if(!verifyPassword){
+      const verifyPassword = comparePassword(password, user.password);
+      if (!verifyPassword) {
         return res.status(HttpCode.unauthorized).json({
           status: false,
-          message: "Incorrect password!"
+          message: "Incorrect password!",
         });
       }
-      const token = jwt.sign({
-        firstName: user.firstName,
-        lastName:user.lastName,
-        email:user.Email,
-        role:user.role,
-        designation:user.designation
-      }, process.env.JWT_SECRET_KEY, {expiresIn:"5hr"})
+      const token = jwt.sign(
+        {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.Email,
+          role: user.role,
+          designation: user.designation,
+        },
+        process.env.JWT_SECRET_KEY,
+        { expiresIn: "5hr" }
+      );
       return res.status(HttpCode.success).json({
         status: true,
         message: `Welcome ${user.designation}`,
-        token: token
-      })
+        token: token,
+      });
     } catch (error) {
       return res.status(HttpCode.serverError).json({
+        status: false,
+        message: error.message,
+      });
+    }
+  }
+  async forgotPassword(req, res) {
+    try {
+      const { email } = req.body;
+      const existingUser = await UserModel.findOne({ email });
+      if (!existingUser) {
+        return res.status(HttpCode.badRequest).json({
+          status: false,
+          message: "User not found!",
+        });
+      }
+      const codeValue = Math.floor(Math.random() * 1000000).toString();
+      let info = await transport.sendMail({
+        from: process.env.NODEMAILER_EMAIL,
+        to: existingUser.email,
+        subject: "Reset your password",
+        html: "<h1>" + codeValue + "</h1>",
+      });
+      if (info.accepted[0] === existingUser.email) {
+        const hashedCodeValue = hmacProcess(
+          codeValue,
+          process.env.HMAC_PROCESS_SECRET
+        );
+        existingUser.forgotPasswordCode = hashedCodeValue;
+        existingUser.forgotPasswordCodeValidation = Date.now();
+        await existingUser.save();
+        return res.status(HttpCode.success).json({
+          status: true,
+          message: "Reset password code sent!",
+        });
+      }
+    } catch (error) {
+      return res.status(HttpCode.serverError).json({
+        status: false,
+        message: error.message,
+      });
+    }
+  }
+  async resetPassword(req, res){
+    try {
+      const { email, code, newPassword } = req.body;
+      const codeValue = code.toString();
+      const existingUser = await UserModel.findOne({ email }).select(
+        "+forgotPasswordCode +forgotPasswordCodeValidation"
+      );
+      if (!existingUser) {
+        return res.status(HttpCode.notFound).json({
+          status: false,
+          message: "User not found!",
+        });
+      }
+      if (
+        !existingUser.forgotPasswordCode ||
+        !existingUser.forgotPasswordCodeValidation
+      ) {
+        return res.status(HttpCode.badRequest).json({
+          status: false,
+          message: "Something went wrong!",
+        });
+      }
+      if (
+        Date.now() - existingUser.forgotPasswordCodeValidation >
+        5 * 60 * 1000
+      ) {
+        return res.status(HttpCode.badRequest).json({
+          status: false,
+          message: "Reset password code expired!",
+        });
+      }
+      const hashedCodeValue = hmacProcess(
+        codeValue,
+        process.env.HMAC_PROCESS_SECRET
+      );
+      if (hashedCodeValue === existingUser.forgotPasswordCode) {
+        const hashed = hashPassword(newPassword);
+        existingUser.password = hashed
+        existingUser.forgotPasswordCode = undefined;
+        existingUser.forgotPasswordCodeValidation = undefined;
+        await existingUser.save();
+      }
+      return res.status(HttpCode.success).json({
+        status: true,
+        message: "Password reset successful",
+      });
+    } catch (error) {
+      return res.status(HttpCode.internalServerError).json({
         status: false,
         message: error.message,
       });
