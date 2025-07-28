@@ -71,6 +71,12 @@ export const endPoints = {
       radiology_bill_delete: "/radiology-bill-delete/"
     },
 
+  },
+  auth: {
+    signup: "/signup",
+    signin: "/signin",
+    verify_email: "/verify-email",
+    forgot_password: "/forgot-password",
+    reset_password: "/reset-password"
   }
-
 }
