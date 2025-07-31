@@ -1,6 +1,5 @@
 "use client"
 import { AppointmentCreateQuery, AppointmentDeleteQuery, AppointmentDetailsQuery, AppointmentListQuery, AppointmentUpdateQuery } from "../../../api/query/AppointmentQuery";
-import ComponentCard from "../../../components/common/ComponentCard";
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import BasicTable from "../../../components/tables/BasicTable";
 import React from "react";
@@ -41,15 +40,24 @@ const Appointment = () => {
   const { mutateAsync: deleteAppointment } = AppointmentDeleteQuery()
 
   const tableColumns = [
-    { label: "Sl No.", render: (_: any, index: number) => index + 1 },
+    { label: "Appointment No.", key: "appointmentNo"},
     { label: "Patient Name", key: "patientId.name" },
     { label: "Note", key: "note" },
     { label: "Doctor Name", key: "doctorId.name" },
     {
       label: "Appointment Date",
-      key: "appointmentDate",
       render: (item: any) => format(new Date(item.appointmentDate), "dd-MM-yyyy")
     },
+    {
+      label: "Appointment Time",
+      render: (item: any) =>
+        new Date(item.appointmentDate).toLocaleTimeString('en-IN', {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true
+        })
+    }
+    ,
     {
       label: "Status",
       key: "status",
@@ -115,7 +123,7 @@ const Appointment = () => {
       }
     })
   }
-  const onDelete = (id : string) => {
+  const onDelete = (id: string) => {
     deleteAppointment(id, {
       onSuccess: (res) => {
         if (res.data.status === true) {
@@ -176,9 +184,7 @@ const Appointment = () => {
           </Button>
         </div>
         <div className="space-y-6">
-          <ComponentCard title="Appointments">
-            <BasicTable data={appointments} tableColumns={tableColumns} onDelete={onDelete}/>
-          </ComponentCard>
+            <BasicTable data={appointments} tableColumns={tableColumns} onDelete={onDelete} />
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={() => {
@@ -274,11 +280,7 @@ const Appointment = () => {
                           label="Appointment Date"
                           placeholder="Select a date"
                           defaultDate={value ? new Date(value) : undefined} // this ensures default is shown
-                          onChange={([selectedDate]) => {
-                            if (selectedDate) {
-                              onChange(selectedDate.toISOString()); // store ISO string in form state
-                            }
-                          }}
+                          onChange={(selectedDate) => onChange(selectedDate?.toISOString())}
                         />
                       )}
                     />

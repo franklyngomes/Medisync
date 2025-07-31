@@ -26,7 +26,7 @@ const Patient = () => {
   const { mutateAsync } = CreatePatientQuery()
   const { editId, isEditing, setIsEditing } = useStore();
   const { data: details } = PatientDetailsQuery(editId, !!editId)
-  const patientDetails = details?.data.data
+  const patientDetails = details?.data?.data
   const { mutateAsync: update } = PatientUpdateQuery()
   const { mutateAsync: deletePatient } = PatientDeleteQuery()
 

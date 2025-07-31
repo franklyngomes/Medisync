@@ -34,6 +34,13 @@ export const endPoints = {
     inpatient_update: "/inpatient-update/",
     inpatient_delete: "/inpatient-delete/"
   },
+  outpatients: {
+    outpatient_create: "/outpatient-create",
+    outpatient_list: "/all-outpatient",
+    outpatient_details: "/outpatient-details/",
+    outpatient_update: "/outpatient-update/",
+    outpatient_delete: "/outpatient-delete/"
+  },
   billing: {
     appointments: {
       appointment_bill_create: "/appointment-bill-create",

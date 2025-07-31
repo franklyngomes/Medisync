@@ -24,11 +24,11 @@ const Doctor = () => {
   const { data } = DoctorListQuery()
   const rooms = data?.data?.data
   const { isOpen, openModal, closeModal } = useModal();
-  const { handleSubmit, reset, control,} = useForm();
+  const { handleSubmit, reset, control, } = useForm();
   const { mutateAsync } = DoctorCreateQuery()
   const { editId, isEditing, setIsEditing } = useStore();
   const { data: details } = DoctorDetailsQuery(editId, !!editId)
-  const doctorDetails = details?.data.data
+  const doctorDetails = details?.data?.data
   const { mutateAsync: update } = DoctorUpdateQuery()
   const { mutateAsync: deleteDoctor } = DoctorDeleteQuery()
 
@@ -126,33 +126,40 @@ const Doctor = () => {
     formdata.append("specialization", specialization)
     formdata.append("phone", phone)
     formdata.append("email", email)
-    formdata.append("fees", JSON.stringify({
-      "consultation": consultation,
-      "surgery": surgery
-    }))
-    if(image) formdata.append("image", image)
+    formdata.append("consultation", consultation)
+    formdata.append("surgery", surgery)
+    if (image) formdata.append("image", image)
     mutateAsync(formdata, {
-      onSuccess: () => {
-        reset()
-        closeModal()
+      onSuccess: (res) => {
+        if (res.data.status === true) {
+          toast.success(res.data.message)
+          closeModal()
+          setIsEditing(false)
+          reset()
+        }else {
+          toast.error(res.data.message)
+        }
       }
     })
   }
   const onUpdate = (data: any) => {
-    const { name, specialization, phone, email,consultation, surgery, status } = data
+    const { name, specialization, phone, email, consultation, surgery, status } = data
     const formData = new FormData()
     formData.append("name", name)
     formData.append("specialization", specialization)
     formData.append("phone", phone)
     formData.append("email", email)
     formData.append("status", status)
-    formData.append("fees", JSON.stringify({
-      "consultation": consultation,
-      "surgery": surgery
-    }))
-    formData.append("image", image)
+    // formData.append("fees", JSON.stringify({
+    //   "consultation": consultation,
+    //   "surgery": surgery
+    // }))
+    formData.append("consultation", consultation)
+    formData.append("surgery", surgery)
+
+    if (image) formData.append("image", image)
     update({ editId, formData }, {
-      onSuccess: (res : any) => {
+      onSuccess: (res: any) => {
         if (res.data.status === true) {
           toast.success(res.data.message)
           closeModal()
@@ -165,7 +172,7 @@ const Doctor = () => {
   }
   const onDelete = (id: string) => {
     deleteDoctor(id, {
-      onSuccess: (res : any) => {
+      onSuccess: (res: any) => {
         if (res.data.status === true) {
           toast.success(res.data.message)
           closeModal()
@@ -261,12 +268,12 @@ const Doctor = () => {
                       <Controller
                         control={control}
                         name="image"
-                        render={({ field : {onChange}}) => (
+                        render={({ field: { onChange } }) => (
                           <FileInput onChange={(e) => {
                             const file = e.target.files?.[0] || null
                             setImage(file)
                             onChange(file)
-                          }}/>
+                          }} />
                         )}
                       />
                     </div>
