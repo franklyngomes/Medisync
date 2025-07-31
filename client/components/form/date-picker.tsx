@@ -1,4 +1,3 @@
-import 'flatpickr/dist/flatpickr.css';
 import Label from './Label';
 import { useEffect, useState } from 'react';
 import toLocalDateTimeString from '../../hooks/useDateTimeString';
