@@ -22,7 +22,7 @@ import Badge from "../../../../components/ui/badge/Badge";
 const AppointmentBilling = () => {
   const [appointmentOption, setAppointmentOption] = React.useState<{ label: string; value: string }[]>([])
   const { data: appointmentList } = AppointmentListQuery()
-  const appointments = appointmentList?.data.data
+  const appointments = appointmentList?.data?.data
   const { data } = AppointmentBillListQuery()
   const bills = data?.data?.data
   const { isOpen, openModal, closeModal } = useModal();
@@ -30,7 +30,7 @@ const AppointmentBilling = () => {
   const { mutateAsync } = AppointmentBillCreateQuery()
   const { editId, isEditing, setIsEditing } = useStore();
   const { data: details } = AppointmentBillDetailsQuery(editId, !!editId)
-  const appointmentBillDetails = details?.data.data
+  const appointmentBillDetails = details?.data?.data
   const { mutateAsync: update } = AppointmentBillUpdateQuery()
   const { mutateAsync: deletePayment } = AppointmentBillDeleteQuery()
 

@@ -18,7 +18,7 @@ export default function DatePicker({
   placeholder,
 }: PropsType) {
 
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState<string | undefined>('');
   useEffect(() => {
     if (defaultDate) {
       const localString = toLocalDateTimeString(new Date(defaultDate));

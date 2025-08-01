@@ -27,8 +27,8 @@ const Outpatient = () => {
   const { data: roomList } = AllRoomQuery()
   const [doctorOption, setDoctorOption] = React.useState<{ label: string, value: string }[]>([])
   const { data: doctorList } = DoctorListQuery()
-  const doctors = doctorList?.data.data
-  const rooms = roomList?.data.data
+  const doctors = doctorList?.data?.data
+  const rooms = roomList?.data
   const patients = patientsList?.data.data
   const { data } = OutPatientListQuery()
   const inPatients = data?.data?.data
@@ -55,11 +55,19 @@ const Outpatient = () => {
       label: "Admission Date", key: "admissionDate", render: (item: any) => format(new Date(item.admissionDate), "dd-MM-yyyy")
     },
     {
-      label: "Admission Time", key: "admissionDate", render: (item: any) => format(new Date(item.admissionDate), "dd-MM-yyyy")
+      label: "Admission Time", key: "admissionDate", render: (item: any) => new Date(item.admissionDate).toLocaleTimeString('en-IN', {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true
+      })
     },
     { label: "Discharge Date", key: "dischargeDate", render: (item: any) => item.dischargeDate ? format(new Date(item.dischargeDate), "dd-MM-yyyy") : "---" },
         {
-      label: "Discharge Time", key: "dischargeDate", render: (item: any) => format(new Date(item.admissionDate), "dd-MM-yyyy")
+      label: "Discharge Time", key: "dischargeDate", render: (item: any) => item.dischargeDate ?  new Date(item.dischargeDate).toLocaleTimeString('en-IN', {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true
+      }) : "---"
     },
     { label: "Diagnosis", key: "diagnosis" },
   ]
@@ -79,9 +87,10 @@ const Outpatient = () => {
     })
   }
   const onUpdate = (data: any) => {
-    const { roomId, admissionDate, dischargeDate, diagnosis } = data
+    const {doctorId, roomId, admissionDate, dischargeDate, diagnosis } = data
     const formData = new FormData()
     formData.append("roomId", roomId)
+    formData.append("doctorId", doctorId)
     formData.append("admissionDate", admissionDate)
     formData.append("dischargeDate", dischargeDate)
     formData.append("diagnosis", diagnosis)
@@ -124,8 +133,8 @@ const Outpatient = () => {
         patientId: inPatientDetails.patientId,
         doctorId: inPatientDetails.doctorId,
         roomId: inPatientDetails?.roomId._id,
-        admissionDate: inPatientDetails?.admissionDate ? new Date(inPatientDetails.admissionDate) : null,
-        dischargeDate: inPatientDetails?.dischargeDate ? new Date(inPatientDetails.dischargeDate) : null,
+        admissionDate: inPatientDetails?.admissionDate ? new Date(inPatientDetails.admissionDate) : undefined,
+        dischargeDate: inPatientDetails?.dischargeDate ? new Date(inPatientDetails.dischargeDate) : undefined,
         diagnosis: inPatientDetails.diagnosis,
       });
     } else {
@@ -133,8 +142,8 @@ const Outpatient = () => {
         patientId: "",
         doctorId: "",
         roomId: "",
-        admissionDate: null,
-        dischargeDate: null,
+        admissionDate: undefined,
+        dischargeDate: undefined,
         diagnosis: "",
       })
     }
@@ -204,7 +213,7 @@ const Outpatient = () => {
                   <div>
                     <Label>{!isEditing ? "Select Doctor" : "Doctor Name"}</Label>
                     <div className="relative">
-                      {!isEditing ?
+
                         <>
                           <Controller
                             control={control}
@@ -222,7 +231,6 @@ const Outpatient = () => {
                             <ChevronDownIcon />
                           </span>
                         </>
-                        : <Input value={inPatientDetails?.doctorId.name ?? ""} disabled />}
                     </div>
                   </div>
                   <div>
@@ -255,7 +263,7 @@ const Outpatient = () => {
                           label="Admission Date"
                           placeholder="Select a date"
                           defaultDate={value ? new Date(value) : undefined} // this ensures default is shown
-                          onChange={([selectedDate]) => {
+                          onChange={(selectedDate) => {
                             if (selectedDate) {
                               onChange(selectedDate.toISOString()); // store ISO string in form state
                             }
@@ -274,7 +282,7 @@ const Outpatient = () => {
                           label="Discharge Date"
                           placeholder="Select a date"
                           defaultDate={value ? new Date(value) : undefined} // this ensures default is shown
-                          onChange={([selectedDate]) => {
+                          onChange={(selectedDate) => {
                             if (selectedDate) {
                               onChange(selectedDate.toISOString()); // store ISO string in form state
                             }

@@ -34,9 +34,7 @@ class AppointmentBillingController {
         source,
         paymentMethod,
       });
-      const appointmentDetails = await AppointmentModel.findById(
-        appointmentId
-      ).populate("doctorId");
+      const appointmentDetails = await AppointmentModel.findById(appointmentId).populate("doctorId");
       if (chargeType === "consultation") {
         billData.standardCharge =
           appointmentDetails?.doctorId?.fees.consultation;
@@ -185,7 +183,8 @@ class AppointmentBillingController {
   async UpdateAppointmentBill(req, res) {
     try {
       const id = req.params.id;
-      const { chargeType, noOfHour,discount, status, source, paymentMethod } = req.body || {};
+      const { chargeType, noOfHour, discount, status, source, paymentMethod } =
+        req.body || {};
 
       if (!chargeType) {
         return res.status(400).json({

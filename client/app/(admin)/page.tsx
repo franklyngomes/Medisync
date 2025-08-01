@@ -9,8 +9,8 @@ import DemographicCard from "../../components/ecommerce/DemographicCard";
 
 export const metadata: Metadata = {
   title:
-    "Medisync | Hospital management made easy",
-  description: "Hospital Management System",
+    "Medisync | Patient management made easy",
+  description: "Patient Management System",
 };
 
 export default function Ecommerce() {

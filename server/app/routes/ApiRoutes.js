@@ -5,6 +5,7 @@ const DoctorController = require('../controller/DoctorController')
 const AppointmentController = require('../controller/AppointmentController')
 const RoomController = require('../controller/RoomController')
 const InPatientController = require('../controller/InPatientController')
+const OutpatientController = require('../controller/OutpatientController')
 const PathologyTestController = require('../controller/PathologyTestController')
 const RadiologyTestController = require("../controller/RadiologyTestController")
 const AppointmentBillController = require("../controller/billing/AppointmentBillingController")
@@ -52,6 +53,13 @@ router.get('/all-inpatient', InPatientController.GetAllInPatient)
 router.get('/inpatient-details/:id', InPatientController.InPatientDetails)
 router.post('/inpatient-update/:id', upload.none(), InPatientController.UpdateInPatient)
 router.post('/inpatient-delete/:id', InPatientController.DeleteInPatient)
+
+//OutPatient Routes
+router.post('/outpatient-create', upload.none(), OutpatientController.CreateOutPatient)
+router.get('/all-outpatient', OutpatientController.GetAllOutPatient)
+router.get('/outpatient-details/:id', OutpatientController.OutPatientDetails)
+router.post('/outpatient-update/:id', upload.none(), OutpatientController.UpdateOutPatient)
+router.delete('/outpatient-delete/:id', OutpatientController.DeleteOutPatient)
 
 //PathologyTest Routes
 router.post('/pathology-test-create', upload.none(), PathologyTestController.CreatePathologyTest)

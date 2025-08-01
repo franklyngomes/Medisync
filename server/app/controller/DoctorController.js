@@ -6,9 +6,8 @@ const fs = require("fs").promises;
 class DoctorController {
   async CreateDoctor(req, res) {
     try {
-      const { name, email, phone, specialization,} = req.body;
-      const fees = JSON.parse(req.body.fees)
-      if (!name || !email || !phone || !specialization || !fees) {
+      const { name, email, phone, specialization,consultation, surgery} = req.body;
+      if (!name || !email || !phone || !specialization || !consultation || !surgery) {
         return res.status(HttpCode.notFound).json({
           status: false,
           message: "All fields are required!",
@@ -20,8 +19,8 @@ class DoctorController {
         phone,
         specialization,
         fees : {
-          consultation: fees.consultation,
-          surgery: fees.surgery
+          consultation: consultation,
+          surgery: surgery
         }
       });
       if (req.file) {
@@ -95,6 +94,15 @@ class DoctorController {
           message: "Doctor not found!",
         });
       }
+      // const fees = await JSON.parse(req.body.fees)
+      console.log(updateData)
+      const {consultation, surgery} = req.body
+      updateData.fees = {
+        consultation: consultation,
+        surgery: surgery
+      }
+      // updateData.fees.consultation = consultation
+      // updateData.fees.surgery = surgery
       if (updateData.image) {
         const existingImage = updateData.image;
         if (fsSync.existsSync(existingImage)) {

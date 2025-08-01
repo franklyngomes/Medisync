@@ -55,7 +55,19 @@ const InPatient = () => {
     {
       label: "Admission Date", key: "admissionDate", render: (item: any) => format(new Date(item.admissionDate), "dd-MM-yyyy")
     },
+        {
+      label: "Admission Time", render: (item: any) => new Date(item.admissionDate).toLocaleTimeString('en-IN', {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true
+      })
+    },
     { label: "Discharge Date", key: "dischargeDate", render: (item: any) => item.dischargeDate ? format(new Date(item.dischargeDate), "dd-MM-yyyy") : "---" },
+     { label: "Discharge Time", render: (item: any) => item.dischargeDate ? new Date(item.dischargeDate).toLocaleTimeString('en-IN', {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true
+      }) : "---" },
     { label: "Diagnosis", key: "diagnosis" },
   ]
   const onSubmit = (data: any) => {
@@ -252,7 +264,7 @@ const InPatient = () => {
                           label="Admission Date"
                           placeholder="Select a date"
                           defaultDate={value ? new Date(value) : undefined} // this ensures default is shown
-                          onChange={([selectedDate]) => {
+                          onChange={(selectedDate) => {
                             if (selectedDate) {
                               onChange(selectedDate.toISOString()); // store ISO string in form state
                             }
@@ -271,7 +283,7 @@ const InPatient = () => {
                           label="Discharge Date"
                           placeholder="Select a date"
                           defaultDate={value ? new Date(value) : undefined} // this ensures default is shown
-                          onChange={([selectedDate]) => {
+                          onChange={(selectedDate) => {
                             if (selectedDate) {
                               onChange(selectedDate.toISOString()); // store ISO string in form state
                             }

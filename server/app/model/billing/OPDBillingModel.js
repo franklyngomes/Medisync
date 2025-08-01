@@ -9,7 +9,7 @@ const OPDBillingSchema = new Schema(
     },
     outPatientId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "outpatients",
+      ref: "outpatient",
       required: true,
     },
     chargeName: {
@@ -27,11 +27,9 @@ const OPDBillingSchema = new Schema(
     },
     standardCharge: {
       type: Number,
-      required: true,
     },
     appliedCharge: {
       type: Number,
-      required: true,
     },
     tpaCharge: {
       type: Number,
@@ -43,11 +41,10 @@ const OPDBillingSchema = new Schema(
     },
     tax: {
       type: Number,
-      required: true,
+      default:18
     },
     amount: {
       type: Number,
-      required: true,
     },
     source: {
       type: String,
@@ -76,5 +73,5 @@ const OPDBillingSchema = new Schema(
   { timestamps: true }
 );
 
-const OPDBillingModel = mongoose.model("OPDBill", OPDBillingSchema);
+const OPDBillingModel = mongoose.model("opdbills", OPDBillingSchema);
 module.exports = OPDBillingModel;
