@@ -1,5 +1,4 @@
 "use client"
-import ComponentCard from "../../../../components/common/ComponentCard";
 import PageBreadcrumb from "../../../../components/common/PageBreadCrumb";
 import BasicTable from "../../../../components/tables/BasicTable";
 import React from "react";
@@ -35,7 +34,6 @@ const OPDBilling = () => {
   const outpatientDetails = details?.data?.data
   const { mutateAsync: update } = OutpatientBillUpdateQuery()
   const { mutateAsync: deletePayment } = OutpatientBillDeleteQuery()
-  console.log(outpatientDetails)
 
   const tableColumns = [
     {
@@ -44,14 +42,14 @@ const OPDBilling = () => {
     { label: "Patient", key: "outPatientId.patientId.name" },
     { label: "Charge Name", key: "chargeName" },
     { label: "Charge Type", key: "chargeType" },
-    { label: "No of Hr", key: "noOfHour" },
-    { label: "Source", key: "source" },
     { label: "Standard Charge", key: "standardCharge" },
+    { label: "No of Hr", key: "noOfHour" },
     { label: "Applied Charge", key: "appliedCharge" },
-    { label: "TPA", key: "tpaCharge" },
-    { label: "Discount", key: "discount" },
-    { label: "Tax", key: "tax" },
-    { label: "Amount", key: "amount" },
+    { label: "TPA(₹)", key: "tpaCharge" },
+    { label: "Discount(₹)", key: "discount" },
+    { label: "Tax (%)", key: "tax" },
+    { label: "Amount(₹)", key: "amount" },
+    { label: "Source", key: "source" },
     { label: "Payment Method", key: "paymentMethod" },
     {
       label: "Status",
@@ -139,13 +137,17 @@ const OPDBilling = () => {
     })
   }
   const onUpdate = (data: any) => {
-    const { tax, standardCharge, noOfHour, discount, status } = data
+    const { tax, noOfHour, chargeType, discount, status,source, paymentMethod } = data
     const formData = new FormData()
     formData.append("tax", tax)
     formData.append("noOfHour", noOfHour)
     formData.append("discount", discount)
+    formData.append("chargeType", chargeType)
+    formData.append("source", source)
+    formData.append("paymentMethod", paymentMethod)
+    formData.append("discount", discount)
     formData.append("status", status)
-    const payload = { tax, standardCharge, noOfHour, discount, status }
+    const payload = { tax, noOfHour, discount, status, chargeType, source, paymentMethod }
     update({ editId, payload }, {
       onSuccess: (res) => {
         if (res.data.status === true) {
@@ -440,6 +442,14 @@ const OPDBilling = () => {
                 </div>
               </div>
             </div>
+            {isEditing &&
+              <div className="mt-3">
+                <Label>Total payable amount</Label>
+                <h4 className="mb-5 text-2xl font-semibold text-gray-800 dark:text-white/90">
+                  ₹{isEditing ? outpatientDetails?.amount : ""}
+                </h4>
+              </div>
+            }
             <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
               <Button size="sm" variant="outline" onClick={() => {
                 setIsEditing(false)

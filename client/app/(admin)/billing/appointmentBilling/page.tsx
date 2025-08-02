@@ -389,7 +389,7 @@ const AppointmentBilling = () => {
                             label="Date"
                             placeholder="Select a date"
                             defaultDate={value ? new Date(value) : undefined} // this ensures default is shown
-                            onChange={([selectedDate]) => {
+                            onChange={(selectedDate) => {
                               if (selectedDate) {
                                 onChange(selectedDate.toISOString()); // store ISO string in form state
                               }

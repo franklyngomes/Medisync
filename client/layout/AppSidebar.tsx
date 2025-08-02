@@ -38,16 +38,16 @@ const navItems: NavItem[] = [
     name: "Patient",
     path: "/patient",
   },
-  {
-    icon: <InpatientIcon />,
-    name: "Inpatient - IPD",
-    path: "/inpatient",
-  },
-  {
-    icon: <OutpatientIcon />,
-    name: "Outpatient - OPD",
-    path: "/outpatient",
-  },
+  // {
+  //   icon: <InpatientIcon />,
+  //   name: "Inpatient - IPD",
+  //   path: "/inpatient",
+  // },
+  // {
+  //   icon: <OutpatientIcon />,
+  //   name: "Outpatient - OPD",
+  //   path: "/outpatient",
+  // },
   {
     icon: <DoctorIcon />,
     name: "Doctor",

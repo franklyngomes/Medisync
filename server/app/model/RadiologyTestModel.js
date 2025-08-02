@@ -24,15 +24,7 @@ const RadiologyTestSchema = new Schema({
     type: Number,
     required: true,
   },
-  tax: {
-    type: Number,
-    required: true,
-  },
   charge: {
-    type: Number,
-    required: true,
-  },
-  amount: {
     type: Number,
     required: true,
   },

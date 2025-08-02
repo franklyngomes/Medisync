@@ -45,10 +45,18 @@ const PathologyBillSchema = new Schema(
       enum: ["Paid", "Pending", "Failed"],
       default: "Pending",
     },
+    tax: {
+      type: Number,
+      default: 18,
+    },
     deleted: {
       type: Boolean,
       default: false,
     },
+    date: {
+      type: Date,
+      default: Date.now()
+    }
   },
   { timestamps: true }
 );

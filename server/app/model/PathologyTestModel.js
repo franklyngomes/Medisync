@@ -28,16 +28,9 @@ const PathologyTestSchema = new Schema(
       type: Number,
       required: true,
     },
-    tax: {
-      type: Number,
-      default: 18,
-    },
     charge: {
       type: Number,
       required: true,
-    },
-    amount: {
-      type: Number,
     },
     deleted: {
       type: Boolean,

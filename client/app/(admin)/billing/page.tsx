@@ -13,16 +13,16 @@ const Billing = () => {
       icon: <AppointmentIcon className="text-gray-800 size-6 dark:text-white/90" />,
       route: "/billing/appointmentBilling"
     },
-    {
-      title: "OPD - Outpatient",
-      icon: <OutpatientIcon className="text-gray-800 size-6 dark:text-white/90" />,
-      route: "/billing/OPDBilling"
-    },
-    {
-      title: "IPD - Inpatient",
-      icon: <InpatientIcon className="text-gray-800 size-6 dark:text-white/90" />,
-      route: "/billing/IPDBilling"
-    },
+    // {
+    //   title: "OPD - Outpatient",
+    //   icon: <OutpatientIcon className="text-gray-800 size-6 dark:text-white/90" />,
+    //   route: "/billing/OPDBilling"
+    // },
+    // {
+    //   title: "IPD - Inpatient",
+    //   icon: <InpatientIcon className="text-gray-800 size-6 dark:text-white/90" />,
+    //   route: "/billing/IPDBilling"
+    // },
     {
       title: "Pathology",
       icon: <PathologyIcon className="text-gray-800 size-6 dark:text-white/90" />,

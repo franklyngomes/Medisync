@@ -1,5 +1,4 @@
 "use client"
-import ComponentCard from "../../../../components/common/ComponentCard";
 import PageBreadcrumb from "../../../../components/common/PageBreadCrumb";
 import BasicTable from "../../../../components/tables/BasicTable";
 import React from "react";
@@ -15,42 +14,47 @@ import Input from "../../../../components/form/input/InputField";
 import toast from "react-hot-toast";
 import DatePicker from "../../../../components/form/date-picker";
 import { format } from 'date-fns';
-import { PatientListQuery } from "../../../../api/query/PatientQuery";
-import { CreatePaymentsQuery, PaymentDeleteQuery, PaymentDetailsQuery, PaymentListQuery, PaymentUpdateQuery } from "../../../../api/query/PaymentQuery";
-import { DoctorListQuery } from "../../../../api/query/DoctorQuery";
+import { PathologyBillCreateQuery, PathologyBillListQuery, PathologyBillDetailsQuery, PathologyBillUpdateQuery, PathologyBillDeleteQuery } from "../../../../api/query/billing/PathologyBillingQuery"
 import Badge from "../../../../components/ui/badge/Badge";
+import { PatientListQuery } from "../../../../api/query/PatientQuery";
+import { DoctorListQuery } from "../../../../api/query/DoctorQuery";
+import { PathologyTestListQuery } from "../../../../api/query/PathologyTestQuery";
 
 
 const PathologyBilling = () => {
   const [patientOption, setPatientOption] = React.useState<{ label: string; value: string }[]>([])
-  const { data: patientsList } = PatientListQuery()
-  const [doctorOption, setDoctorOption] = React.useState<{ label: string, value: string }[]>([])
+  const [doctorOption, setDoctorOption] = React.useState<{ label: string; value: string }[]>([])
+  const [testOption, setTestOption] = React.useState<{ label: string; value: string }[]>([])
+  const { data: patientList } = PatientListQuery()
   const { data: doctorList } = DoctorListQuery()
-  const doctors = doctorList?.data.data
-  const patients = patientsList?.data.data
-  const { data } = PaymentListQuery()
-  const payments = data?.data?.data
+  const { data: testDetails } = PathologyTestListQuery()
+  const patients = patientList?.data?.data
+  const doctors = doctorList?.data?.data
+  const tests = testDetails?.data?.data
+  const { data: pathologyBills } = PathologyBillListQuery()
+  const bills = pathologyBills?.data?.data
   const { isOpen, openModal, closeModal } = useModal();
   const { handleSubmit, reset, control } = useForm();
-  const { mutateAsync } = CreatePaymentsQuery()
+  const { mutateAsync } = PathologyBillCreateQuery()
   const { editId, isEditing, setIsEditing } = useStore();
-  const { data: details } = PaymentDetailsQuery(editId, !!editId)
-  const paymentDetails = details?.data.data
-  const { mutateAsync: update } = PaymentUpdateQuery()
-  const { mutateAsync: deletePayment } = PaymentDeleteQuery()
+  const { data: details } = PathologyBillDetailsQuery(editId, !!editId)
+  const pathologyBillDetails = details?.data?.data
+  const { mutateAsync: update } = PathologyBillUpdateQuery()
+  const { mutateAsync: deletePayment } = PathologyBillDeleteQuery()
 
   const tableColumns = [
-    {
-      label: "Date", key: "reportingDate", render: (item: any) => item.date ? format(new Date(item.date), "dd-MM-yyyy") : "---"
-    },
     { label: "Bill No.", key: "billNo" },
-    { label: "Case Id", key: "caseId" },
-    { label: "Patient Name", key: "patientId.name" },
-    { label: "Reference Doctor", key: "doctorId.name" },
+    {
+      label: "Date", key: "date", render: (item: any) => item.date ? format(new Date(item.date), "dd-MM-yyyy") : "---"
+    },
+    { label: "Patient", key: "patientId.name" },
+    { label: "Reference Doctor", key: "referenceDoctor.name" },
+    { label: "Test Name", key: "testId.testName" },
+    { label: "Charge(₹)", key: "testId.charge" },
+    { label: "Tax(%)", key: "tax" },
     { label: "Discount", key: "discount" },
-    { label: "Amount", key: "amount" },
-    { label: "Paid Amount", key: "paidAmount" },
-    { label: "Balance Amount", key: "balanceAmount" },
+    { label: "Amount(₹)", key: "amount" },
+    { label: "Payment Method", key: "paymentMethod" },
     {
       label: "Status",
       key: "status",
@@ -70,7 +74,6 @@ const PathologyBilling = () => {
       )
     },
   ]
-
   const statusOptions = [
     {
       label: "Paid",
@@ -85,13 +88,39 @@ const PathologyBilling = () => {
       value: "Failed"
     }
   ]
+  const paymentOptions = [
+    {
+      label: "UPI",
+      value: "UPI",
+    },
+    {
+      label: "Cash",
+      value: "Cash",
+    },
+    {
+      label: "Card",
+      value: "Card",
+    },
+  ]
+  const sourceOptions = [
+    {
+      label: "Online",
+      value: "Online",
+    },
+    {
+      label: "Offline",
+      value: "Offline"
+    },
+  ]
   const onSubmit = (data: any) => {
-    const { patientId, doctorId, notes, amount } = data
+    const { testId, patientId,referenceDoctor, discount,source, paymentMethod} = data
     const formdata = new FormData()
+    formdata.append("testId", testId)
     formdata.append("patientId", patientId)
-    formdata.append("doctorId", doctorId)
-    formdata.append("notes", notes)
-    formdata.append("amount", amount)
+    formdata.append("referenceDoctor", referenceDoctor)
+    formdata.append("discount", discount)
+    formdata.append("source", source)
+    formdata.append("paymentMethod", paymentMethod)
     mutateAsync(formdata, {
       onSuccess: () => {
         reset()
@@ -100,13 +129,12 @@ const PathologyBilling = () => {
     })
   }
   const onUpdate = (data: any) => {
-    const { notes, amount, status, date } = data
-    const formData = new FormData()
-    formData.append("notes", notes)
-    formData.append("amount", amount)
-    formData.append("status", status)
-    formData.append("date", date)
-    update({ editId, formData }, {
+    const { testId, chargeType, discount, status, source, paymentMethod } = data;
+
+    const payload = {
+      testId, chargeType, discount, status, source, paymentMethod
+    };
+    update({ editId, payload }, {
       onSuccess: (res) => {
         if (res.data.status === true) {
           toast.success(res.data.message)
@@ -140,47 +168,58 @@ const PathologyBilling = () => {
 
   // useEffect to reset form values when editing
   React.useEffect(() => {
-    if (isEditing && paymentDetails) {
+    if (isEditing && pathologyBillDetails) {
+
       reset({
-        patientId: paymentDetails.patientId,
-        doctorId: paymentDetails.doctorId,
-        notes: paymentDetails.notes,
-        amount: paymentDetails.amount,
-        status: paymentDetails.status,
-        date: paymentDetails?.date ? new Date(paymentDetails.date) : null,
+        billNo: pathologyBillDetails.billNo,
+        patientId: pathologyBillDetails.patientId._id,
+        testId: pathologyBillDetails.testId._id,
+        referenceDoctor: pathologyBillDetails.referenceDoctor._id,
+        discount: pathologyBillDetails.discount,
+        status: pathologyBillDetails.status,
+        source: pathologyBillDetails?.source,
+        paymentMethod: pathologyBillDetails.paymentMethod,
+        tax: pathologyBillDetails.tax,
+        date: pathologyBillDetails?.date ? new Date(pathologyBillDetails.date) : null,
       });
     } else {
       reset({
+        billNo: "",
         patientId: "",
-        doctorId: "",
-        notes: "",
-        amount: "",
+        testId: "",
+        referenceDoctor: "",
+        discount: "",
         status: "",
+        source: "",
+        paymentMethod: "",
+        tax: "",
         date: null,
       })
     }
-  }, [isEditing, paymentDetails, reset]);
+  }, [isEditing, pathologyBillDetails, reset]);
+
   React.useEffect(() => {
     if (patients && Array.isArray(patients)) {
-      setPatientOption(patients.map((patient) => ({ label: patient.name, value: patient._id })));
+      setPatientOption(patients.map((item) => ({ label: item?.name, value: item._id })));
     }
     if (doctors && Array.isArray(doctors)) {
-      setDoctorOption(doctors.map((item) => ({ label: item.name, value: item._id })))
+      setDoctorOption(doctors.map((item) => ({ label: `Dr. ${item?.name}`, value: item._id })));
     }
-  }, [patients, doctors])
+    if (tests && Array.isArray(tests)) {
+      setTestOption(tests.map((item) => ({ label: item.testName, value: item._id })));
+    }
+  }, [patients, doctors, tests])
   return (
     <>
       <div>
         <div className="flex flex-wrap justify-between items-center">
-          <PageBreadcrumb pageTitle="Pathology Billing" breadCrumbTitle="Pathology Billing" />
+          <PageBreadcrumb pageTitle="Pathology Billing" breadCrumbTitle="" />
           <Button size="sm" variant="primary" startIcon={<PaymentIcon />} onClick={openModal}>
             New Bill
           </Button>
         </div>
         <div className="space-y-6">
-          <ComponentCard title="Generated Bills">
-            <BasicTable data={payments} tableColumns={tableColumns} onDelete={onDelete} />
-          </ComponentCard>
+          <BasicTable data={bills} tableColumns={tableColumns} onDelete={onDelete} />
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={() => {
@@ -198,7 +237,7 @@ const PathologyBilling = () => {
               <div>
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div>
-                    <Label>{!isEditing ? "Select Patient" : "Patient Name"}</Label>
+                    <Label>{!isEditing ? "Select Patient" : "Patient No/Name"}</Label>
                     <div className="relative">
                       {!isEditing ?
                         <>
@@ -218,17 +257,17 @@ const PathologyBilling = () => {
                             <ChevronDownIcon />
                           </span>
                         </>
-                        : <Input value={paymentDetails?.patientId.name ?? ""} disabled />}
+                        : <Input value={pathologyBillDetails ? pathologyBillDetails.patientId?.name : ""} disabled />}
                     </div>
                   </div>
                   <div>
-                    <Label>{!isEditing ? "Select Doctor" : "Doctor Name"}</Label>
+                    <Label>{!isEditing ? "Select Doctor" : "Doctor"}</Label>
                     <div className="relative">
                       {!isEditing ?
                         <>
                           <Controller
                             control={control}
-                            name="doctorId"
+                            name="referenceDoctor"
                             render={({ field }) => (
                               <Select
                                 {...field}
@@ -242,29 +281,62 @@ const PathologyBilling = () => {
                             <ChevronDownIcon />
                           </span>
                         </>
-                        : <Input value={paymentDetails?.doctorId.name ?? ""} disabled />}
+                        : <Input value={pathologyBillDetails ? pathologyBillDetails.referenceDoctor?.name : ""} disabled />}
                     </div>
                   </div>
                   <div>
-                    <Label>Notes</Label>
+                    <Label>{!isEditing ? "Select Test" : "Test Name"}</Label>
                     <div className="relative">
-                      <Controller
-                        control={control}
-                        name="notes"
-                        render={({ field }) => (
-                          <Input {...field}
-                            value={field.value ?? ""}
+                      {!isEditing ?
+                        <>
+                          <Controller
+                            control={control}
+                            name="testId"
+                            render={({ field }) => (
+                              <Select
+                                {...field}
+                                options={testOption}
+                                placeholder="Select Test"
+                                className="dark:bg-dark-900"
+                              />
+                            )}
                           />
-                        )}
-                      />
+                          <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                            <ChevronDownIcon />
+                          </span>
+                        </>
+                        : <Input value={pathologyBillDetails ? pathologyBillDetails?.testId?.testName : ""} disabled />}
                     </div>
                   </div>
                   <div>
-                    <Label>Amount</Label>
+                    <Label>Payment Methods</Label>
+                    <div className="relative">
+                      <>
+                        <Controller
+                          control={control}
+                          name="paymentMethod"
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              value={field.value ?? ""}
+                              options={paymentOptions}
+                              placeholder="Select method"
+                              className="dark:bg-dark-900"
+                            />
+                          )}
+                        />
+                        <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                          <ChevronDownIcon />
+                        </span>
+                      </>
+                    </div>
+                  </div>
+                  <div>
+                    <Label>Discount($)</Label>
                     <div className="relative">
                       <Controller
                         control={control}
-                        name="amount"
+                        name="discount"
                         render={({ field }) => (
                           <Input {...field}
                             value={field.value ?? ""}
@@ -272,6 +344,27 @@ const PathologyBilling = () => {
                           />
                         )}
                       />
+                    </div>
+                  </div>
+                  <div>
+                    <Label>Source</Label>
+                    <div className="relative">
+                      <Controller
+                        control={control}
+                        name="source"
+                        render={({ field }) => (
+                          <Select
+                            {...field}
+                            value={field.value ?? ""}
+                            options={sourceOptions}
+                            placeholder="Select Source"
+                            className="dark:bg-dark-900"
+                          />
+                        )}
+                      />
+                      <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                        <ChevronDownIcon />
+                      </span>
                     </div>
                   </div>
                   {isEditing &&
@@ -310,7 +403,7 @@ const PathologyBilling = () => {
                             label="Date"
                             placeholder="Select a date"
                             defaultDate={value ? new Date(value) : undefined} // this ensures default is shown
-                            onChange={([selectedDate]) => {
+                            onChange={(selectedDate) => {
                               if (selectedDate) {
                                 onChange(selectedDate.toISOString()); // store ISO string in form state
                               }
@@ -323,6 +416,14 @@ const PathologyBilling = () => {
                 </div>
               </div>
             </div>
+            {isEditing &&
+              <div className="mt-3">
+                <Label>Total payable amount</Label>
+                <h4 className="mb-5 text-2xl font-semibold text-gray-800 dark:text-white/90">
+                  ${isEditing ? pathologyBillDetails?.amount : ""}
+                </h4>
+              </div>
+            }
             <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
               <Button size="sm" variant="outline" onClick={() => {
                 setIsEditing(false)

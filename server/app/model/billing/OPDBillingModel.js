@@ -11,6 +11,7 @@ const OPDBillingSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "outpatient",
       required: true,
+      unique: true
     },
     chargeName: {
       type: String,

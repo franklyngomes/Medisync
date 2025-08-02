@@ -22,7 +22,8 @@ class PathologyBillController {
         message: "Test not found!",
       });
       }
-      const amount = testDetails.charge * (1 + testDetails.tax / 100)
+      const tax = req.body.tax || 18
+      const amount = testDetails.charge * (1 + tax / 100)
       if(discount > 0) {
         billData.amount = amount - discount
       }else{
@@ -43,7 +44,7 @@ class PathologyBillController {
   }
   async GetAllPathologyBills(req, res){
     try {
-      const bills = await PathologyBillModel.find({deleted: false})
+      const bills = await PathologyBillModel.find({deleted: false}).populate("patientId").populate("referenceDoctor").populate("testId")
       if(bills.length === 0){
         return res.status(HttpCode.notFound).json({
           status: false,
@@ -66,7 +67,7 @@ class PathologyBillController {
   async PathologyBillDetails(req, res){
     try {
       const id = req.params.id
-      const bill = await PathologyBillModel.findById(id)
+      const bill = await PathologyBillModel.findById(id).populate("patientId").populate("referenceDoctor").populate("testId")
       if(!id){
         return res.status(HttpCode.notFound).json({
           status: false,
@@ -91,31 +92,26 @@ class PathologyBillController {
       const id = req.params.id
       const {discount, status, testId} = req.body
       const updateData = await PathologyBillModel.findByIdAndUpdate(id, req.body)
-      const testDetails = await PathologyTestModel.findOne({testId})
+      const testDetails = await PathologyTestModel.findById(testId)
       if(!testDetails){
         return res.status(HttpCode.notFound).json({
         status: false,
         message: "Test not found!",
       });
       }
-      const amount = testDetails.charge
+      const tax = req.body.tax || 18
+      const amount = testDetails.charge * (1 + tax / 100)
       if(discount > 0) {
         updateData.amount = amount - discount
       }else{
          updateData.amount = amount
       }
 
-      if(!updateData){
-        return res.status(HttpCode.badRequest).json({
-          status: false,
-          message: "Failed to update appointment bill!"
-        })
-      }else{
+      await updateData.save()
         return res.status(HttpCode.success).json({
           status: true,
           message: "Pathology bill updated successfully",
         })
-      }
     }catch(error){
       return res.status(HttpCode.serverError).json({
         status: false,

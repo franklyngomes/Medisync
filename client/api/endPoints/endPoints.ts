@@ -41,6 +41,20 @@ export const endPoints = {
     outpatient_update: "/outpatient-update/",
     outpatient_delete: "/outpatient-delete/"
   },
+  pathologyTest: {
+    pathologyTest_create: "/pathology-test-create",
+    pathologyTest_list: "/all-pathology-test",
+    pathologyTest_details: "/pathology-test-details/",
+    pathologyTest_update: "/pathology-test-update/",
+    pathologyTest_delete: "/pathology-test-delete/"
+  },
+  radiologyTest: {
+    radiologyTest_create: "/radiology-test-create",
+    radiologyTest_list: "/all-radiology-test",
+    radiologyTest_details: "/radiology-test-details/",
+    radiologyTest_update: "/radiology-test-update/",
+    radiologyTest_delete: "/radiology-test-delete/"
+  },
   billing: {
     appointments: {
       appointment_bill_create: "/appointment-bill-create",

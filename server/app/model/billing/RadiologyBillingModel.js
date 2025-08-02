@@ -41,6 +41,10 @@ const RadiologyBillSchema = new Schema(
       enum: ["Paid", "Pending", "Failed"],
       default: "Pending",
     },
+    tax: {
+      type: Number,
+      default: 18,
+    },
     deleted: {
       type: Boolean,
       default: false,

@@ -42,7 +42,9 @@ class OPDBillingController {
         source,
         paymentMethod,
       });
-      const docDetails = await OutpatientModel.findById(outPatientId).populate("doctorId");
+      const docDetails = await OutpatientModel.findById(outPatientId).populate(
+        "doctorId"
+      );
       if (chargeType === "consultation") {
         billData.standardCharge = docDetails?.doctorId?.fees.consultation;
       } else if (chargeType === "surgery") {
@@ -50,9 +52,9 @@ class OPDBillingController {
       }
       const appliedCharge = billData.standardCharge * noOfHour;
       billData.appliedCharge = appliedCharge;
-      billData.tax = req.body.tax || 18
-      const tax = billData.tax
-      const amount = appliedCharge * (1 + tax / 100);
+      billData.tax = req.body.tax || 18;
+      const tax = billData.tax;
+      const amount = billData.appliedCharge * (1 + tax / 100);
       if (discount > 0 || tpaCharge > 0) {
         billData.amount = amount - tpaCharge - discount;
       } else {
@@ -78,14 +80,14 @@ class OPDBillingController {
         path: "outPatientId",
         populate: [
           {
-            path:"doctorId",
-            model: "doctor"
+            path: "doctorId",
+            model: "doctor",
           },
           {
             path: "patientId",
-            model: "patient"
-          }
-        ]
+            model: "patient",
+          },
+        ],
       });
       if (bills.length === 0) {
         return res.status(HttpCode.notFound).json({
@@ -113,14 +115,14 @@ class OPDBillingController {
         path: "outPatientId",
         populate: [
           {
-            path:"doctorId",
-            model: "doctor"
+            path: "doctorId",
+            model: "doctor",
           },
           {
             path: "patientId",
-            model: "patient"
-          }
-        ]
+            model: "patient",
+          },
+        ],
       });
       if (!id) {
         return res.status(HttpCode.notFound).json({
@@ -144,29 +146,34 @@ class OPDBillingController {
   async UpdateOPDBill(req, res) {
     try {
       const id = req.params.id;
-      const { tax, standardCharge, noOfHour, discount, status } = req.body;
-      const appliedCharge = standardCharge * noOfHour;
-      req.body.appliedCharge = appliedCharge;
-      const amount = standardCharge * (1 + tax / 100);
-      if (discount > 0) {
-        req.body.amount = amount - discount;
-      } else {
-        req.body.amount = amount;
-      }
+      const { chargeType, noOfHour,discount } = req.body;
+      const outPatient = await OPDBillingModel.findById(id)
       const updateData = await OPDBillingModel.findByIdAndUpdate(id, req.body);
-
-      if (!updateData) {
-        return res.status(HttpCode.badRequest).json({
-          status: false,
-          message: "Failed to update OPD bill!",
-        });
+      const docDetails = await OutpatientModel.findById(outPatient.
+outPatientId).populate(
+        "doctorId"
+      );
+      if (chargeType === "consultation") {
+        updateData.standardCharge = docDetails?.doctorId?.fees.consultation;
+      } else if (chargeType === "surgery") {
+        updateData.standardCharge = docDetails?.doctorId?.fees.surgery;
+      }
+      // console.log(updateData.standardCharge)
+      updateData.appliedCharge = updateData.standardCharge * noOfHour;
+      const tax = req.body.tax || 18;
+      const amount = updateData.appliedCharge * (1 + tax / 100);
+      if (discount > 0) {
+        updateData.amount = amount - discount;
       } else {
+        updateData.amount = amount;
+      }
+      await updateData.save()
         return res.status(HttpCode.success).json({
           status: true,
           message: "OPD bill  updated successfully",
           data: updateData,
         });
-      }
+      
     } catch (error) {
       return res.status(HttpCode.serverError).json({
         status: false,

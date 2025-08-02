@@ -1,5 +1,4 @@
 "use client"
-import ComponentCard from "../../../components/common/ComponentCard";
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import BasicTable from "../../../components/tables/BasicTable";
 import React from "react";
@@ -29,7 +28,7 @@ const InPatient = () => {
   const [doctorOption, setDoctorOption] = React.useState<{ label: string, value: string }[]>([])
   const { data: doctorList } = DoctorListQuery()
   const doctors = doctorList?.data.data
-  const rooms = roomList?.data.data
+  const rooms = roomList?.data
   const patients = patientsList?.data.data
   const { data } = InPatientListQuery()
   const inPatients = data?.data?.data
@@ -39,7 +38,6 @@ const InPatient = () => {
   const { editId, isEditing, setIsEditing } = useStore();
   const { data: details } = InPatientDetailsQuery(editId, !!editId)
   const inPatientDetails = details ? details.data : null
-  console.log(inPatientDetails)
   const { mutateAsync: update } = InPatientUpdateQuery()
   const { mutateAsync: deleteInPatient } = InPatientDeleteQuery()
 
@@ -167,9 +165,7 @@ const InPatient = () => {
           </Button>
         </div>
         <div className="space-y-6">
-          <ComponentCard title="Inpatients">
             <BasicTable data={inPatients} tableColumns={tableColumns} onDelete={onDelete} />
-          </ComponentCard>
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={() => {

@@ -79,16 +79,13 @@ class RadiologyTestController {
     try{
       const id = req.params.id
       const {tax, charge} = req.body
-      const amount = charge * (1 + tax / 100)
-      req.body.amount = amount
       if(req.body.testName){
         req.body.slug = req.body.testName.split(/[\s\-]+/)
         .map((word) => word[0]?.toUpperCase())
         .join("");
-        req.body.testType = req.body.slug
       }
 
-      const updateData = await RadiologyTestModel.findByIdAndUpdate(id, req.body, {new:true})
+      const updateData = await RadiologyTestModel.findByIdAndUpdate(id, req.body)
 
       if(!updateData){
         return res.status(HttpCode.badRequest).json({

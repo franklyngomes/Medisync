@@ -132,54 +132,7 @@ class AppointmentBillingController {
       });
     }
   }
-  // async UpdateAppointmentBill(req, res) {
-  //   try {
-  //     const id = req.params.id;
-  //     console.log("🚨 Full req.body:", req.body);
-  //     console.log("Headers:", req.headers["content-type"]);
-  //     const { chargeType, status, source, paymentMethod } = req.body;
-  //     const updateData = await AppointmentBillingModel.findByIdAndUpdate(
-  //       id,
-  //       req.body
-  //     );
-  //     const appointmentDetails = await AppointmentModel.findById(id).populate(
-  //       "doctorId"
-  //     );
-  //     if (chargeType === "consultation") {
-  //       updateData.standardCharge =
-  //         appointmentDetails?.doctorId?.fees.consultation;
-  //     } else if (chargeType === "surgery") {
-  //       updateData.standardCharge = appointmentDetails?.doctorId?.fees.surgery;
-  //     }
-  //     const appliedCharge =
-  //       appointmentDetails.standardCharge * updateData.noOfHour;
-  //     req.body.appliedCharge = appliedCharge;
-  //     const amount = appliedCharge * (1 + tax / 100);
-  //     if (discount > 0) {
-  //       req.body.amount = amount - updateData.discount;
-  //     } else {
-  //       req.body.amount = amount;
-  //     }
-
-  //     if (!updateData) {
-  //       return res.status(HttpCode.badRequest).json({
-  //         status: false,
-  //         message: "Failed to update appointment bill!",
-  //       });
-  //     } else {
-  //       return res.status(HttpCode.success).json({
-  //         status: true,
-  //         message: "Appointment bill updated successfully",
-  //         data: updateData,
-  //       });
-  //     }
-  //   } catch (error) {
-  //     return res.status(HttpCode.serverError).json({
-  //       status: false,
-  //       message: error.message,
-  //     });
-  //   }
-  // }
+ 
   async UpdateAppointmentBill(req, res) {
     try {
       const id = req.params.id;
