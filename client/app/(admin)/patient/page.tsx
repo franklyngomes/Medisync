@@ -34,8 +34,7 @@ const Patient = () => {
     { label: "Name", key: "name" },
     { label: "Gender", key: "gender" },
     {
-      label: "DOB", key: "dateOfBirth", render: (item: any) => format(new Date(item.dateOfBirth), "dd-MM-yyyy")
-    },
+      label: "Age", key: "age"},
     { label: "Blood Type", key: "bloodType" },
     { label: "Address", key: "address" },
     { label: "Phone", key: "phone" },
@@ -91,11 +90,11 @@ const Patient = () => {
 
   ]
   const onSubmit = (data: any) => {
-    const { name, gender, dateOfBirth, bloodType, address, phone } = data
+    const { name, gender, age, bloodType, address, phone } = data
     const formdata = new FormData()
     formdata.append("name", name)
     formdata.append("gender", gender)
-    formdata.append("dateOfBirth", dateOfBirth)
+    formdata.append("age", age)
     formdata.append("bloodType", bloodType)
     formdata.append("address", address)
     formdata.append("phone", phone)
@@ -107,11 +106,11 @@ const Patient = () => {
     })
   }
   const onUpdate = (data: any) => {
-    const { name, gender, dateOfBirth, bloodType, address, phone } = data
+    const { name, gender, age, bloodType, address, phone } = data
     const formData = new FormData()
     formData.append("name", name)
     formData.append("gender", gender)
-    formData.append("dateOfBirth", dateOfBirth)
+    formData.append("age", age)
     formData.append("bloodType", bloodType)
     formData.append("address", address)
     formData.append("phone", phone)
@@ -153,7 +152,7 @@ const Patient = () => {
       reset({
         name: patientDetails.name,
         gender: patientDetails.gender,
-        dateOfBirth: patientDetails?.dateOfBirth ? new Date(patientDetails.dateOfBirth) : null,
+        age: patientDetails?.age,
         bloodType: patientDetails.bloodType,
         address: patientDetails.address,
         phone: patientDetails.phone
@@ -162,7 +161,7 @@ const Patient = () => {
       reset({
         name: "",
         gender: "",
-        dateOfBirth: null,
+        age: "",
         bloodType: "",
         address: "",
         phone: ""
@@ -214,23 +213,19 @@ const Patient = () => {
                     </div>
                   </div>
                   <div>
-                    <Controller
-                      control={control}
-                      name="dateOfBirth"
-                      render={({ field: { onChange, value } }) => (
-                        <DatePicker
-                          id="date-picker"
-                          label="Date Of Birth"
-                          placeholder="Select a date"
-                          defaultDate={value ? new Date(value) : undefined} // this ensures default is shown
-                          onChange={([selectedDate]) => {
-                            if (selectedDate) {
-                              onChange(selectedDate.toISOString()); // store ISO string in form state
-                            }
-                          }}
-                        />
-                      )}
-                    />
+                    <Label>Age</Label>
+                    <div className="relative">
+                      <Controller
+                        control={control}
+                        name="age"
+                        render={({ field }) => (
+                          <Input {...field}
+                            value={field.value ?? ""}
+                            type="number"
+                          />
+                        )}
+                      />
+                    </div>
                   </div>
                   <div>
                     <Label>Gender</Label>
