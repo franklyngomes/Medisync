@@ -108,7 +108,7 @@ router.post('/radiology-bill-create', upload.none(), RadiologyBillController.Cre
 router.get('/all-radiology-bill', RadiologyBillController.GetAllRadiologyBills)
 router.get('/radiology-bill-details/:id', RadiologyBillController.RadiologyBillDetails)
 router.post('/radiology-bill-update/:id', upload.none(), RadiologyBillController.UpdateRadiologyBill)
-router.delete('/radiology-bill-delete/:id', PathologyBillController.DeletePathologyBill)
+router.delete('/radiology-bill-delete/:id', RadiologyBillController.DeleteRadiologyBill)
 
 
 //User Routes

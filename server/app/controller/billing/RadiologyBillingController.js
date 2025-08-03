@@ -22,7 +22,8 @@ class RadiologyBillController {
         message: "Test not found!",
       });
       }
-      const amount = testDetails.charge * (1 + testDetails.tax / 100)
+      const tax = req.body.tax || 18
+      const amount = testDetails.charge * (1 + tax / 100)
       if(discount > 0) {
         billData.amount = amount - discount
       }else{
@@ -43,7 +44,7 @@ class RadiologyBillController {
   }
   async GetAllRadiologyBills(req, res){
     try {
-      const bills = await RadiologyBillModel.find({deleted: false})
+      const bills = await RadiologyBillModel.find({deleted: false}).populate("patientId").populate("referenceDoctor").populate("testId")
       if(bills.length === 0){
         return res.status(HttpCode.notFound).json({
           status: false,
@@ -66,7 +67,7 @@ class RadiologyBillController {
   async RadiologyBillDetails(req, res){
     try {
       const id = req.params.id
-      const bill = await RadiologyBillModel.findById(id)
+      const bill = await RadiologyBillModel.findById(id).populate("patientId").populate("referenceDoctor").populate("testId")
       if(!id){
         return res.status(HttpCode.notFound).json({
           status: false,
@@ -91,31 +92,25 @@ class RadiologyBillController {
       const id = req.params.id
       const {discount, status, testId} = req.body
       const updateData = await RadiologyBillModel.findByIdAndUpdate(id, req.body)
-      const testDetails = await RadiologyTestModel.findOne({testId})
+      const testDetails = await RadiologyTestModel.findById(testId)
       if(!testDetails){
         return res.status(HttpCode.notFound).json({
         status: false,
         message: "Test not found!",
       });
       }
-      const amount = testDetails.charge
+       const tax = req.body.tax || 18
+      const amount = testDetails.charge * (1 + tax / 100)
       if(discount > 0) {
         updateData.amount = amount - discount
       }else{
          updateData.amount = amount
       }
-
-      if(!updateData){
-        return res.status(HttpCode.badRequest).json({
-          status: false,
-          message: "Failed to update radiology bill!"
-        })
-      }else{
+      await updateData.save()
         return res.status(HttpCode.success).json({
           status: true,
           message: "Radiology bill updated successfully",
         })
-      }
     }catch(error){
       return res.status(HttpCode.serverError).json({
         status: false,

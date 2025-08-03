@@ -34,7 +34,9 @@ class AppointmentBillingController {
         source,
         paymentMethod,
       });
-      const appointmentDetails = await AppointmentModel.findById(appointmentId).populate("doctorId");
+      const appointmentDetails = await AppointmentModel.findById(
+        appointmentId
+      ).populate("doctorId");
       if (chargeType === "consultation") {
         billData.standardCharge =
           appointmentDetails?.doctorId?.fees.consultation;
@@ -132,24 +134,16 @@ class AppointmentBillingController {
       });
     }
   }
- 
+
   async UpdateAppointmentBill(req, res) {
     try {
       const id = req.params.id;
-      const { chargeType, noOfHour, discount, status, source, paymentMethod } =
-        req.body || {};
-
-      if (!chargeType) {
-        return res.status(400).json({
-          status: false,
-          message: "Missing chargeType",
-        });
-      }
+      const { chargeType, noOfHour, discount } = req.body;
       const updateData = await AppointmentBillingModel.findByIdAndUpdate(
         id,
         req.body
       );
-      const appointmentDetails = await AppointmentModel.findById(id).populate(
+      const appointmentDetails = await AppointmentModel.findById(updateData.appointmentId).populate(
         "doctorId"
       );
       if (chargeType === "consultation") {
@@ -159,26 +153,19 @@ class AppointmentBillingController {
         updateData.standardCharge = appointmentDetails?.doctorId?.fees.surgery;
       }
       const tax = req.body.tax || 18;
-      const appliedCharge = updateData.standardCharge * noOfHour;
-      const amount = appliedCharge * (1 + tax / 100);
+      updateData.appliedCharge = updateData.standardCharge * noOfHour;
+      const amount = updateData.appliedCharge * (1 + tax / 100);
       if (discount > 0) {
         updateData.amount = amount - discount;
       } else {
         updateData.amount = amount;
       }
-
-      if (!updateData) {
-        return res.status(HttpCode.badRequest).json({
-          status: false,
-          message: "Failed to update appointment bill!",
-        });
-      } else {
-        return res.status(HttpCode.success).json({
-          status: true,
-          message: "Appointment bill updated successfully",
-          data: updateData,
-        });
-      }
+      await updateData.save()
+      return res.status(HttpCode.success).json({
+        status: true,
+        message: "Appointment bill updated successfully",
+        data: updateData,
+      });
     } catch (error) {
       return res.status(HttpCode.serverError).json({
         status: false,

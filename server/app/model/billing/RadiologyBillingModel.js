@@ -8,7 +8,7 @@ const RadiologyBillSchema = new Schema(
     billNo: {
       type: String,
     },
-    patientName: {
+    patientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "patient",
       required: true,
@@ -18,13 +18,17 @@ const RadiologyBillSchema = new Schema(
       ref: "doctor",
       required: true,
     },
+    testId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "radiologyTest",
+      required: true,
+    },
     discount: {
       type: Number,
       required: true,
     },
     amount: {
       type: Number,
-      required: true,
     },
     source: {
       type: String,

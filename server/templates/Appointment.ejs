@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Appointment Invoice</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 40px;
+        max-width: 900px;
+        margin: auto;
+        line-height: 1.6;
+      }
+      header,
+      footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+      }
+      header h2 {
+        font-weight: 300;
+        margin: 0.5rem 0 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        font-size: 10pt;
+      }
+      th,
+      td {
+        border: 1px solid #999;
+        padding: 6px 10px;
+        text-align: left;
+      }
+      .section-title {
+        font-size: 13.5pt;
+        font-weight: bold;
+        padding: 10px 0 5px;
+      }
+      .no-border {
+        border: none !important;
+      }
+      .text-right {
+        text-align: right;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .font-light {
+        font-weight: 300;
+      }
+      .highlight {
+        background: #f9f9f9;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div>
+        <img
+          src="D:\Typescript Projects\Medisync\server\public\images\logo-png.png"
+          alt="Logo"
+          width="180"
+        />
+        <h2>Smart Clinic & Research Center</h2>
+        <h3 style="font-weight: 300; padding: 0px; margin: 0px;">Appointment Invoice</h3>
+      </div>
+      <div class="text-right">
+        <p style="margin: 0px; padding: 0px">
+          <strong>Address:</strong> 25 Kings Street, CA
+        </p>
+        <p style="margin: 0px; padding: 0px">
+          <strong>Phone No.:</strong> 89562423934
+        </p>
+        <p style="margin: 0px; padding: 0px">
+          <strong>Email:</strong> medisync@gmail.com
+        </p>
+        <p style="margin: 0px; padding: 0px">
+          <strong>Website:</strong> www.medisync.in
+        </p>
+      </div>
+    </header>
+
+    <hr style="background-color: #3178c6; padding: 2px" />
+
+    <!-- Patient + Appointment Info -->
+    <table>
+      <tr>
+        <td><strong>Patient Name:</strong></td>
+        <td>Maria Taylor (121)</td>
+        <td colspan="2"><strong>Appointment No:</strong></td>
+        <td>APPN07224</td>
+      </tr>
+      <tr>
+        <td><strong>Age:</strong></td>
+        <td>14 Year 10 Month 5 Days</td>
+        <td colspan="2"><strong>Appointment Date:</strong></td>
+        <td>07/30/2025 01:30 PM</td>
+      </tr>
+      <tr>
+        <td><strong>Email:</strong></td>
+        <td>mariaw@gmail.com</td>
+        <td colspan="2"><strong>Phone:</strong></td>
+        <td>7488548942</td>
+      </tr>
+      <tr>
+        <td><strong>Gender:</strong></td>
+        <td>Female</td>
+        <td colspan="2"><strong>Doctor:</strong></td>
+        <td>Reyan Jain (9011)</td>
+      </tr>
+      <tr>
+        <td><strong>Department:</strong></td>
+        <td>Doctor Department</td>
+        <td colspan="2"><strong>Payment Mode:</strong></td>
+        <td>Offline</td>
+      </tr>
+      <tr>
+        <td><strong>Live Consultation:</strong></td>
+        <td>No</td>
+        <td colspan="2"><strong>Status:</strong></td>
+        <td>Approved</td>
+      </tr>
+      <tr>
+        <td><strong>Source</strong></td>
+        <td colspan="1">Offline</td>
+      </tr>
+    </table>
+
+    <!-- Payment Section -->
+    <p class="section-title">Payment Details</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Standard Charge</th>
+          <th>No of Hour</th>
+          <th>Applied Charge</th>
+          <th>Tax</th>
+          <th>Discount</th>
+          <th class="text-right">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>$500.00</td>
+          <td>2</td>
+          <td>$1000.00</td>
+          <td>18%</td>
+          <td>$56.00</td>
+          <td class="text-right">$1180.00</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Footer -->
+    <footer style="margin-top: 2rem; justify-content: center">
+      <p>This is a computer-generated invoice. No signature is required.</p>
+    </footer>
+  </body>
+</html>

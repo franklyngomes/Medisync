@@ -4,8 +4,8 @@ const HttpCode = require("../helper/HttpCode");
 class PatientController {
   async CreatePatient(req, res) {
     try {
-      const { name, dateOfBirth, gender, address, phone, bloodType } = req.body;
-      if (!name || !dateOfBirth || !gender || !address || !phone || !bloodType) {
+      const { name, age, gender, address, phone, bloodType } = req.body;
+      if (!name || !age || !gender || !address || !phone || !bloodType) {
         return res.status(HttpCode.notFound).json({
           status: false,
           message: "All fields are required!",
@@ -14,7 +14,7 @@ class PatientController {
       const patientData = new PatientModel({
         name,
         gender,
-        dateOfBirth,
+        age,
         address,
         phone,
         bloodType,
