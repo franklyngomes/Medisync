@@ -6,7 +6,7 @@ export const ListDoctor = () => {
     const response = axiosInstance.get(endPoints.doctors.doctor_list)
     return response
   } catch (error) {
-    console.log(error)
+    return error
   }
 }
 export const CreateDoctor = (formdata: FormData) => {
@@ -14,7 +14,7 @@ export const CreateDoctor = (formdata: FormData) => {
     const response = axiosInstance.post(endPoints.doctors.doctor_create, formdata)
     return response
   } catch (error) {
-    console.log(error)
+    return error
   }
 }
 export const DoctorDetails = async (id: string) => {

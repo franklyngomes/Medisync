@@ -213,7 +213,7 @@ const AppointmentBilling = () => {
           </Button>
         </div>
         <div className="space-y-6">
-          <BasicTable data={bills} tableColumns={tableColumns} onDelete={onDelete} />
+          <BasicTable data={bills} tableColumns={tableColumns} onDelete={onDelete} billOption={true} billType="appointment"/>
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={() => {

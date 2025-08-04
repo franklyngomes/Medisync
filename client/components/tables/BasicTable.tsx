@@ -12,11 +12,32 @@ import { Dropdown } from "../ui/dropdown/Dropdown";
 import { MoreDotIcon } from "../../icons";
 import { useStore } from "../../store/store";
 import { useModal } from "../../hooks/useModal";
+import Image from "next/image";
+import { BillGenerateQuery, BillPreviewQuery } from "../../api/query/BillGenerationQuery";
+import toast from "react-hot-toast";
 
-export default function BasicTable({ tableColumns, data, onDelete }: { tableColumns: any, data : any, onDelete: any }) {
+export default function BasicTable({ tableColumns, data, onDelete, billOption, billType }: { tableColumns: any, data: any, onDelete: any, billOption: boolean, billType: string }) {
   const { editId, isEditing, setIsEditing, setEditId } = useStore();
   const { isOpen, openModal, closeModal } = useModal();
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
+  const {mutateAsync: submit} = BillGenerateQuery()
+  // const {mutateAsync: preview} = BillPreviewQuery()
+
+  const onClick = (data) => {
+    const billData = data
+    submit({billType, billData}, {
+      onSuccess: (res) => {
+        if (res.data.status === true) {
+          toast.success(res.data.message)
+          closeModal()
+          setIsEditing(false)
+        } else {
+          toast.error(res.data.message)
+        }
+      }
+    })
+    // preview({billType, billData}, {})
+  }
 
   function toggleDropdown(index: number) {
     setOpenDropdownIndex(prev => (prev === index ? null : index));
@@ -27,7 +48,7 @@ export default function BasicTable({ tableColumns, data, onDelete }: { tableColu
   }
 
   //Function to dynamically access nested object values
-  function getValueByKeyPath(obj: any, path: string){
+  function getValueByKeyPath(obj: any, path: string) {
     return path.split('.').reduce((acc, key) => acc?.[key], obj);
   }
   return (
@@ -49,6 +70,15 @@ export default function BasicTable({ tableColumns, data, onDelete }: { tableColu
                     </TableCell>
                   ))
                 }
+                {
+                  billOption &&
+                  <TableCell
+                    isHeader
+                    className="px-3 py-3 font-medium text-gray-800 text-start text-theme-xs dark:text-gray-200"
+                  >
+                    Invoice
+                  </TableCell>
+                }
                 <TableCell
                   isHeader
                   className="px-3 py-3 font-medium text-gray-800 text-start text-theme-xs dark:text-gray-200"
@@ -61,7 +91,7 @@ export default function BasicTable({ tableColumns, data, onDelete }: { tableColu
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {data && data.length > 0 ? (
-                data.map((item, index : number) => (
+                data.map((item, index: number) => (
                   <TableRow key={index} className="dark:hover:bg-gray-700 hover:bg-gray-100">
                     {tableColumns.map((col: any, colIndex: number) => (
                       <TableCell
@@ -73,6 +103,18 @@ export default function BasicTable({ tableColumns, data, onDelete }: { tableColu
                           : getValueByKeyPath(item, col.key || "")}
                       </TableCell>
                     ))}
+                    {
+                      billOption &&
+                      <TableCell  className=" text-gray-800 text-center dark:text-gray-200">
+                        <button
+                          type="button"
+                          className="text-xs text-center"
+                          onClick={() => onClick(item)}
+                        >
+                          <Image src={"/images/task/pdf.svg"} alt="pdf" width={20} height={20}/>
+                        </button>
+                      </TableCell>
+                    }
                     <TableCell className="relative text-center">
                       <button
                         type="button"
@@ -82,7 +124,7 @@ export default function BasicTable({ tableColumns, data, onDelete }: { tableColu
                         <MoreDotIcon className="text-gray-800 dark:text-gray-200" />
                       </button>
                       {openDropdownIndex === index && (
-                        <div className="absolute right-0 top-[-40px] z-50">
+                        <div className="absolute right-0 top-[-40px]">
                           <Dropdown
                             isOpen={true} onClose={closeDropdown}
                             className="w-40"

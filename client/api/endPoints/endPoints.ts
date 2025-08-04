@@ -99,5 +99,7 @@ export const endPoints = {
     verify_email: "/verify-email",
     forgot_password: "/forgot-password",
     reset_password: "/reset-password"
-  }
+  },
+  generateBill: "/generate",
+  previewBill: "/preview"
 }

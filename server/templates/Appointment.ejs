@@ -61,7 +61,7 @@
     <header>
       <div>
         <img
-          src="D:\Typescript Projects\Medisync\server\public\images\logo-png.png"
+          src="<%= logoDataUrl %>"
           alt="Logo"
           width="180"
         />
@@ -84,39 +84,39 @@
       </div>
     </header>
 
-    <hr style="background-color: #3178c6; padding: 2px" />
+    <div style="height: 4px; background-color: #3178c6; margin: 20px 0;"></div>
 
     <!-- Patient + Appointment Info -->
     <table>
       <tr>
         <td><strong>Patient Name:</strong></td>
-        <td>Maria Taylor (121)</td>
+        <td><%= appointmentId.patientId.name  %></td>
         <td colspan="2"><strong>Appointment No:</strong></td>
-        <td>APPN07224</td>
+        <td><%=  appointmentId.appointmentNo %></td>
       </tr>
       <tr>
         <td><strong>Age:</strong></td>
-        <td>14 Year 10 Month 5 Days</td>
+        <td><%= appointmentId.patientId.age  %></td>
         <td colspan="2"><strong>Appointment Date:</strong></td>
-        <td>07/30/2025 01:30 PM</td>
+        <td><%= appointmentId.appointmentDate %></td>
       </tr>
       <tr>
         <td><strong>Email:</strong></td>
         <td>mariaw@gmail.com</td>
         <td colspan="2"><strong>Phone:</strong></td>
-        <td>7488548942</td>
+        <td><%= appointmentId.patientId.phone  %></td>
       </tr>
       <tr>
         <td><strong>Gender:</strong></td>
-        <td>Female</td>
+        <td><%= appointmentId.patientId.gender  %></td>
         <td colspan="2"><strong>Doctor:</strong></td>
-        <td>Reyan Jain (9011)</td>
+        <td><%= appointmentId.doctorId.name  %></td>
       </tr>
       <tr>
         <td><strong>Department:</strong></td>
         <td>Doctor Department</td>
         <td colspan="2"><strong>Payment Mode:</strong></td>
-        <td>Offline</td>
+        <td><%= paymentMethod  %></td>
       </tr>
       <tr>
         <td><strong>Live Consultation:</strong></td>
@@ -126,7 +126,7 @@
       </tr>
       <tr>
         <td><strong>Source</strong></td>
-        <td colspan="1">Offline</td>
+        <td colspan="1"><%= source  %></td>
       </tr>
     </table>
 
@@ -145,12 +145,12 @@
       </thead>
       <tbody>
         <tr>
-          <td>$500.00</td>
-          <td>2</td>
-          <td>$1000.00</td>
-          <td>18%</td>
-          <td>$56.00</td>
-          <td class="text-right">$1180.00</td>
+          <td><%= standardCharge  %></td>
+          <td><%= noOfHour %></td>
+          <td><%= appliedCharge %></td>
+          <td><%= tax %></td>
+          <td><%= discount %></td>
+          <td class="text-right">₹<%= amount %></td>
         </tr>
       </tbody>
     </table>
