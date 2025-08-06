@@ -1,5 +1,4 @@
 "use client"
-import { CreateRoomQuery, RoomDeleteQuery, RoomDetailsQuery, RoomUpdateQuery } from "../../../api/query/RoomQuery"
 import ComponentCard from "../../../components/common/ComponentCard";
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import BasicTable from "../../../components/tables/BasicTable";
@@ -17,16 +16,47 @@ import Input from "../../../components/form/input/InputField";
 import toast from "react-hot-toast";
 import { DoctorCreateQuery, DoctorDeleteQuery, DoctorDetailsQuery, DoctorListQuery, DoctorUpdateQuery } from "../../../api/query/DoctorQuery";
 import FileInput from "../../../components/form/input/FileInput";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 
 const Doctor = () => {
+  const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+  const schemaWithContext = ({isEditing}: {isEditing: boolean})  =>  yup.object({
+    name: yup.string().required("Name is required"),
+    specialization: yup.string().required("Specialization is required"),
+    email: yup.string().email().required("Email is required"),
+    consultation: yup.number().required("Consultation charge is required"),
+    surgery: yup.number().required("Surgery charge is required"),
+    phone: yup.string()
+      .required("Phone number required")
+      .matches(phoneRegExp, 'Phone number is not valid')
+      .min(10, "too short")
+      .max(10, "too long"),
+    image:yup.mixed().test("image-validation", "Image is required", function (value) {
+      const { path, createError } = this;
+      if (!isEditing) {
+        if (!value) {
+          return createError({ path, message: "Image is required" });
+        }
+        const isValidType =
+          value instanceof File &&
+          ["image/jpeg", "image/png", "image/webp", "image/jpg"].includes(value.type);
+        if (!isValidType) {
+          return createError({ path, message: "Only image files are allowed" });
+        }
+      }
+      return true;
+    }),
+    status: yup.string()
+  });
   const [image, setImage] = React.useState<File | null>(null)
   const { data } = DoctorListQuery()
-  const rooms = data?.data?.data
+  const doctors = data?.data?.data
   const { isOpen, openModal, closeModal } = useModal();
-  const { handleSubmit, reset, control, } = useForm();
-  const { mutateAsync } = DoctorCreateQuery()
   const { editId, isEditing, setIsEditing } = useStore();
+  const { handleSubmit, reset, control, formState: { errors } } = useForm({ resolver: yupResolver(schemaWithContext({ isEditing })) });
+  const { mutateAsync } = DoctorCreateQuery()
   const { data: details } = DoctorDetailsQuery(editId, !!editId)
   const doctorDetails = details?.data?.data
   const { mutateAsync: update } = DoctorUpdateQuery()
@@ -114,11 +144,6 @@ const Doctor = () => {
       value: "Obstetrician-gynecologist"
     },
   ]
-
-  // const handleChange = (e) => {
-  //   setImage(e.target.files[0])
-  // }
-  console.log(image)
   const onSubmit = (data: any) => {
     const { name, specialization, phone, email, consultation, surgery, image } = data
     const formdata = new FormData()
@@ -136,7 +161,7 @@ const Doctor = () => {
           closeModal()
           setIsEditing(false)
           reset()
-        }else {
+        } else {
           toast.error(res.data.message)
         }
       }
@@ -150,10 +175,6 @@ const Doctor = () => {
     formData.append("phone", phone)
     formData.append("email", email)
     formData.append("status", status)
-    // formData.append("fees", JSON.stringify({
-    //   "consultation": consultation,
-    //   "surgery": surgery
-    // }))
     formData.append("consultation", consultation)
     formData.append("surgery", surgery)
 
@@ -224,13 +245,14 @@ const Doctor = () => {
         </div>
         <div className="space-y-6">
           <ComponentCard title="Doctors">
-            <BasicTable data={rooms} tableColumns={tableColumns} onDelete={onDelete} />
+            <BasicTable data={doctors} tableColumns={tableColumns} onDelete={onDelete} />
           </ComponentCard>
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={() => {
         setIsEditing(false)
         closeModal()
+        reset()
       }} className="max-w-[700px] m-4">
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-2xl bg-white p-5 dark:bg-gray-900">
           <div className="px-2 pr-14">
@@ -277,6 +299,11 @@ const Doctor = () => {
                         )}
                       />
                     </div>
+                    {errors.image && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.image.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Name</Label>
@@ -291,6 +318,11 @@ const Doctor = () => {
                         )}
                       />
                     </div>
+                    {errors.name && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.name.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Specialization</Label>
@@ -312,6 +344,11 @@ const Doctor = () => {
                         <ChevronDownIcon />
                       </span>
                     </div>
+                    {errors.specialization && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.specialization.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Phone</Label>
@@ -326,6 +363,11 @@ const Doctor = () => {
                         )}
                       />
                     </div>
+                    {errors.phone && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.phone.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Email</Label>
@@ -340,6 +382,11 @@ const Doctor = () => {
                         )}
                       />
                     </div>
+                    {errors.email && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.email.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Consultation Charge</Label>
@@ -355,6 +402,11 @@ const Doctor = () => {
                         )}
                       />
                     </div>
+                    {errors.consultation && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.consultation.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Surgery Charge</Label>
@@ -370,6 +422,11 @@ const Doctor = () => {
                         )}
                       />
                     </div>
+                    {errors.surgery && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.surgery.message}
+                      </p>
+                    )}
                   </div>
                   {isEditing &&
                     <div>
@@ -393,6 +450,11 @@ const Doctor = () => {
                             <ChevronDownIcon />
                           </span>
                         </>
+                        {errors.status && (
+                          <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                            {errors.status.message}
+                          </p>
+                        )}
                       </div>
                     </div>
                   }
@@ -403,6 +465,7 @@ const Doctor = () => {
               <Button size="sm" variant="outline" onClick={() => {
                 setIsEditing(false)
                 closeModal()
+                reset()
               }}>
                 Cancel
               </Button>

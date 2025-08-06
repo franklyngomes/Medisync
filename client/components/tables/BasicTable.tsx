@@ -25,9 +25,6 @@ export default function BasicTable({ tableColumns, data, onDelete, billOption, b
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
   const { mutateAsync: submit } = BillGenerateQuery()
 
-  console.log(billType)
-  console.log(data)
-
   const onClick = (data) => {
     const billData = data
     submit({ billType, billData }, {

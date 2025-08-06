@@ -13,7 +13,7 @@ export const AppointmentListQuery = () => {
 
 export const AppointmentCreateQuery = () => {
   return useMutation({
-    mutationFn: (formData: AppointmentListProps) => CreateAppointment(formData),
+    mutationFn: (formData: any) => CreateAppointment(formData),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["AppointmentList"]})
     }

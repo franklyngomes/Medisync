@@ -19,9 +19,18 @@ import { format } from 'date-fns';
 import { useStore } from "../../../store/store";
 import Input from "../../../components/form/input/InputField";
 import toast from "react-hot-toast";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 
 const Appointment = () => {
+  const schema = yup.object({
+    patientId: yup.string().required("Patient is required"),
+    doctorId: yup.string().required("Doctor is required"),
+    appointmentDate: yup.date().required("Appointment Date is required"),
+    note: yup.string().required("Note is required").max(35),
+    status: yup.string()
+  });
   const [patientOption, setPatientOption] = React.useState<{ label: string; value: string }[]>([])
   const [doctorOption, setDoctorOption] = React.useState<{ label: string, value: string }[]>([])
   const { data } = AppointmentListQuery()
@@ -31,7 +40,7 @@ const Appointment = () => {
   const { data: doctorList } = DoctorListQuery()
   const doctors = doctorList?.data.data
   const { isOpen, openModal, closeModal } = useModal();
-  const { handleSubmit, reset, control } = useForm();
+  const { handleSubmit, reset, control, formState: { errors } } = useForm({ resolver: yupResolver(schema) });
   const { mutateAsync } = AppointmentCreateQuery()
   const { editId, isEditing, setIsEditing } = useStore();
   const { data: details } = AppointmentDetailsQuery(editId, !!editId)
@@ -40,7 +49,7 @@ const Appointment = () => {
   const { mutateAsync: deleteAppointment } = AppointmentDeleteQuery()
 
   const tableColumns = [
-    { label: "Appointment No.", key: "appointmentNo"},
+    { label: "Appointment No.", key: "appointmentNo" },
     { label: "Patient Name", key: "patientId.name" },
     { label: "Note", key: "note" },
     { label: "Doctor Name", key: "doctorId.name" },
@@ -160,12 +169,12 @@ const Appointment = () => {
         status: appointmentDetails.status,
         appointmentDate: appointmentDetails?.appointmentDate
           ? new Date(appointmentDetails.appointmentDate)
-          : null,
+          : undefined,
         note: appointmentDetails.note,
       });
     } else {
       reset({
-        appointmentDate: null,
+        appointmentDate: undefined,
         note: "",
         status: "",
         patientId: "",
@@ -184,12 +193,13 @@ const Appointment = () => {
           </Button>
         </div>
         <div className="space-y-6">
-            <BasicTable data={appointments} tableColumns={tableColumns} onDelete={onDelete} />
+          <BasicTable data={appointments} tableColumns={tableColumns} onDelete={onDelete} />
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={() => {
         setIsEditing(false)
         closeModal()
+        reset()
       }} className="max-w-[700px] m-4">
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-2xl bg-white p-5 dark:bg-gray-900">
           <div className="px-2 pr-14">
@@ -244,6 +254,11 @@ const Appointment = () => {
                         </>
                         : <Input value={appointmentDetails?.patientId.name ?? ""} disabled />}
                     </div>
+                    {errors.patientId && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.patientId.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>{!isEditing ? "Select Doctor" : "Doctor Name"}</Label>
@@ -269,6 +284,11 @@ const Appointment = () => {
                         : <Input value={appointmentDetails?.doctorId.name ?? ""} disabled />
                       }
                     </div>
+                    {errors.doctorId && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.doctorId.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Controller
@@ -280,10 +300,19 @@ const Appointment = () => {
                           label="Appointment Date"
                           placeholder="Select a date"
                           defaultDate={value ? new Date(value) : undefined} // this ensures default is shown
-                          onChange={(selectedDate) => onChange(selectedDate?.toISOString())}
+                          onChange={(selectedDate) => {
+                            if (selectedDate) {
+                              onChange(selectedDate.toISOString()); // store ISO string in form state
+                            }
+                          }}
                         />
                       )}
                     />
+                    {errors.appointmentDate && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.appointmentDate.message}
+                      </p>
+                    )}
                   </div>
                   {isEditing &&
                     <div>
@@ -296,6 +325,7 @@ const Appointment = () => {
                             render={({ field }) => (
                               <Select
                                 {...field}
+                                value={field.value ?? ""}
                                 options={statusOptions}
                                 placeholder="Select Status"
                                 className="dark:bg-dark-900"
@@ -319,6 +349,11 @@ const Appointment = () => {
                       <TextArea {...field} />
                     )}
                   />
+                  {errors.note && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.note.message}
+                      </p>
+                    )}
                 </div>
               </div>
             </div>
@@ -326,6 +361,7 @@ const Appointment = () => {
               <Button size="sm" variant="outline" onClick={() => {
                 setIsEditing(false)
                 closeModal()
+                reset()
               }}>
                 Cancel
               </Button>

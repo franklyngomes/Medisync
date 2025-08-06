@@ -11,13 +11,12 @@ import {
   DoctorIcon,
   AppointmentIcon,
   PatientIcon,
-  InpatientIcon,
+  // InpatientIcon,
   PaymentIcon,
   RoomIcon,
-  ReportsIcons,
   RadiologyIcon,
   PathologyIcon,
-  OutpatientIcon
+  // OutpatientIcon
 } from "../icons/index";
 
 type NavItem = {
@@ -72,11 +71,6 @@ const navItems: NavItem[] = [
     icon: <RoomIcon />,
     name: "Rooms",
     path: "/rooms",
-  },
-  {
-    icon: <ReportsIcons />,
-    name: "Reports",
-    path: "/reports",
   },
   {
     icon: <PaymentIcon />,

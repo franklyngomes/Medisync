@@ -14,15 +14,29 @@ import { useStore } from "../../../store/store";
 import Input from "../../../components/form/input/InputField";
 import toast from "react-hot-toast";
 import { CreatePatientQuery, PatientDeleteQuery, PatientDetailsQuery, PatientListQuery, PatientUpdateQuery } from "../../../api/query/PatientQuery";
-import DatePicker from "../../../components/form/date-picker";
-import { format } from 'date-fns';
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
 
 
 const Patient = () => {
+  const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+  const schema = yup.object({
+    name: yup.string().required("Name is required"),
+    gender: yup.string().required("Gender is required"),
+    age: yup.number().required("Age is required"),
+    bloodType: yup.string().required("Blood Type is required"),
+    address: yup.string().required("Note is required").max(50),
+    phone: yup.string()
+  .required("Phone number required")
+  .matches(phoneRegExp, 'Phone number is not valid')
+  .min(10, "too short")
+  .max(10, "too long"),
+  });
   const { data } = PatientListQuery()
   const patients = data?.data?.data
   const { isOpen, openModal, closeModal } = useModal();
-  const { handleSubmit, reset, control } = useForm();
+  const { handleSubmit, reset, control, formState: { errors } } = useForm({ resolver: yupResolver(schema) });
   const { mutateAsync } = CreatePatientQuery()
   const { editId, isEditing, setIsEditing } = useStore();
   const { data: details } = PatientDetailsQuery(editId, !!editId)
@@ -34,7 +48,8 @@ const Patient = () => {
     { label: "Name", key: "name" },
     { label: "Gender", key: "gender" },
     {
-      label: "Age", key: "age"},
+      label: "Age", key: "age"
+    },
     { label: "Blood Type", key: "bloodType" },
     { label: "Address", key: "address" },
     { label: "Phone", key: "phone" },
@@ -150,24 +165,24 @@ const Patient = () => {
   React.useEffect(() => {
     if (isEditing && patientDetails) {
       reset({
-        name: patientDetails.name,
-        gender: patientDetails.gender,
+        name: patientDetails?.name,
+        gender: patientDetails?.gender,
         age: patientDetails?.age,
-        bloodType: patientDetails.bloodType,
-        address: patientDetails.address,
-        phone: patientDetails.phone
+        bloodType: patientDetails?.bloodType,
+        address: patientDetails?.address,
+        phone: patientDetails?.phone
       });
     } else {
       reset({
         name: "",
         gender: "",
-        age: "",
+        age: undefined,
         bloodType: "",
         address: "",
         phone: ""
       })
     }
-  }, [isEditing, patientDetails, reset]);
+  }, [isEditing, patientDetails, reset, closeModal]);
 
   return (
     <>
@@ -187,6 +202,7 @@ const Patient = () => {
       <Modal isOpen={isOpen} onClose={() => {
         setIsEditing(false)
         closeModal()
+        reset()
       }} className="max-w-[700px] m-4">
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-2xl bg-white p-5 dark:bg-gray-900">
           <div className="px-2 pr-14">
@@ -210,6 +226,11 @@ const Patient = () => {
                           />
                         )}
                       />
+                      {errors.name && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.name.message}
+                      </p>
+                    )}
                     </div>
                   </div>
                   <div>
@@ -225,6 +246,11 @@ const Patient = () => {
                           />
                         )}
                       />
+                      {errors.age && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.age.message}
+                      </p>
+                    )}
                     </div>
                   </div>
                   <div>
@@ -247,6 +273,11 @@ const Patient = () => {
                         <ChevronDownIcon />
                       </span>
                     </div>
+                    {errors.gender && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.gender.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Blood Type</Label>
@@ -268,6 +299,11 @@ const Patient = () => {
                         <ChevronDownIcon />
                       </span>
                     </div>
+                    {errors.bloodType && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.bloodType.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Address</Label>
@@ -281,6 +317,11 @@ const Patient = () => {
                           />
                         )}
                       />
+                      {errors.address && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.address.message}
+                      </p>
+                    )}
                     </div>
                   </div>
                   <div>
@@ -296,6 +337,11 @@ const Patient = () => {
                         )}
                       />
                     </div>
+                      {errors.phone && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.phone.message}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -304,6 +350,7 @@ const Patient = () => {
               <Button size="sm" variant="outline" onClick={() => {
                 setIsEditing(false)
                 closeModal()
+                reset()
               }}>
                 Cancel
               </Button>

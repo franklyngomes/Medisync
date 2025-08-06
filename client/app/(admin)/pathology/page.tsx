@@ -13,14 +13,23 @@ import { useStore } from "../../../store/store";
 import Input from "../../../components/form/input/InputField";
 import toast from "react-hot-toast";
 import { PathologyTestListQuery, PathologyTestCreateQuery, PathologyTestDetailsQuery, PathologyTestUpdateQuery, PathologyTestDeleteQuery } from "../../../api/query/PathologyTestQuery";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 
 const Pathology = () => {
+  const schema = yup.object({
+    testName: yup.string().required("Name is required"),
+    method: yup.string().required("Method is required"),
+    category: yup.string().required("Category is required"),
+    reportDays: yup.number().required("Report days is required"),
+    charge: yup.number().required("Charge is required"),
+    slug: yup.string()
+  });
   const { data } = PathologyTestListQuery()
   const tests = data?.data?.data
-  console.log(tests)
   const { isOpen, openModal, closeModal } = useModal();
-  const { handleSubmit, reset, control } = useForm();
+  const { handleSubmit, reset, control, formState: { errors } } = useForm({ resolver: yupResolver(schema) });
   const { mutateAsync } = PathologyTestCreateQuery()
   const { editId, isEditing, setIsEditing } = useStore();
   const { data: details } = PathologyTestDetailsQuery(editId, !!editId)
@@ -127,8 +136,8 @@ const Pathology = () => {
         slug: "",
         category: "",
         method: "",
-        reportDays: "",
-        charge: "",
+        reportDays: undefined,
+        charge: undefined,
       })
     }
   }, [isEditing, testDetails, reset]);
@@ -149,6 +158,7 @@ const Pathology = () => {
       <Modal isOpen={isOpen} onClose={() => {
         setIsEditing(false)
         closeModal()
+        reset()
       }} className="max-w-[700px] m-4">
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-2xl bg-white p-5 dark:bg-gray-900">
           <div className="px-2 pr-14">
@@ -174,6 +184,11 @@ const Pathology = () => {
                         )}
                       />
                     </div>
+                    {errors.testName && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.testName.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Select Category</Label>
@@ -194,6 +209,11 @@ const Pathology = () => {
                         <ChevronDownIcon />
                       </span>
                     </div>
+                    {errors.category && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.category.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Method</Label>
@@ -209,6 +229,11 @@ const Pathology = () => {
                         )}
                       />
                     </div>
+                    {errors.method && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.method.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Report Days</Label>
@@ -218,12 +243,17 @@ const Pathology = () => {
                         name="reportDays"
                         render={({ field }) => (
                           <Input {...field}
-                            value={field.value ?? ""}
+                            value={field.value ?? 0}
                             type="number"
                           />
                         )}
                       />
                     </div>
+                    {errors.reportDays && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.reportDays.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Charge</Label>
@@ -233,12 +263,17 @@ const Pathology = () => {
                         name="charge"
                         render={({ field }) => (
                           <Input {...field}
-                            value={field.value ?? ""}
+                            value={field.value ?? 0}
                             type="number"
                           />
                         )}
                       />
                     </div>
+                    {errors.charge && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.charge.message}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -247,6 +282,7 @@ const Pathology = () => {
               <Button size="sm" variant="outline" onClick={() => {
                 setIsEditing(false)
                 closeModal()
+                reset()
               }}>
                 Cancel
               </Button>
