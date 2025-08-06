@@ -14,14 +14,28 @@ import Input from "../../../../components/form/input/InputField";
 import toast from "react-hot-toast";
 import DatePicker from "../../../../components/form/date-picker";
 import { format } from 'date-fns';
-import {RadiologyBillListQuery, RadiologyBillCreateQuery, RadiologyBillDetailsQuery, RadiologyBillUpdateQuery, RadiologyBillDeleteQuery} from "../../../../api/query/billing/RadiologyBillQuery"
+import { RadiologyBillListQuery, RadiologyBillCreateQuery, RadiologyBillDetailsQuery, RadiologyBillUpdateQuery, RadiologyBillDeleteQuery } from "../../../../api/query/billing/RadiologyBillQuery"
 import Badge from "../../../../components/ui/badge/Badge";
 import { PatientListQuery } from "../../../../api/query/PatientQuery";
 import { DoctorListQuery } from "../../../../api/query/DoctorQuery";
 import { RadiologyTestListQuery } from "../../../../api/query/RadiologyTestQuery";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 
 const RadiologyBilling = () => {
+  const schema = yup.object({
+    billNo: yup.string(),
+    patientId: yup.string().required("Patient is required"),
+    testId: yup.string().required("Test is required"),
+    referenceDoctor: yup.string().required("Doctor is required"),
+    discount: yup.number(),
+    tax: yup.number(),
+    source: yup.string(),
+    paymentMethod: yup.string().required("Payment method is required"),
+    date: yup.date(),
+    status: yup.string()
+  });
   const [patientOption, setPatientOption] = React.useState<{ label: string; value: string }[]>([])
   const [doctorOption, setDoctorOption] = React.useState<{ label: string; value: string }[]>([])
   const [testOption, setTestOption] = React.useState<{ label: string; value: string }[]>([])
@@ -34,7 +48,7 @@ const RadiologyBilling = () => {
   const { data: radiologyBills } = RadiologyBillListQuery()
   const bills = radiologyBills?.data?.data
   const { isOpen, openModal, closeModal } = useModal();
-  const { handleSubmit, reset, control } = useForm();
+  const { handleSubmit, reset, control, formState: { errors } } = useForm({ resolver: yupResolver(schema) });
   const { mutateAsync } = RadiologyBillCreateQuery()
   const { editId, isEditing, setIsEditing } = useStore();
   const { data: details } = RadiologyBillDetailsQuery(editId, !!editId)
@@ -113,7 +127,7 @@ const RadiologyBilling = () => {
     },
   ]
   const onSubmit = (data: any) => {
-    const { testId, patientId,referenceDoctor, discount,source, paymentMethod} = data
+    const { testId, patientId, referenceDoctor, discount, source, paymentMethod } = data
     const formdata = new FormData()
     formdata.append("testId", testId)
     formdata.append("patientId", patientId)
@@ -180,7 +194,7 @@ const RadiologyBilling = () => {
         source: radiologyBillDetails?.source,
         paymentMethod: radiologyBillDetails.paymentMethod,
         tax: radiologyBillDetails.tax,
-        date: radiologyBillDetails?.date ? new Date(radiologyBillDetails.date) : null,
+        date: radiologyBillDetails?.date ? new Date(radiologyBillDetails.date) : undefined,
       });
     } else {
       reset({
@@ -188,12 +202,12 @@ const RadiologyBilling = () => {
         patientId: "",
         testId: "",
         referenceDoctor: "",
-        discount: "",
+        discount: undefined,
         status: "",
         source: "",
         paymentMethod: "",
-        tax: "",
-        date: null,
+        tax: undefined,
+        date: undefined,
       })
     }
   }, [isEditing, radiologyBillDetails, reset]);
@@ -219,12 +233,13 @@ const RadiologyBilling = () => {
           </Button>
         </div>
         <div className="space-y-6">
-          <BasicTable data={bills} tableColumns={tableColumns} onDelete={onDelete} billType="radiology" billOption={true}/>
+          <BasicTable data={bills} tableColumns={tableColumns} onDelete={onDelete} billType="radiology" billOption={true} />
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={() => {
         setIsEditing(false)
         closeModal()
+        reset()
       }} className="max-w-[700px] m-4">
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-2xl bg-white p-5 dark:bg-gray-900">
           <div className="px-2 pr-14">
@@ -259,6 +274,11 @@ const RadiologyBilling = () => {
                         </>
                         : <Input value={radiologyBillDetails ? radiologyBillDetails.patientId?.name : ""} disabled />}
                     </div>
+                    {errors.patientId && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.patientId.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>{!isEditing ? "Select Doctor" : "Doctor"}</Label>
@@ -283,6 +303,11 @@ const RadiologyBilling = () => {
                         </>
                         : <Input value={radiologyBillDetails ? radiologyBillDetails.referenceDoctor?.name : ""} disabled />}
                     </div>
+                    {errors.referenceDoctor && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.referenceDoctor.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>{!isEditing ? "Select Test" : "Test Name"}</Label>
@@ -307,6 +332,11 @@ const RadiologyBilling = () => {
                         </>
                         : <Input value={radiologyBillDetails ? radiologyBillDetails?.testId?.testName : ""} disabled />}
                     </div>
+                    {errors.testId && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.testId.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Payment Methods</Label>
@@ -330,6 +360,11 @@ const RadiologyBilling = () => {
                         </span>
                       </>
                     </div>
+                    {errors.paymentMethod && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.paymentMethod.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Discount($)</Label>
@@ -345,6 +380,11 @@ const RadiologyBilling = () => {
                         )}
                       />
                     </div>
+                    {errors.discount && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.discount.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Source</Label>
@@ -366,6 +406,11 @@ const RadiologyBilling = () => {
                         <ChevronDownIcon />
                       </span>
                     </div>
+                    {errors.source && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.source.message}
+                      </p>
+                    )}
                   </div>
                   {isEditing &&
                     <div>
@@ -390,6 +435,11 @@ const RadiologyBilling = () => {
                           </span>
                         </>
                       </div>
+                      {errors.status && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.status.message}
+                      </p>
+                    )}
                     </div>
                   }
                   {isEditing &&
@@ -411,6 +461,11 @@ const RadiologyBilling = () => {
                           />
                         )}
                       />
+                       {errors.date && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.date.message}
+                      </p>
+                    )}
                     </div>
                   }
                 </div>
@@ -428,6 +483,7 @@ const RadiologyBilling = () => {
               <Button size="sm" variant="outline" onClick={() => {
                 setIsEditing(false)
                 closeModal()
+                reset()
               }}>
                 Cancel
               </Button>

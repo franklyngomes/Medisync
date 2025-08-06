@@ -17,16 +17,33 @@ import { format } from 'date-fns';
 import { AppointmentBillCreateQuery, AppointmentBillDeleteQuery, AppointmentBillDetailsQuery, AppointmentBillListQuery, AppointmentBillUpdateQuery } from "../../../../api/query/billing/AppointmentBillQuery";
 import { AppointmentListQuery } from "../../../../api/query/AppointmentQuery"
 import Badge from "../../../../components/ui/badge/Badge";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 
 const AppointmentBilling = () => {
+  const schema = yup.object({
+    appointmentId: yup.string().required("Patient is required"),
+    patientId: yup.string(),
+    doctorId: yup.string(),
+    chargeType: yup.string().required("Charge type is required"),
+    noOfHour: yup.number().required("Hours is required"),
+    standardCharge: yup.number(),
+    appliedCharge: yup.number(),
+    discount: yup.number(),
+    tax: yup.number(),
+    source: yup.string(),
+    paymentMethod: yup.string().required("Payment method is required"),
+    date: yup.date(),
+    status: yup.string()
+  });
   const [appointmentOption, setAppointmentOption] = React.useState<{ label: string; value: string }[]>([])
   const { data: appointmentList } = AppointmentListQuery()
   const appointments = appointmentList?.data?.data
   const { data } = AppointmentBillListQuery()
   const bills = data?.data?.data
   const { isOpen, openModal, closeModal } = useModal();
-  const { handleSubmit, reset, control } = useForm();
+  const { handleSubmit, reset, control, formState: { errors } } = useForm({ resolver: yupResolver(schema) });
   const { mutateAsync } = AppointmentBillCreateQuery()
   const { editId, isEditing, setIsEditing } = useStore();
   const { data: details } = AppointmentBillDetailsQuery(editId, !!editId)
@@ -182,18 +199,18 @@ const AppointmentBilling = () => {
         status: appointmentBillDetails.status,
         source: appointmentBillDetails?.source,
         paymentMethod: appointmentBillDetails.paymentMethod,
-        date: appointmentBillDetails?.date ? new Date(appointmentBillDetails.date) : null,
+        date: appointmentBillDetails?.date ? new Date(appointmentBillDetails.date) : undefined,
       });
     } else {
       reset({
         appointmentId: "",
         chargeType: "",
-        standardCharge: "",
-        discount: "",
+        standardCharge: undefined,
+        discount: undefined,
         status: "",
         source: "",
         paymentMethod: "",
-        date: null,
+        date: undefined,
       })
     }
   }, [isEditing, appointmentBillDetails, reset]);
@@ -213,12 +230,13 @@ const AppointmentBilling = () => {
           </Button>
         </div>
         <div className="space-y-6">
-          <BasicTable data={bills} tableColumns={tableColumns} onDelete={onDelete} billOption={true} billType="appointment"/>
+          <BasicTable data={bills} tableColumns={tableColumns} onDelete={onDelete} billOption={true} billType="appointment" />
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={() => {
         setIsEditing(false)
         closeModal()
+        reset()
       }} className="max-w-[700px] m-4">
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-2xl bg-white p-5 dark:bg-gray-900">
           <div className="px-2 pr-14">
@@ -253,6 +271,11 @@ const AppointmentBilling = () => {
                         </>
                         : <Input value={appointmentBillDetails ? appointmentBillDetails.appointmentId?.appointmentNo : ""} disabled />}
                     </div>
+                    {errors.appointmentId && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.appointmentId.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>No of hours</Label>
@@ -268,6 +291,11 @@ const AppointmentBilling = () => {
                         )}
                       />
                     </div>
+                    {errors.noOfHour && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.noOfHour.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Charge Type</Label>
@@ -291,6 +319,11 @@ const AppointmentBilling = () => {
                         </span>
                       </>
                     </div>
+                    {errors.chargeType && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.chargeType.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Source</Label>
@@ -314,6 +347,11 @@ const AppointmentBilling = () => {
                         </span>
                       </>
                     </div>
+                    {errors.source && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.source.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Payment Methods</Label>
@@ -337,6 +375,11 @@ const AppointmentBilling = () => {
                         </span>
                       </>
                     </div>
+                    {errors.paymentMethod && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.paymentMethod.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label>Discount($)</Label>
@@ -352,6 +395,11 @@ const AppointmentBilling = () => {
                         )}
                       />
                     </div>
+                    {errors.discount && (
+                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                        {errors.discount.message}
+                      </p>
+                    )}
                   </div>
                   {isEditing &&
                     <div>
@@ -376,6 +424,11 @@ const AppointmentBilling = () => {
                           </span>
                         </>
                       </div>
+                      {errors.status && (
+                        <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                          {errors.status.message}
+                        </p>
+                      )}
                     </div>
                   }
                   {isEditing &&
@@ -397,6 +450,11 @@ const AppointmentBilling = () => {
                           />
                         )}
                       />
+                      {errors.date && (
+                        <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                          {errors.date.message}
+                        </p>
+                      )}
                     </div>
                   }
                 </div>
@@ -414,6 +472,7 @@ const AppointmentBilling = () => {
               <Button size="sm" variant="outline" onClick={() => {
                 setIsEditing(false)
                 closeModal()
+                reset()
               }}>
                 Cancel
               </Button>
