@@ -219,7 +219,7 @@ const RadiologyBilling = () => {
           </Button>
         </div>
         <div className="space-y-6">
-          <BasicTable data={bills} tableColumns={tableColumns} onDelete={onDelete} />
+          <BasicTable data={bills} tableColumns={tableColumns} onDelete={onDelete} billType="radiology" billOption={true}/>
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={() => {

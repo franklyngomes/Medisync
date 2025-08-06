@@ -49,14 +49,17 @@ const PathologyBillSchema = new Schema(
       type: Number,
       default: 18,
     },
+    date: {
+      type: Date,
+      default: Date.now()
+    },
+    invoice: {
+      type: String,
+    },
     deleted: {
       type: Boolean,
       default: false,
     },
-    date: {
-      type: Date,
-      default: Date.now()
-    }
   },
   { timestamps: true }
 );

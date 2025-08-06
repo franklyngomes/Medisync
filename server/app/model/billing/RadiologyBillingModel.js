@@ -49,6 +49,9 @@ const RadiologyBillSchema = new Schema(
       type: Number,
       default: 18,
     },
+    invoice: {
+      type: String,
+    },
     deleted: {
       type: Boolean,
       default: false,

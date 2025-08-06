@@ -15,7 +15,7 @@ async function generateReport(type, data) {
   const logoDataUrl = `data:image/png;base64,${logoBase64}`;
 
   const html = await ejs.renderFile(templatePath, {...data,logoDataUrl});
-  const outputDir = path.join(__dirname, "..", "reports");
+  const outputDir = path.join(__dirname, "..", "invoices");
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
   const filename = `${type}-invoice-${Date.now()}.pdf`;
   const outputPath = path.join(outputDir, filename);
@@ -24,30 +24,7 @@ async function generateReport(type, data) {
   await page.setContent(html);
   await page.pdf({ path: outputPath, format: "A4" });
   await browser.close();
-  return `/reports/${filename}`;
+  return `/invoices/${filename}`;
 }
 
-async function renderHtml(type, data, options = {}) {
-  const templatePath = path.join(__dirname, "..", "templates", `${type}.ejs`);
-
-  if (!fs.existsSync(templatePath)) {
-    throw new Error(`Template file not found for type: ${type}`);
-  }
-
-  const logoPath = path.join(__dirname, "..", "public", "images", "logo-png.png");
-  const logoBase64 = fs.readFileSync(logoPath, { encoding: "base64" });
-  const logoDataUrl = `data:image/png;base64,${logoBase64}`;
-
-  let html = await ejs.renderFile(templatePath, { ...data, logoDataUrl });
-
-  // 🖨️ Optionally inject auto-print script
-  if (options.autoPrint) {
-    html = html.replace(
-      "</body>",
-      `<script>window.onload = () => window.print();</script></body>`
-    );
-  }
-
-  return html;
-}
-module.exports = {generateReport, renderHtml};
+module.exports = {generateReport};

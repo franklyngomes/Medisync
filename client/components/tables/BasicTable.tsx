@@ -13,30 +13,34 @@ import { MoreDotIcon } from "../../icons";
 import { useStore } from "../../store/store";
 import { useModal } from "../../hooks/useModal";
 import Image from "next/image";
-import { BillGenerateQuery, BillPreviewQuery } from "../../api/query/BillGenerationQuery";
+import { BillGenerateQuery } from "../../api/query/BillGenerationQuery";
 import toast from "react-hot-toast";
+import Button from "../ui/button/Button";
+import { useRouter } from "next/navigation";
 
-export default function BasicTable({ tableColumns, data, onDelete, billOption, billType }: { tableColumns: any, data: any, onDelete: any, billOption: boolean, billType: string }) {
-  const { editId, isEditing, setIsEditing, setEditId } = useStore();
-  const { isOpen, openModal, closeModal } = useModal();
+export default function BasicTable({ tableColumns, data, onDelete, billOption, billType }: { tableColumns: any, data: any, onDelete: any, billOption?: boolean, billType?: string }) {
+  const router = useRouter()
+  const { setIsEditing, setEditId } = useStore();
+  const { openModal, closeModal } = useModal();
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
-  const {mutateAsync: submit} = BillGenerateQuery()
-  // const {mutateAsync: preview} = BillPreviewQuery()
+  const { mutateAsync: submit } = BillGenerateQuery()
+
+  console.log(billType)
+  console.log(data)
 
   const onClick = (data) => {
     const billData = data
-    submit({billType, billData}, {
+    submit({ billType, billData }, {
       onSuccess: (res) => {
-        if (res.data.status === true) {
-          toast.success(res.data.message)
-          closeModal()
-          setIsEditing(false)
-        } else {
-          toast.error(res.data.message)
-        }
       }
     })
-    // preview({billType, billData}, {})
+  }
+  const previewBill = (invoice : string) => {
+    if(!invoice){
+      toast.error("No invoice found!")
+      return
+    }
+    router.push(`http://localhost:5000${invoice}`)
   }
 
   function toggleDropdown(index: number) {
@@ -89,7 +93,7 @@ export default function BasicTable({ tableColumns, data, onDelete, billOption, b
             </TableHeader>
 
             {/* Table Body */}
-            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05] -z-10">
               {data && data.length > 0 ? (
                 data.map((item, index: number) => (
                   <TableRow key={index} className="dark:hover:bg-gray-700 hover:bg-gray-100">
@@ -105,14 +109,10 @@ export default function BasicTable({ tableColumns, data, onDelete, billOption, b
                     ))}
                     {
                       billOption &&
-                      <TableCell  className=" text-gray-800 text-center dark:text-gray-200">
-                        <button
-                          type="button"
-                          className="text-xs text-center"
-                          onClick={() => onClick(item)}
-                        >
-                          <Image src={"/images/task/pdf.svg"} alt="pdf" width={20} height={20}/>
-                        </button>
+                      <TableCell className=" text-gray-800 text-center dark:text-gray-200">
+                        <Button size="x_sm" variant="primary" onClick={() => previewBill(item.invoice)}>
+                          View <Image src={"/images/task/pdf.svg"} alt="pdf" width={20} height={20} />
+                        </Button>
                       </TableCell>
                     }
                     <TableCell className="relative text-center">
@@ -123,8 +123,10 @@ export default function BasicTable({ tableColumns, data, onDelete, billOption, b
                       >
                         <MoreDotIcon className="text-gray-800 dark:text-gray-200" />
                       </button>
-                      {openDropdownIndex === index && (
-                        <div className="absolute right-0 top-[-40px]">
+                    </TableCell>
+                    {openDropdownIndex === index && (
+                      <td>
+                        <div className="z-40">
                           <Dropdown
                             isOpen={true} onClose={closeDropdown}
                             className="w-40"
@@ -140,6 +142,18 @@ export default function BasicTable({ tableColumns, data, onDelete, billOption, b
                             >
                               Edit
                             </DropdownItem>
+                            {
+                              billOption &&
+                              <DropdownItem
+                                onItemClick={() => {
+                                  onClick(item)
+                                  closeDropdown()
+                                }}
+                                className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                              >
+                                Generate Invoice
+                              </DropdownItem>
+                            }
                             <DropdownItem
                               onItemClick={() => {
                                 onDelete(item._id)
@@ -151,8 +165,8 @@ export default function BasicTable({ tableColumns, data, onDelete, billOption, b
                             </DropdownItem>
                           </Dropdown>
                         </div>
-                      )}
-                    </TableCell>
+                      </td>
+                    )}
                   </TableRow>
                 ))
               ) : (

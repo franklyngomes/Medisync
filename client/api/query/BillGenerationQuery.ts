@@ -8,10 +8,3 @@ export const BillGenerateQuery = () => {
     }
   })
 }
-export const BillPreviewQuery = () => {
-  return useMutation({
-    mutationFn: (billType : string, billData: any) => BillPreviewFunc(billType, billData),
-    onSuccess: () => {
-    }
-  })
-}

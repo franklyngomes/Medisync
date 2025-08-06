@@ -60,13 +60,11 @@
     <!-- Header -->
     <header>
       <div>
-        <img
-          src="<%= logoDataUrl %>"
-          alt="Logo"
-          width="180"
-        />
+        <img src="<%= logoDataUrl %>" alt="Logo" width="180" />
         <h2>Smart Clinic & Research Center</h2>
-        <h3 style="font-weight: 300; padding: 0px; margin: 0px;">Appointment Invoice</h3>
+        <h3 style="font-weight: 300; padding: 0px; margin: 0px">
+          Appointment Invoice
+        </h3>
       </div>
       <div class="text-right">
         <p style="margin: 0px; padding: 0px">
@@ -84,39 +82,50 @@
       </div>
     </header>
 
-    <div style="height: 4px; background-color: #3178c6; margin: 20px 0;"></div>
+    <div style="height: 4px; background-color: #3178c6; margin: 20px 0"></div>
 
     <!-- Patient + Appointment Info -->
     <table>
       <tr>
         <td><strong>Patient Name:</strong></td>
-        <td><%= appointmentId.patientId.name  %></td>
+        <td><%= appointmentId.patientId.name %></td>
         <td colspan="2"><strong>Appointment No:</strong></td>
-        <td><%=  appointmentId.appointmentNo %></td>
+        <td><%= appointmentId.appointmentNo %></td>
       </tr>
       <tr>
         <td><strong>Age:</strong></td>
-        <td><%= appointmentId.patientId.age  %></td>
+        <td><%= appointmentId.patientId.age %></td>
         <td colspan="2"><strong>Appointment Date:</strong></td>
-        <td><%= appointmentId.appointmentDate %></td>
+        <td><% const apptDate = new Date(appointmentId.appointmentDate)
+        const options = {
+          day:'2-digit',
+          month:'2-digit',
+          year:'numeric',
+          hour:'2-digit',
+          minute:'2-digit',
+          hour12:true,
+        }
+        const formattedDate = apptDate.toLocaleString('en-IN', options)
+          %>
+          <%= formattedDate %></td>
       </tr>
       <tr>
         <td><strong>Email:</strong></td>
         <td>mariaw@gmail.com</td>
         <td colspan="2"><strong>Phone:</strong></td>
-        <td><%= appointmentId.patientId.phone  %></td>
+        <td><%= appointmentId.patientId.phone %></td>
       </tr>
       <tr>
         <td><strong>Gender:</strong></td>
-        <td><%= appointmentId.patientId.gender  %></td>
+        <td><%= appointmentId.patientId.gender %></td>
         <td colspan="2"><strong>Doctor:</strong></td>
-        <td><%= appointmentId.doctorId.name  %></td>
+        <td><%= appointmentId.doctorId.name %></td>
       </tr>
       <tr>
         <td><strong>Department:</strong></td>
         <td>Doctor Department</td>
         <td colspan="2"><strong>Payment Mode:</strong></td>
-        <td><%= paymentMethod  %></td>
+        <td><%= paymentMethod %></td>
       </tr>
       <tr>
         <td><strong>Live Consultation:</strong></td>
@@ -126,7 +135,7 @@
       </tr>
       <tr>
         <td><strong>Source</strong></td>
-        <td colspan="1"><%= source  %></td>
+        <td colspan="1"><%= source %></td>
       </tr>
     </table>
 
@@ -145,7 +154,7 @@
       </thead>
       <tbody>
         <tr>
-          <td><%= standardCharge  %></td>
+          <td><%= standardCharge %></td>
           <td><%= noOfHour %></td>
           <td><%= appliedCharge %></td>
           <td><%= tax %></td>

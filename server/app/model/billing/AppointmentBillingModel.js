@@ -62,6 +62,9 @@ const AppointmentBillingSchema = new Schema(
       type: Date,
       default: Date.now,
     },
+    invoice: {
+      type: String,
+    },
     deleted: {
       type: Boolean,
       default: false,

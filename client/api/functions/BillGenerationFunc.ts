@@ -1,27 +1,16 @@
 import { endPoints } from "../endPoints/endPoints";
 import { reportApi } from "../axios/axiosInstance";
 
-export const BillGenerationFunc = (billType: string, billData: any) => {
+export const BillGenerationFunc = async (billType: string, billData: any) => {
   try {
-    const response = reportApi.post(endPoints.generateBill, billType, billData)
+    const response = await reportApi.post(endPoints.generateBill, billType, billData)
+    const {reportPath} = response?.data;
+
+    const filename = reportPath.split("/").pop();
+    const printUrl = `http://localhost:5000/report/print/${filename}`
+
+    window.open(printUrl, "_blank")
     return response
-  } catch (error) {
-    return error
-  }
-}
-export const BillPreviewFunc = (billType: string, billData: any) => {
-  try {
-    const response = reportApi.post(endPoints.previewBill, billType, billData)
-    const html = response;
-    console.log(response)
-
-    const printWindow = window.open("", "_blank");
-    if (!printWindow) throw new Error("Failed to open new window for print preview");
-
-    printWindow.document.open();
-    printWindow.document.write(html);
-    printWindow.document.close(); // This will trigger window.print() if injected
-     return { success: true };
   } catch (error) {
     return error
   }

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Pathology Invoice</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 40px;
+        max-width: 900px;
+        margin: auto;
+        line-height: 1.6;
+      }
+      header,
+      footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+      }
+      header h2 {
+        font-weight: 300;
+        margin: 0.5rem 0 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        font-size: 10pt;
+      }
+      th,
+      td {
+        border: 1px solid #999;
+        padding: 6px 10px;
+        text-align: left;
+      }
+      .section-title {
+        font-size: 13.5pt;
+        font-weight: bold;
+        padding: 10px 0 5px;
+      }
+      .no-border {
+        border: none !important;
+      }
+      .text-right {
+        text-align: right;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .font-light {
+        font-weight: 300;
+      }
+      .highlight {
+        background: #f9f9f9;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div>
+        <img src="<%= logoDataUrl %>" alt="Logo" width="180" />
+        <h2>Smart Clinic & Research Center</h2>
+        <h3 style="font-weight: 300; padding: 0px; margin: 0px">
+          Pathology Invoice
+        </h3>
+      </div>
+      <div class="text-right">
+        <p style="margin: 0px; padding: 0px">
+          <strong>Address:</strong> 25 Kings Street, CA
+        </p>
+        <p style="margin: 0px; padding: 0px">
+          <strong>Phone No.:</strong> 89562423934
+        </p>
+        <p style="margin: 0px; padding: 0px">
+          <strong>Email:</strong> medisync@gmail.com
+        </p>
+        <p style="margin: 0px; padding: 0px">
+          <strong>Website:</strong> www.medisync.in
+        </p>
+      </div>
+    </header>
+
+    <div style="height: 4px; background-color: #3178c6; margin: 20px 0"></div>
+
+    <!-- Patient + Appointment Info -->
+    <table>
+      <tr>
+        <td><strong>Patient Name:</strong></td>
+        <td><%= patientId.name %></td>
+        <td colspan="2"><strong>Test Name</strong></td>
+        <td><%= testId.testName %></td>
+      </tr>
+      <tr>
+        <td><strong>Age:</strong></td>
+        <td><%= patientId.age %></td>
+        <td colspan="2"><strong>Date</strong></td>
+        <td>
+          <% const apptDate = new Date(date); const options = { day:'2-digit',
+          month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit',
+          hour12:true, }; const formattedDate = apptDate.toLocaleString('en-IN',
+          options) %> <%= formattedDate %>
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Email:</strong></td>
+        <td>mariaw@gmail.com</td>
+        <td colspan="2"><strong>Phone:</strong></td>
+        <td><%= patientId.phone %></td>
+      </tr>
+      <tr>
+        <td><strong>Gender:</strong></td>
+        <td><%= patientId.gender %></td>
+        <td colspan="2"><strong>Doctor:</strong></td>
+        <td><%= referenceDoctor.name %></td>
+      </tr>
+      <tr>
+        <td><strong>Department:</strong></td>
+        <td>Pathology Department</td>
+        <td colspan="2"><strong>Payment Mode:</strong></td>
+        <td><%= paymentMethod %></td>
+      </tr>
+      <tr>
+        <td><strong>Source</strong></td>
+        <td colspan="1"><%= source %></td>
+        <td colspan="2"><strong>Status:</strong></td>
+        <td>Approved</td>
+      </tr>
+    </table>
+
+    <!-- Payment Section -->
+    <p class="section-title">Payment Details</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Charge</th>
+          <th>Tax</th>
+          <th>Discount</th>
+          <th class="text-right">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><%= testId.charge %></td>
+          <td><%= tax %></td>
+          <td><%= discount %></td>
+          <td class="text-right">₹<%= amount %></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Footer -->
+    <footer style="margin-top: 2rem; justify-content: center">
+      <p>This is a computer-generated invoice. No signature is required.</p>
+    </footer>
+  </body>
+</html>
