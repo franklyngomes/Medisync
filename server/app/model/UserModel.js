@@ -19,17 +19,14 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    dateOfBirth: {
-      type: Date,
-      required: true,
-    },
     password: {
       type: String,
       required: true,
     },
     role: {
       type: String,
-      enum: ["admin" , "doctor" , "staff"] 
+      enum: ['Admin', 'Doctor', 'Receptionist', 'LabStaff'],
+      default: "Receptionist"
     },
     designation: {
       type: String,
@@ -38,17 +35,22 @@ const UserSchema = new Schema(
     image: {
       type: String,
     },
+    doctorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "doctor",
+      required: function () {
+        return this.role === 'Doctor'
+      }
+    },
     verified: {
       type: Boolean,
       default: false,
     },
-    verificationCode: {
+    verificationToken: {
       type: String,
-      select: false,
     },
-    verificationCodeValidation: {
-      type: Number,
-      select: false,
+    verificationTokenExpires: {
+      type: Date,
     },
     forgotPasswordCode: {
       type: String,

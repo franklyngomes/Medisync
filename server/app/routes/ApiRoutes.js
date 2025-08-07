@@ -112,8 +112,8 @@ router.delete('/radiology-bill-delete/:id', RadiologyBillController.DeleteRadiol
 
 
 //User Routes
-router.post('/signup',UserController.Signup)
-router.post('/verify-email',UserController.VerifyEmail)
+router.post('/signup',upload.none(),UserController.Signup)
+router.get('/verify-email',UserController.VerifyEmail)
 router.post('/signin',UserController.Signin)
 router.post('/forgot-password',UserController.forgotPassword)
 router.post('/reset-password',UserController.resetPassword)

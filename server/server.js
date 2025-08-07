@@ -9,13 +9,13 @@ const ejs = require("ejs");
 
 Database();
 
+app.use(express.json());
 app.set("view engine", "ejs");
 app.set("views", "views");
 
-app.use(express.static(path.join(__dirname, "/public")));
+app.use("/public",express.static(path.join(__dirname, "/public")));
 app.use("/invoices", express.static(path.join(__dirname, "invoices")));
 // app.use(bodyParser.json())
-app.use(express.json());
 app.use(bodyParser.urlencoded());
 app.use(cors());
 

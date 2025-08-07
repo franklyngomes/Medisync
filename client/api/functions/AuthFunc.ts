@@ -1,7 +1,18 @@
+import axios from "axios";
 import { axiosInstance } from "../axios/axiosInstance";
 import { endPoints } from "../endPoints/endPoints";
 
-export const Signup = async (payload) => {
+type SignupPayload = {
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string,
+  doctorId?: string,
+  phone: string,
+  designation: string,
+  role: string
+}
+export const Signup = async (payload: SignupPayload) => {
   try {
     const response = await axiosInstance.post(endPoints.auth.signup, payload)
     return response
@@ -18,9 +29,12 @@ export const Signin = async (payload) => {
 
   }
 }
-export const VerifyPassword = async (payload) => {
+export const VerifyEmail = async (token : string) => {
   try {
-    const response = await axiosInstance.post(endPoints.auth.verify_email, payload)
+    const response = await axios.get(`http://localhost:5000/api${endPoints.auth.verify_email}`,
+      {
+        params: { token },
+      })
     return response
   } catch (error) {
     return error

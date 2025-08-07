@@ -7,7 +7,6 @@ const {
   hmacProcess,
 } = require("../middleware/Auth");
 const transport = require("../helper/SendMail");
-const dayjs = require("dayjs");
 const jwt = require("jsonwebtoken");
 
 class UserController {
@@ -18,13 +17,12 @@ class UserController {
         lastName,
         phone,
         email,
-        dateOfBirth,
         password,
         role,
         designation,
+        doctorId,
       } = req.body;
       const hashed = hashPassword(password);
-      const dob = dayjs(dateOfBirth);
       const existingUser = await UserModel.findOne({ email });
       if (existingUser) {
         return res.status(HttpCode.badRequest).json({
@@ -32,37 +30,97 @@ class UserController {
           message: "User with this email already exists!",
         });
       }
+      // 2. Create verification token (expires in 10 mins)
+      const verificationToken = jwt.sign(
+        { email },
+        process.env.JWT_SECRET_KEY,
+        { expiresIn: "10m" }
+      );
+      const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+      // 3. Create new user with verified: false
       const userData = new UserModel({
         firstName,
         lastName,
         phone,
         email,
-        dateOfBirth: dob,
         password: hashed,
         role,
         designation,
+        doctorId: role === "Doctor" ? doctorId : undefined,
+        verificationToken,
+        verificationTokenExpires: Date.now() + 10 * 60 * 1000,
       });
-
-      const codeValue = Math.floor(Math.random() * 1000000).toString();
-      const sendVerificationCode = await transport.sendMail({
-        from: process.env.NODEMAILER_EMAIL,
-        to: userData.email,
-        subject: "Verify your email address",
-        html: "<h1> Verification Code </h1><br> <h2>" + codeValue + "</h2>",
+      await userData.save();
+      // 4. Send verification email
+      await transport.sendMail({
+        from: `Medisync <${process.env.NODEMAILER_EMAIL}>`,
+        to: email,
+        subject: "Verify Your Email - Medisync",
+        html: `
+  <body style="margin: 0; padding: 0; background-color: #f4f4f5;">
+    <table
+      align="center"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      width="100%"
+      style="padding: 40px 0;"
+    >
+      <tr>
+        <td align="center">
+          <table
+            width="100%"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="max-width: 500px; background-color: #ffffff; border-radius: 12px; padding: 40px 20px; font-family: Arial, sans-serif;"
+          >
+            <tr>
+              <td align="center" style="padding-bottom: 20px;">
+                <img
+                  src="http://localhost:5000/public/images/logo-png.png"
+                  width="150"
+                  height="60"
+                  alt="Logo"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="font-size: 24px; font-weight: bold; color: #111827; padding-bottom: 10px;">
+                <h4>Hello ${firstName}, Please verify your email</h4>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="font-size: 14px; color: #6b7280; padding-bottom: 30px;">
+                To use Medisync, click the verification button. This helps keep your account secure.
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
+                <a
+                  href=${verificationLink}
+                  style="display: inline-block; background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 24px; font-size: 14px; font-weight: bold; border-radius: 6px;"
+                >
+                  Verify Email
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="font-size: 12px; color: #6b7280; padding-top: 30px;">
+                You're receiving this email because you have an account in Medisync. If you are not sure why you're receiving this, please contact us by replying to this email.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+        `,
       });
-      if (sendVerificationCode.accepted[0] === userData.email) {
-        const hashedCodeValue = hmacProcess(
-          codeValue,
-          process.env.HMAC_PROCESS_SECRET
-        );
-        userData.verificationCode = hashedCodeValue;
-        userData.verificationCodeValidation = Date.now();
-      }
-      const data = await userData.save();
-      const userRole = role.charAt(0).toUpperCase().concat(role.slice(1));
       return res.status(HttpCode.create).json({
         status: true,
-        message: `${userRole} created successfully & verification code sent`,
+        message: `${role} created successfully & verification email sent`,
       });
     } catch (error) {
       return res.status(HttpCode.serverError).json({
@@ -73,63 +131,44 @@ class UserController {
   }
   async VerifyEmail(req, res) {
     try {
-      const { email, code } = req.body;
-      const verificationCode = code.toString();
-      const existingUser = await UserModel.findOne({ email }).select(
-        "+verificationCode +verificationCodeValidation"
-      );
-      const userRole = existingUser.role
-        .charAt(0)
-        .toUpperCase()
-        .concat(existingUser.role.slice(1));
-
-      if (!email || !code) {
+      const { token } = req.query;
+      if (!token) {
         return res.status(HttpCode.badRequest).json({
           status: false,
-          message: "All fields are required!",
+          message: "Verification token is required!",
         });
       }
+
+      const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+      const email = decoded.email;
+
+      const existingUser = await UserModel.findOne({ email });
+
       if (!existingUser) {
         return res.status(HttpCode.notFound).json({
           status: false,
-          message: `${userRole} not found!`,
+          message: "User not found!",
         });
       }
       if (existingUser.verified) {
         return res.status(HttpCode.badRequest).json({
           status: false,
-          message: `${userRole} is already verified!`,
+          message: "User is already verified!",
         });
       }
-      if (
-        Date.now() - existingUser.verificationCodeValidation >
-        10 * 60 * 1000
-      ) {
-        return res.status(HttpCode.badRequest).json({
-          status: false,
-          message: "Verification code expired!",
-        });
-      }
-      const codeValue = hmacProcess(
-        verificationCode,
-        process.env.HMAC_PROCESS_SECRET
-      );
-      if (codeValue === existingUser.verificationCode) {
-        existingUser.verified = true;
-        existingUser.verificationCode = undefined;
-        existingUser.verificationCodeValidation = undefined;
-      } else {
-        return res.status(HttpCode.badRequest).json({
-          status: false,
-          message: `Incorrect Code!`,
-        });
-      }
+      existingUser.verified = true;
       await existingUser.save();
       return res.status(HttpCode.success).json({
         status: true,
-        message: `${userRole} verified successfully!`,
+        message: "Email verified successfully!",
       });
     } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        return res.status(HttpCode.unauthorized).json({
+          status: false,
+          message: "Verification token has expired!",
+        });
+      }
       return res.status(HttpCode.serverError).json({
         status: false,
         message: error.message,
@@ -219,7 +258,7 @@ class UserController {
       });
     }
   }
-  async resetPassword(req, res){
+  async resetPassword(req, res) {
     try {
       const { email, code, newPassword } = req.body;
       const codeValue = code.toString();
@@ -256,7 +295,7 @@ class UserController {
       );
       if (hashedCodeValue === existingUser.forgotPasswordCode) {
         const hashed = hashPassword(newPassword);
-        existingUser.password = hashed
+        existingUser.password = hashed;
         existingUser.forgotPasswordCode = undefined;
         existingUser.forgotPasswordCodeValidation = undefined;
         await existingUser.save();

@@ -125,5 +125,5 @@ export {
   ReportsIcons,
   OutpatientIcon,
   PathologyIcon,
-  RadiologyIcon
+  RadiologyIcon,
 };
