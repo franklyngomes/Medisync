@@ -12,6 +12,18 @@ type SignupPayload = {
   designation: string,
   role: string
 }
+type SigninPayload= {
+  email: string,
+  password: string,
+}
+type ForgotPasswordPayload = {
+  email: string,
+}
+type ResetPasswordPayload = {
+  email: string,
+  newPassword: string,
+  code: number
+}
 export const Signup = async (payload: SignupPayload) => {
   try {
     const response = await axiosInstance.post(endPoints.auth.signup, payload)
@@ -20,7 +32,7 @@ export const Signup = async (payload: SignupPayload) => {
     return error
   }
 }
-export const Signin = async (payload) => {
+export const Signin = async (payload :SigninPayload) => {
   try {
     const response = await axiosInstance.post(endPoints.auth.signin, payload)
     return response
@@ -40,7 +52,7 @@ export const VerifyEmail = async (token : string) => {
     return error
   }
 }
-export const ForgotPassword = async (payload) => {
+export const ForgotPassword = async (payload :ForgotPasswordPayload) => {
   try {
     const response = await axiosInstance.post(endPoints.auth.forgot_password, payload)
     return response
@@ -48,7 +60,7 @@ export const ForgotPassword = async (payload) => {
     return error
   }
 }
-export const RestPassword = async (payload) => {
+export const RestPassword = async (payload : ResetPasswordPayload) => {
   try {
     const response = await axiosInstance.post(endPoints.auth.reset_password, payload)
     return response

@@ -1,13 +1,39 @@
 "use client"
 import Link from "next/link";
 import Button from "../../../../components/ui/button/Button";
-import {EyeCloseIcon, EyeIcon } from "../../../../icons";
 import Label from "../../../../components/form/Label";
 import Input from "../../../../components/form/input/InputField";
-import { useState } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { ForgotPasswordQuery } from "../../../../api/query/AuthQuery";
+import { useRouter } from "next/navigation";
 
+const schema = yup.object({
+  email: yup.string().email().required("Email is required"),
+})
 export default function ForgotPassword() {
-    const [showPassword, setShowPassword] = useState(false);
+  const { handleSubmit, reset, control, formState: { errors } } = useForm({ resolver: yupResolver(schema) });
+  const { mutateAsync } = ForgotPasswordQuery()
+  const router = useRouter()
+  const onSubmit = async (data) => {
+    const { email } = data
+    const formData = new FormData()
+    formData.append('email', email)
+    await mutateAsync(formData, {
+      onSuccess: (res: any) => {
+        if (res?.data?.status === true) {
+          toast.success(res?.data?.message)
+          reset()
+          router.push('/reset-password')
+        } else {
+          toast.error(res?.response?.data?.message)
+        }
+      }
+    })
+
+  }
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
@@ -21,44 +47,32 @@ export default function ForgotPassword() {
             </p>
           </div>
           <div>
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="space-y-6">
                 <div>
                   <Label>
-                    Email <span className="text-error-500">*</span>{" "}
+                    Email<span className="text-error-500">*</span>
                   </Label>
-                  <Input placeholder="info@gmail.com" type="email" />
-                </div>
-                                  <div>
-                    <Label>
-                      Password<span className="text-error-500">*</span>
-                    </Label>
-                    <div className="relative">
+                  <Controller
+                    control={control}
+                    name="email"
+                    render={({ field }) => (
                       <Input
-                        name="password"
-                        placeholder="Enter your password"
-                        type={showPassword ? "text" : "password"}
+                        {...field}
+                        value={field.value ?? ""}
+                        placeholder="Enter Email"
                       />
-                      <span
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
-                      >
-                        {showPassword ? (
-                          <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
-                        ) : (
-                          <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
-                        )}
-                      </span>
-                    </div>
-                    {errors.password && (
-                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
-                        {errors.password.message}
-                      </p>
                     )}
-                  </div>
+                  />
+                  {errors.email && (
+                    <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
                 <div>
-                  <Button className="w-full" size="sm">
-                    Sign in
+                  <Button className="w-full" size="sm" type="submit">
+                    Submit
                   </Button>
                 </div>
               </div>

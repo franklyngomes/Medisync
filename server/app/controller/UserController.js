@@ -115,8 +115,83 @@ class UserController {
       </tr>
     </table>
   </body>
-</html>
         `,
+      });
+      await transport.sendMail({
+        from: `Medisync <${process.env.NODEMAILER_EMAIL}>`,
+        to: email,
+        subject: `Your Medisync Account Credentials`,
+        html: `
+  <body style="margin: 0; padding: 0; background-color: #f4f4f5;">
+    <table
+      align="center"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      width="100%"
+      style="padding: 40px 0;"
+    >
+      <tr>
+        <td align="center">
+          <table
+            width="100%"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="max-width: 500px; background-color: #ffffff; border-radius: 12px; padding: 40px 20px; font-family: Arial, sans-serif;"
+          >
+            <tr>
+              <td align="center" style="padding-bottom: 20px;">
+                <img
+                  src="http://localhost:5000/public/images/logo-png.png"
+                  width="150"
+                  height="60"
+                  alt="Medisync Logo"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="font-size: 20px; font-weight: bold; color: #111827; padding-bottom: 10px;">
+                Welcome to Medisync 👋
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size: 14px; color: #374151; padding-bottom: 10px;">
+                Hi ${firstName},
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size: 14px; color: #374151; padding-bottom: 10px;">
+                Your Medisync account has been created successfully. Here are your login credentials:
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size: 14px; color: #111827; padding-bottom: 10px;">
+                <strong>Email:</strong> ${email}<br />
+                <strong>Password:</strong> ${password}
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size: 14px; color: #6b7280; padding-top: 20px;">
+                Please log in and change your password after your first login.
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-top: 20px;">
+                <a
+                  href="${process.env.FRONTEND_URL}/signin"
+                  style="background-color: #2563eb; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold;"
+                >
+                  Login Now
+                </a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+  `,
       });
       return res.status(HttpCode.create).json({
         status: true,
@@ -233,10 +308,59 @@ class UserController {
       }
       const codeValue = Math.floor(Math.random() * 1000000).toString();
       let info = await transport.sendMail({
-        from: process.env.NODEMAILER_EMAIL,
+        from: `Medisync <${process.env.NODEMAILER_EMAIL}>`,
         to: existingUser.email,
-        subject: "Reset your password",
-        html: "<h1>" + codeValue + "</h1>",
+        subject: `Reset Your Account Password - Medisync`,
+        html: `
+  <body style="margin: 0; padding: 0; background-color: #f4f4f5;">
+    <table
+      align="center"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      width="100%"
+      style="padding: 40px 0;"
+    >
+      <tr>
+        <td align="center">
+          <table
+            width="100%"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="max-width: 500px; background-color: #ffffff; border-radius: 12px; padding: 40px 20px; font-family: Arial, sans-serif;"
+          >
+            <tr>
+              <td align="center" style="padding-bottom: 20px;">
+                <img
+                  src="http://localhost:5000/public/images/logo-png.png"
+                  width="150"
+                  height="60"
+                  alt="Medisync Logo"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="font-size: 20px; font-weight: bold; color: #111827; padding-bottom: 10px;">
+              Hi ${existingUser.firstName},
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="font-size: 14px; color: #374151; padding-bottom: 10px;">
+                OTP for your Medisync account has been created successfully:
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="font-size: 16px; color: #111827; padding-bottom: 10px;">
+                <strong>OTP:</strong> ${codeValue}<br />
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+  `,
       });
       if (info.accepted[0] === existingUser.email) {
         const hashedCodeValue = hmacProcess(
@@ -261,7 +385,7 @@ class UserController {
   async resetPassword(req, res) {
     try {
       const { email, code, newPassword } = req.body;
-      const codeValue = code.toString();
+      const codeValue = code
       const existingUser = await UserModel.findOne({ email }).select(
         "+forgotPasswordCode +forgotPasswordCodeValidation"
       );
@@ -299,13 +423,13 @@ class UserController {
         existingUser.forgotPasswordCode = undefined;
         existingUser.forgotPasswordCodeValidation = undefined;
         await existingUser.save();
+        return res.status(HttpCode.success).json({
+          status: true,
+          message: "Password reset successful",
+        })
       }
-      return res.status(HttpCode.success).json({
-        status: true,
-        message: "Password reset successful",
-      });
     } catch (error) {
-      return res.status(HttpCode.internalServerError).json({
+      return res.status(HttpCode.serverError).json({
         status: false,
         message: error.message,
       });

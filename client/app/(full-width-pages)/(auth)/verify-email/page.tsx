@@ -10,7 +10,7 @@ const VerifyEmail = () => {
   const {mutateAsync} = VerifyEmailQuery()
   React.useEffect(() => {
     const urlParms = new URLSearchParams(window.location.search)
-    const token = urlParms.get("token")
+    const token = urlParms.get("token") ?? ""
     mutateAsync(token, {
       onSuccess: (res) => {
         if(res?.status === 200){

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { Signup, Signin, VerifyEmail, RestPassword, ForgotPassword } from "../functions/AuthFunc"
 
 type SignupPayload = {
@@ -11,7 +11,18 @@ type SignupPayload = {
   designation: string,
   role: string
 }
-
+type SigninPayload= {
+  email: string,
+  password: string,
+}
+type ForgotPasswordPayload = {
+  email: string,
+}
+type ResetPasswordPayload = {
+  email: string,
+  newPassword: string,
+  code: number
+}
 export const SignupQuery = () => {
   return useMutation({
     mutationFn: (payload : SignupPayload) => Signup(payload),
@@ -22,7 +33,7 @@ export const SignupQuery = () => {
 }
 export const SigninQuery = () => {
   return useMutation({
-    mutationFn: (payload) => Signin(payload),
+    mutationFn: (payload : SigninPayload) => Signin(payload),
     onSuccess: () => {
 
     }
@@ -30,14 +41,14 @@ export const SigninQuery = () => {
 }
 export const VerifyEmailQuery = () => {
    return useMutation({
-    mutationFn: (token : string | null) => VerifyEmail(token),
+    mutationFn: (token : string) => VerifyEmail(token),
     onSuccess: () => {
     }
   })
 }
 export const ForgotPasswordQuery = () => {
   return useMutation({
-    mutationFn: (payload) => ForgotPassword(payload),
+    mutationFn: (payload:ForgotPasswordPayload) => ForgotPassword(payload),
     onSuccess: () => {
 
     }
@@ -45,7 +56,7 @@ export const ForgotPasswordQuery = () => {
 }
 export const RestPasswordQuery = () => {
   return useMutation({
-    mutationFn: (payload) => RestPassword(payload),
+    mutationFn: (payload : ResetPasswordPayload) => RestPassword(payload),
     onSuccess: () => {
 
     }

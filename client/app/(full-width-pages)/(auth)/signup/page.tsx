@@ -69,10 +69,10 @@ export default function SignUp() {
     await mutateAsync(formData, {
       onSuccess: (res: any) => {
         if (res.data.status === true) {
-          toast.success(res.data.message)
+          toast.success(res?.data?.message)
           reset()
         } else {
-          toast.error(res.data.message)
+          toast.error(res?.response?.data?.message)
         }
       }
     })
