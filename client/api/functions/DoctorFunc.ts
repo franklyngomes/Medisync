@@ -1,9 +1,16 @@
 import { axiosInstance } from "../axios/axiosInstance";
 import { endPoints } from "../endPoints/endPoints";
+import { Cookies } from "react-cookie";
 
 export const ListDoctor = () => {
   try {
-    const response = axiosInstance.get(endPoints.doctors.doctor_list)
+    const cookies = new Cookies()
+    const token = cookies.get("token")
+    const response = axiosInstance.get(endPoints.doctors.doctor_list, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     return response
   } catch (error) {
     return error
@@ -11,7 +18,13 @@ export const ListDoctor = () => {
 }
 export const CreateDoctor = (formdata: FormData) => {
   try {
-    const response = axiosInstance.post(endPoints.doctors.doctor_create, formdata)
+    const cookies = new Cookies()
+    const token = cookies.get("token")
+    const response = axiosInstance.post(endPoints.doctors.doctor_create, formdata, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     return response
   } catch (error) {
     return error
@@ -19,7 +32,13 @@ export const CreateDoctor = (formdata: FormData) => {
 }
 export const DoctorDetails = async (id: string) => {
   try {
-    const response = await axiosInstance.get(endPoints.doctors.doctor_details + id)
+    const cookies = new Cookies()
+    const token = cookies.get("token")
+    const response = await axiosInstance.get(endPoints.doctors.doctor_details + id, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     return response
   } catch (error) {
     return error
@@ -27,7 +46,13 @@ export const DoctorDetails = async (id: string) => {
 }
 export const DoctorUpdate = async ({ editId, formData }: { editId: string, formData: FormData }) => {
   try {
-    const response = await axiosInstance.post(endPoints.doctors.doctor_update + editId, formData)
+    const cookies = new Cookies()
+    const token = cookies.get("token")
+    const response = await axiosInstance.post(endPoints.doctors.doctor_update + editId, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     return response
   } catch (error) {
     return error
@@ -35,7 +60,13 @@ export const DoctorUpdate = async ({ editId, formData }: { editId: string, formD
 }
 export const DoctorDelete = async (id: string) => {
   try {
-    const response = await axiosInstance.post(endPoints.doctors.doctor_delete + id)
+    const cookies = new Cookies()
+    const token = cookies.get("token")
+    const response = await axiosInstance.post(endPoints.doctors.doctor_delete + id, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     return response
   } catch (error) {
     return error

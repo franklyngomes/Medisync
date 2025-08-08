@@ -156,13 +156,13 @@ const Doctor = () => {
     if (image) formdata.append("image", image)
     mutateAsync(formdata, {
       onSuccess: (res) => {
-        if (res.data.status === true) {
-          toast.success(res.data.message)
+        if (res?.data?.status === true) {
+          toast.success(res?.data?.message)
           closeModal()
           setIsEditing(false)
           reset()
         } else {
-          toast.error(res.data.message)
+          toast.error(res?.response?.data?.message)
         }
       }
     })
@@ -181,12 +181,12 @@ const Doctor = () => {
     if (image) formData.append("image", image)
     update({ editId, formData }, {
       onSuccess: (res: any) => {
-        if (res.data.status === true) {
-          toast.success(res.data.message)
+        if (res?.data?.status === true) {
+          toast.success(res?.data?.message)
           closeModal()
           setIsEditing(false)
         } else {
-          toast.error(res.data.message)
+          toast.error(res?.response?.data?.message)
         }
       }
     })
@@ -194,12 +194,12 @@ const Doctor = () => {
   const onDelete = (id: string) => {
     deleteDoctor(id, {
       onSuccess: (res: any) => {
-        if (res.data.status === true) {
-          toast.success(res.data.message)
+        if (res?.data?.status === true) {
+          toast.success(res?.data?.message)
           closeModal()
           setIsEditing(false)
         } else {
-          toast.error(res.data.message)
+          toast.error(res?.response?.data?.message)
         }
       }
     })

@@ -108,9 +108,14 @@ const Appointment = () => {
     formdata.append("appointmentDate", appointmentDate)
     formdata.append("note", note)
     mutateAsync(formdata, {
-      onSuccess: () => {
-        reset()
-        closeModal()
+      onSuccess: (res) => {
+        if (res?.data?.status === true) {
+          toast.success(res?.data?.message)
+          closeModal()
+          reset()
+        } else {
+          toast.error(res?.response?.data?.message)
+        }
       }
     })
   }
@@ -122,12 +127,12 @@ const Appointment = () => {
     formdata.append("appointmentDate", appointmentDate)
     update({ editId, formdata }, {
       onSuccess: (res) => {
-        if (res.data.status === true) {
-          toast.success(res.data.message)
+        if (res?.data?.status === true) {
+          toast.success(res?.data?.message)
           closeModal()
           setIsEditing(false)
         } else {
-          toast.error(res.data.message)
+          toast.error(res?.response?.data?.message)
         }
       }
     })
@@ -135,12 +140,12 @@ const Appointment = () => {
   const onDelete = (id: string) => {
     deleteAppointment(id, {
       onSuccess: (res) => {
-        if (res.data.status === true) {
-          toast.success(res.data.message)
+        if (res?.data?.status === true) {
+          toast.success(res?.data?.message)
           closeModal()
           setIsEditing(false)
         } else {
-          toast.error(res.data.message)
+          toast.error(res?.response?.data?.message)
         }
       }
     })

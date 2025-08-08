@@ -18,69 +18,71 @@ const UserImageUpload = require('../helper/UserImageUpload')
 const router = express.Router()
 const multer = require('multer')
 const upload = multer()
+const CheckPermissions = require('../middleware/CheckPermissions')
+const {AuthCheck} = require('../middleware/Auth')
 
 //Patient Routes
-router.post('/patient-create',upload.none(), PatientController.CreatePatient)
-router.get('/all-patients', PatientController.GetAllPatients)
-router.get('/patient-details/:id', PatientController.PatientDetails)
-router.post('/patient-update/:id',upload.none(), PatientController.UpdatePatient)
-router.post('/patient-delete/:id', PatientController.DeletePatient)
+router.post('/patient-create',AuthCheck,CheckPermissions(["create_patient"]),upload.none(), PatientController.CreatePatient)
+router.get('/all-patients',AuthCheck,CheckPermissions(["read_patient"]), PatientController.GetAllPatients)
+router.get('/patient-details/:id',AuthCheck,CheckPermissions(["read_patient"]), PatientController.PatientDetails)
+router.post('/patient-update/:id',AuthCheck,CheckPermissions(["update_patient"]),upload.none(), PatientController.UpdatePatient)
+router.post('/patient-delete/:id',AuthCheck,CheckPermissions(["delete_patient"]), PatientController.DeletePatient)
 
 //Doctor Routes
-router.post('/doctor-create',DoctorImageUpload.single('image'), DoctorController.CreateDoctor)
-router.get('/all-doctor', DoctorController.GetAllDoctors)
-router.get('/doctor-details/:id', DoctorController.DoctorDetails)
-router.post('/doctor-update/:id',DoctorImageUpload.single('image'), DoctorController.UpdateDoctor)
-router.post('/doctor-delete/:id',DoctorController.DeleteDoctor)
+router.post('/doctor-create',AuthCheck,CheckPermissions(["create_doctor"]),DoctorImageUpload.single('image'), DoctorController.CreateDoctor)
+router.get('/all-doctor', AuthCheck,CheckPermissions(["read_doctor"]),DoctorController.GetAllDoctors)
+router.get('/doctor-details/:id', AuthCheck,CheckPermissions(["read_doctor"]),DoctorController.DoctorDetails)
+router.post('/doctor-update/:id',AuthCheck,CheckPermissions(["update_doctor"]),DoctorImageUpload.single('image'), DoctorController.UpdateDoctor)
+router.post('/doctor-delete/:id',AuthCheck,CheckPermissions(["delete_doctor"]),DoctorController.DeleteDoctor)
 
 //Appointment Routes
-router.post('/appointment-create',upload.none(), AppointmentController.CreateAppointment)
-router.get('/all-appointment', AppointmentController.GetAllAppointment)
-router.get('/appointment-details/:id', AppointmentController.AppointmentDetails)
-router.post('/appointment-update/:id',upload.none(), AppointmentController.UpdateAppointment)
-router.post('/appointment-delete/:id', AppointmentController.DeleteAppointment)
+router.post('/appointment-create',AuthCheck,CheckPermissions(["create_appointment"]),upload.none(), AppointmentController.CreateAppointment)
+router.get('/all-appointment', AuthCheck,CheckPermissions(["read_appointment"]),AppointmentController.GetAllAppointment)
+router.get('/appointment-details/:id', AuthCheck,CheckPermissions(["read_appointment"]),AppointmentController.AppointmentDetails)
+router.post('/appointment-update/:id',AuthCheck,CheckPermissions(["update_appointment"]),upload.none(), AppointmentController.UpdateAppointment)
+router.post('/appointment-delete/:id', AuthCheck,CheckPermissions(["delete_appointment"]),AppointmentController.DeleteAppointment)
 
 //Room Routes
-router.post('/room-create', upload.none(),RoomController.CreateRoom)
-router.get('/all-room', RoomController.GetAllRooms)
-router.get('/room-details/:id', RoomController.RoomDetails)
-router.post('/room-update/:id', upload.none(), RoomController.UpdateRoom)
-router.post('/room-delete/:id', RoomController.DeleteRoom)
+router.post('/room-create',AuthCheck,CheckPermissions(["create_room"]),upload.none(),RoomController.CreateRoom)
+router.get('/all-room', AuthCheck,CheckPermissions(["read_room"]),RoomController.GetAllRooms)
+router.get('/room-details/:id',AuthCheck,CheckPermissions(["read_room"]), RoomController.RoomDetails)
+router.post('/room-update/:id', AuthCheck,CheckPermissions(["update_room"]),upload.none(), RoomController.UpdateRoom)
+router.post('/room-delete/:id',AuthCheck,CheckPermissions(["delete_room"]), RoomController.DeleteRoom)
 
 //InPatient Routes
-router.post('/inpatient-create', upload.none(), InPatientController.CreateInPatient)
+router.post('/inpatient-create',upload.none(), InPatientController.CreateInPatient)
 router.get('/all-inpatient', InPatientController.GetAllInPatient)
 router.get('/inpatient-details/:id', InPatientController.InPatientDetails)
 router.post('/inpatient-update/:id', upload.none(), InPatientController.UpdateInPatient)
 router.post('/inpatient-delete/:id', InPatientController.DeleteInPatient)
 
 //OutPatient Routes
-router.post('/outpatient-create', upload.none(), OutpatientController.CreateOutPatient)
+router.post('/outpatient-create',upload.none(), OutpatientController.CreateOutPatient)
 router.get('/all-outpatient', OutpatientController.GetAllOutPatient)
 router.get('/outpatient-details/:id', OutpatientController.OutPatientDetails)
 router.post('/outpatient-update/:id', upload.none(), OutpatientController.UpdateOutPatient)
 router.delete('/outpatient-delete/:id', OutpatientController.DeleteOutPatient)
 
 //PathologyTest Routes
-router.post('/pathology-test-create', upload.none(), PathologyTestController.CreatePathologyTest)
-router.get('/all-pathology-test', PathologyTestController.GetAllPathologyTest)
-router.get('/pathology-test-details/:id', PathologyTestController.PathologyTestDetails)
-router.post('/pathology-test-update/:id', upload.none(), PathologyTestController.UpdatePathologyTest)
-router.post('/pathology-test-delete/:id', PathologyTestController.DeletePathologyTest)
+router.post('/pathology-test-create', AuthCheck,CheckPermissions(["create_pathology_test"]),upload.none(), PathologyTestController.CreatePathologyTest)
+router.get('/all-pathology-test', AuthCheck,CheckPermissions(["read_pathology_test"]),PathologyTestController.GetAllPathologyTest)
+router.get('/pathology-test-details/:id', AuthCheck,CheckPermissions(["read_pathology_test"]),PathologyTestController.PathologyTestDetails)
+router.post('/pathology-test-update/:id', AuthCheck,CheckPermissions(["update_pathology_test"]),upload.none(), PathologyTestController.UpdatePathologyTest)
+router.post('/pathology-test-delete/:id', AuthCheck,CheckPermissions(["delete_pathology_test"]),PathologyTestController.DeletePathologyTest)
 
 //RadiologyTest Routes
-router.post('/radiology-test-create', upload.none(), RadiologyTestController.CreateRadiologyTest)
-router.get('/all-radiology-test', RadiologyTestController.GetAllRadiologyTest)
-router.get('/radiology-test-details/:id', RadiologyTestController.RadiologyTestDetails)
-router.post('/radiology-test-update/:id', upload.none(), RadiologyTestController.UpdateRadiologyTest)
-router.post('/radiology-test-delete/:id', RadiologyTestController.DeleteRadiologyTest)
+router.post('/radiology-test-create', AuthCheck,CheckPermissions(["create_radiology_test"]),upload.none(), RadiologyTestController.CreateRadiologyTest)
+router.get('/all-radiology-test', AuthCheck,CheckPermissions(["read_radiology_test"]),RadiologyTestController.GetAllRadiologyTest)
+router.get('/radiology-test-details/:id', AuthCheck,CheckPermissions(["read_radiology_test"]),RadiologyTestController.RadiologyTestDetails)
+router.post('/radiology-test-update/:id', AuthCheck,CheckPermissions(["update_radiology_test"]),upload.none(), RadiologyTestController.UpdateRadiologyTest)
+router.post('/radiology-test-delete/:id', AuthCheck,CheckPermissions(["delete_radiology_test"]),RadiologyTestController.DeleteRadiologyTest)
 
 //AppointmentBill Routes
-router.post('/appointment-bill-create', upload.none(), AppointmentBillController.CreateAppointmentBill)
-router.get('/all-appointment-bill', AppointmentBillController.GetAllAppointmentBills)
-router.get('/appointment-bill-details/:id', AppointmentBillController.AppointmentBillDetails)
-router.post('/appointment-bill-update/:id', AppointmentBillController.UpdateAppointmentBill)
-router.delete('/appointment-bill-delete/:id', AppointmentBillController.DeleteAppointmentBill)
+router.post('/appointment-bill-create', AuthCheck,CheckPermissions(["create_invoice"]),upload.none(), AppointmentBillController.CreateAppointmentBill)
+router.get('/all-appointment-bill', AuthCheck,CheckPermissions(["read_invoice"]),AppointmentBillController.GetAllAppointmentBills)
+router.get('/appointment-bill-details/:id', AuthCheck,CheckPermissions(["read_invoice"]),AppointmentBillController.AppointmentBillDetails)
+router.post('/appointment-bill-update/:id', AuthCheck,CheckPermissions(["update_invoice"]),AppointmentBillController.UpdateAppointmentBill)
+router.delete('/appointment-bill-delete/:id', AuthCheck,CheckPermissions(["delete_invoice"]),AppointmentBillController.DeleteAppointmentBill)
 
 //IPDBill Routes
 router.post('/ipd-bill-create', upload.none(), IPDBillController.CreateIPDBill)
@@ -97,22 +99,22 @@ router.post('/opd-bill-update/:id', upload.none(), OPDBillController.UpdateOPDBi
 router.delete('/opd-bill-delete/:id', OPDBillController.DeleteOPDBill)
 
 //Pathology Bill Routes
-router.post('/pathology-bill-create', upload.none(), PathologyBillController.CreatePathologyBill)
-router.get('/all-pathology-bill', PathologyBillController.GetAllPathologyBills)
-router.get('/pathology-bill-details/:id', PathologyBillController.PathologyBillDetails)
-router.post('/pathology-bill-update/:id', upload.none(), PathologyBillController.UpdatePathologyBill)
-router.delete('/pathology-bill-delete/:id', PathologyBillController.DeletePathologyBill)
+router.post('/pathology-bill-create', AuthCheck,CheckPermissions(["create_invoice"]),upload.none(), PathologyBillController.CreatePathologyBill)
+router.get('/all-pathology-bill', AuthCheck,CheckPermissions(["read_invoice"]),PathologyBillController.GetAllPathologyBills)
+router.get('/pathology-bill-details/:id', AuthCheck,CheckPermissions(["read_invoice"]),PathologyBillController.PathologyBillDetails)
+router.post('/pathology-bill-update/:id', AuthCheck,CheckPermissions(["update_invoice"]),upload.none(), PathologyBillController.UpdatePathologyBill)
+router.delete('/pathology-bill-delete/:id', AuthCheck,CheckPermissions(["delete_invoice"]),PathologyBillController.DeletePathologyBill)
 
 //Radiology Bill Routes
-router.post('/radiology-bill-create', upload.none(), RadiologyBillController.CreateRadiologyBill)
-router.get('/all-radiology-bill', RadiologyBillController.GetAllRadiologyBills)
-router.get('/radiology-bill-details/:id', RadiologyBillController.RadiologyBillDetails)
-router.post('/radiology-bill-update/:id', upload.none(), RadiologyBillController.UpdateRadiologyBill)
-router.delete('/radiology-bill-delete/:id', RadiologyBillController.DeleteRadiologyBill)
+router.post('/radiology-bill-create', AuthCheck,CheckPermissions(["create_invoice"]),upload.none(), RadiologyBillController.CreateRadiologyBill)
+router.get('/all-radiology-bill', AuthCheck,CheckPermissions(["read_invoice"]),RadiologyBillController.GetAllRadiologyBills)
+router.get('/radiology-bill-details/:id', AuthCheck,CheckPermissions(["read_invoice"]),RadiologyBillController.RadiologyBillDetails)
+router.post('/radiology-bill-update/:id', AuthCheck,CheckPermissions(["update_invoice"]),upload.none(), RadiologyBillController.UpdateRadiologyBill)
+router.delete('/radiology-bill-delete/:id', AuthCheck,CheckPermissions(["delete_invoice"]),RadiologyBillController.DeleteRadiologyBill)
 
 
 //User Routes
-router.post('/signup',upload.none(),UserController.Signup)
+router.post('/signup',AuthCheck,CheckPermissions(["create_user"]),upload.none(),UserController.Signup)
 router.get('/verify-email',UserController.VerifyEmail)
 router.post('/signin',upload.none(),UserController.Signin)
 router.post('/forgot-password',upload.none(),UserController.forgotPassword)

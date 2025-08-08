@@ -157,12 +157,12 @@ const AppointmentBilling = () => {
     };
     update({ editId, payload }, {
       onSuccess: (res) => {
-        if (res.data.status === true) {
-          toast.success(res.data.message)
+        if (res?.data?.status === true) {
+          toast.success(res?.data?.message)
           closeModal()
           setIsEditing(false)
         } else {
-          toast.error(res.data.message)
+          toast.error(res?.response?.data.message)
         }
       }
     })

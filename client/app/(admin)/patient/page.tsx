@@ -114,9 +114,14 @@ const Patient = () => {
     formdata.append("address", address)
     formdata.append("phone", phone)
     mutateAsync(formdata, {
-      onSuccess: () => {
-        reset()
-        closeModal()
+      onSuccess: (res) => {
+        if (res?.data?.status === true) {
+          toast.success(res?.data?.message)
+          closeModal()
+          reset()
+        } else {
+          toast.error(res?.reponse?.data?.message)
+        }
       }
     })
   }
@@ -131,12 +136,12 @@ const Patient = () => {
     formData.append("phone", phone)
     update({ editId, formData }, {
       onSuccess: (res) => {
-        if (res.data.status === true) {
-          toast.success(res.data.message)
+        if (res?.data?.status === true) {
+          toast.success(res?.data?.message)
           closeModal()
           setIsEditing(false)
         } else {
-          toast.error(res.data.message)
+          toast.error(res?.response?.data?.message)
         }
       }
     })
@@ -144,12 +149,12 @@ const Patient = () => {
   const onDelete = (id: string) => {
     deletePatient(id, {
       onSuccess: (res) => {
-        if (res.data.status === true) {
-          toast.success(res.data.message)
+        if (res?.data?.status === true) {
+          toast.success(res?.data?.message)
           closeModal()
           setIsEditing(false)
         } else {
-          toast.error(res.data.message)
+          toast.error(res?.response?.data.message)
         }
       }
     })

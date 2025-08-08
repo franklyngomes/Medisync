@@ -1,6 +1,7 @@
 import axios from "axios";
 import { axiosInstance } from "../axios/axiosInstance";
 import { endPoints } from "../endPoints/endPoints";
+import { Cookies } from "react-cookie";
 
 type SignupPayload = {
   firstName: string,
@@ -12,7 +13,7 @@ type SignupPayload = {
   designation: string,
   role: string
 }
-type SigninPayload= {
+type SigninPayload = {
   email: string,
   password: string,
 }
@@ -26,13 +27,19 @@ type ResetPasswordPayload = {
 }
 export const Signup = async (payload: SignupPayload) => {
   try {
-    const response = await axiosInstance.post(endPoints.auth.signup, payload)
+    const cookies = new Cookies()
+    const token = cookies.get("token")
+    const response = await axiosInstance.post(endPoints.auth.signup, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     return response
   } catch (error) {
     return error
   }
 }
-export const Signin = async (payload :SigninPayload) => {
+export const Signin = async (payload: SigninPayload) => {
   try {
     const response = await axiosInstance.post(endPoints.auth.signin, payload)
     return response
@@ -41,7 +48,7 @@ export const Signin = async (payload :SigninPayload) => {
 
   }
 }
-export const VerifyEmail = async (token : string) => {
+export const VerifyEmail = async (token: string) => {
   try {
     const response = await axios.get(`http://localhost:5000/api${endPoints.auth.verify_email}`,
       {
@@ -52,7 +59,7 @@ export const VerifyEmail = async (token : string) => {
     return error
   }
 }
-export const ForgotPassword = async (payload :ForgotPasswordPayload) => {
+export const ForgotPassword = async (payload: ForgotPasswordPayload) => {
   try {
     const response = await axiosInstance.post(endPoints.auth.forgot_password, payload)
     return response
@@ -60,7 +67,7 @@ export const ForgotPassword = async (payload :ForgotPasswordPayload) => {
     return error
   }
 }
-export const RestPassword = async (payload : ResetPasswordPayload) => {
+export const RestPassword = async (payload: ResetPasswordPayload) => {
   try {
     const response = await axiosInstance.post(endPoints.auth.reset_password, payload)
     return response

@@ -1,6 +1,6 @@
-
 import { axiosInstance } from "../../axios/axiosInstance";
 import { endPoints } from "../../endPoints/endPoints";
+import { Cookies } from "react-cookie";
 
 type UpdateProps = {
   discount: number,
@@ -11,7 +11,13 @@ type UpdateProps = {
 
 export const ListRadiologyBill = async () => {
   try {
-    const response = await axiosInstance.get(endPoints.billing.radiology.radiology_bill_list)
+    const cookies = new Cookies()
+    const token = cookies.get("token")
+    const response = await axiosInstance.get(endPoints.billing.radiology.radiology_bill_list, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     return response
   } catch (error) {
     return error
@@ -19,7 +25,13 @@ export const ListRadiologyBill = async () => {
 }
 export const CreateRadiologyBill = async (formData: FormData) => {
   try {
-    const response = await axiosInstance.post(endPoints.billing.radiology.radiology_bill_create, formData)
+    const cookies = new Cookies()
+    const token = cookies.get("token")
+    const response = await axiosInstance.post(endPoints.billing.radiology.radiology_bill_create, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     return response
   } catch (error) {
     return error
@@ -28,7 +40,13 @@ export const CreateRadiologyBill = async (formData: FormData) => {
 }
 export const RadiologyBillDetails = async (id: string) => {
   try {
-    const response = await axiosInstance.get(endPoints.billing.radiology.radiology_bill_details + id)
+    const cookies = new Cookies()
+    const token = cookies.get("token")
+    const response = await axiosInstance.get(endPoints.billing.radiology.radiology_bill_details + id, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     return response
   } catch (error) {
     return error
@@ -36,7 +54,13 @@ export const RadiologyBillDetails = async (id: string) => {
 }
 export const RadiologyBillUpdate = async ({ editId, payload }: { editId: string, payload: UpdateProps }) => {
   try {
-    const response = await axiosInstance.post(endPoints.billing.radiology.radiology_bill_update + editId, payload)
+    const cookies = new Cookies()
+    const token = cookies.get("token")
+    const response = await axiosInstance.post(endPoints.billing.radiology.radiology_bill_update + editId, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     return response
   } catch (error) {
     return error
@@ -44,7 +68,13 @@ export const RadiologyBillUpdate = async ({ editId, payload }: { editId: string,
 }
 export const RadiologyBillDelete = async (id: string) => {
   try {
-    const response = await axiosInstance.delete(endPoints.billing.radiology.radiology_bill_delete + id)
+    const cookies = new Cookies()
+    const token = cookies.get("token")
+    const response = await axiosInstance.delete(endPoints.billing.radiology.radiology_bill_delete + id, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     return response
   } catch (error) {
     return error

@@ -68,7 +68,7 @@ export default function SignUp() {
     formData.append('role', role)
     await mutateAsync(formData, {
       onSuccess: (res: any) => {
-        if (res.data.status === true) {
+        if (res?.data?.status === true) {
           toast.success(res?.data?.message)
           reset()
         } else {
