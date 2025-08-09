@@ -1,4 +1,4 @@
-export interface Patient{
+export interface Patient {
   _id: string;
   name: string;
   phone: string;
@@ -9,7 +9,7 @@ export interface Patient{
   createdAt: string;
   updatedAt: string;
 }
-export interface Doctor{
+export interface Doctor {
   _id: string;
   name: string;
   phone: string;
@@ -23,16 +23,34 @@ export interface Doctor{
 }
 export interface AppointmentListProps {
   patientId: Patient;
-  note:string;
+  note: string;
   doctorId: Doctor;
-  appointmentDate:Date;
-  status?:string;
-  _id:string;
+  appointmentDate: Date;
+  status?: string;
+  _id: string;
+}
+export interface UserProfile {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  phone: string,
+  email: string;
+  password: string;
+  role: string;
+  designation: string;
+  doctorId?: string;
+  image?: string;
+  verified: boolean;
+  verificationToken: string;
+  verificationTokenExpires: Date;
+  deletedAt: null;
 }
 
-export interface StoreState{
+export interface StoreState {
   isEditing: boolean,
   editId: string,
   setIsEditing: (value: boolean) => void;
   setEditId: (id: string) => void;
+  user: UserProfile | null
+  setUser: (value: UserProfile) => void
 }

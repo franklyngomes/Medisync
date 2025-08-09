@@ -101,5 +101,6 @@ export const endPoints = {
     reset_password: "/reset-password"
   },
   generateBill: "/generate",
-  previewBill: "/preview"
+  previewBill: "/preview",
+  userProfile: "/user-profile"
 }

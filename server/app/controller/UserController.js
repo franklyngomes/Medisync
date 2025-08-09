@@ -275,6 +275,7 @@ class UserController {
       }
       const token = jwt.sign(
         {
+          _id: user._id,
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.Email,
@@ -385,7 +386,7 @@ class UserController {
   async resetPassword(req, res) {
     try {
       const { email, code, newPassword } = req.body;
-      const codeValue = code
+      const codeValue = code;
       const existingUser = await UserModel.findOne({ email }).select(
         "+forgotPasswordCode +forgotPasswordCodeValidation"
       );
@@ -426,8 +427,29 @@ class UserController {
         return res.status(HttpCode.success).json({
           status: true,
           message: "Password reset successful",
-        })
+        });
       }
+    } catch (error) {
+      return res.status(HttpCode.serverError).json({
+        status: false,
+        message: error.message,
+      });
+    }
+  }
+  async UserProfile(req, res) {
+    try {
+      const id = req.user._id;
+      const userDetails = await UserModel.findById(id);
+      if (!userDetails) {
+        return res.status(HttpCode.serverError).json({
+          status: false,
+          message: "User not found!",
+        });
+      }
+      return res.status(HttpCode.success).json({
+        status: true,
+        data: userDetails,
+      });
     } catch (error) {
       return res.status(HttpCode.serverError).json({
         status: false,

@@ -20,6 +20,7 @@ const multer = require('multer')
 const upload = multer()
 const CheckPermissions = require('../middleware/CheckPermissions')
 const {AuthCheck} = require('../middleware/Auth')
+const {ROLES, ROLE_PERMISSIONS} = require('../config/roles')
 
 //Patient Routes
 router.post('/patient-create',AuthCheck,CheckPermissions(["create_patient"]),upload.none(), PatientController.CreatePatient)
@@ -119,4 +120,10 @@ router.get('/verify-email',UserController.VerifyEmail)
 router.post('/signin',upload.none(),UserController.Signin)
 router.post('/forgot-password',upload.none(),UserController.forgotPassword)
 router.post('/reset-password',upload.none(),UserController.resetPassword)
+router.get('/user-profile',AuthCheck,CheckPermissions(["user_profile"]), UserController.UserProfile)
+
+//Role Route
+router.get('/roles-config', (req, res) => {
+  return res.json({ROLES, ROLE_PERMISSIONS})
+})
 module.exports = router
