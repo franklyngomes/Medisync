@@ -74,3 +74,17 @@ export const AppointmentDelete = async (id: string) => {
     return error
   }
 }
+export const AppointmentGroup = async (id: string) => {
+  const cookies = new Cookies()
+  const token = cookies.get("token")
+  try {
+    const response = await axiosInstance.get(endPoints.appointments.appointment_group + id, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response
+  } catch (error) {
+    return error
+  }
+}

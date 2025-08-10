@@ -1,5 +1,5 @@
 "use client"
-import { AppointmentCreateQuery, AppointmentDeleteQuery, AppointmentDetailsQuery, AppointmentListQuery, AppointmentUpdateQuery } from "../../../api/query/AppointmentQuery";
+import { AppointmentCreateQuery, AppointmentDeleteQuery, AppointmentDetailsQuery, AppointmentGroupQuery, AppointmentListQuery, AppointmentUpdateQuery } from "../../../api/query/AppointmentQuery";
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import BasicTable from "../../../components/tables/BasicTable";
 import React from "react";
@@ -47,12 +47,17 @@ const Appointment = () => {
   const appointmentDetails = details?.data.data
   const { mutateAsync: update } = AppointmentUpdateQuery()
   const { mutateAsync: deleteAppointment } = AppointmentDeleteQuery()
+  const { user } = useStore()
+  const doctorId = (user?.role === "Doctor" ? user?.doctorId : "")
+  const {data: doctorAppointment} = AppointmentGroupQuery(doctorId, !!doctorId)
+  const specificAppointments = doctorAppointment?.data?.data
+  console.log(specificAppointments)
 
   const tableColumns = [
     { label: "Appointment No.", key: "appointmentNo" },
-    { label: "Patient Name", key: "patientId.name" },
+    { label: "Patient Name", key:`${user?.role === "Doctor" ? "patient.name" :"patientId.name"}` },
     { label: "Note", key: "note" },
-    { label: "Doctor Name", key: "doctorId.name" },
+    { label: "Doctor Name", key: `${user?.role === "Doctor"? "doctor.name" : "doctorId.name"}` },
     {
       label: "Appointment Date",
       render: (item: any) => format(new Date(item.appointmentDate), "dd-MM-yyyy")
@@ -155,7 +160,7 @@ const Appointment = () => {
       setPatientOption(patients.map((patient) => ({ label: patient.name, value: patient._id })));
     }
     if (doctors && Array.isArray(doctors)) {
-      setDoctorOption(doctors.map((item) => ({ label: item.name, value: item._id })))
+      setDoctorOption(doctors.map((item) => ({ label: `Dr. ${item.name}`, value: item._id })))
     }
   }, [patients, doctors])
 
@@ -198,7 +203,7 @@ const Appointment = () => {
           </Button>
         </div>
         <div className="space-y-6">
-          <BasicTable data={appointments} tableColumns={tableColumns} onDelete={onDelete} />
+          <BasicTable data={user?.role === "Doctor" ? specificAppointments : appointments} tableColumns={tableColumns} onDelete={onDelete} />
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={() => {
@@ -266,29 +271,39 @@ const Appointment = () => {
                     )}
                   </div>
                   <div>
-                    <Label>{!isEditing ? "Select Doctor" : "Doctor Name"}</Label>
-                    <div className="relative">
-                      {!isEditing ?
+                    {
+                      user?.role !== "Doctor" ?
                         <>
-                          <Controller
-                            control={control}
-                            name="doctorId"
-                            render={({ field }) => (
-                              <Select
-                                {...field}
-                                options={doctorOption}
-                                placeholder="Select Doctor"
-                                className="dark:bg-dark-900"
-                              />
-                            )}
-                          />
-                          <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-                            <ChevronDownIcon />
-                          </span>
+                          <Label>{!isEditing ? "Select Doctor" : "Doctor Name"}</Label>
+                          <div className="relative">
+                            {!isEditing ?
+                              <>
+                                <Controller
+                                  control={control}
+                                  name="doctorId"
+                                  render={({ field }) => (
+                                    <Select
+                                      {...field}
+                                      options={doctorOption}
+                                      placeholder="Select Doctor"
+                                      className="dark:bg-dark-900"
+                                    />
+                                  )}
+                                />
+                                <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                                  <ChevronDownIcon />
+                                </span>
+                              </>
+                              : <Input value={appointmentDetails?.doctorId.name ?? ""} disabled />
+                            }
+                          </div>
                         </>
-                        : <Input value={appointmentDetails?.doctorId.name ?? ""} disabled />
-                      }
-                    </div>
+                        :
+                        <>
+                          <Label>Dr. {user.firstName} {user.lastName}</Label>
+                          <Input value={user?.doctorId} disabled />
+                        </>
+                    }
                     {errors.doctorId && (
                       <p style={{ color: "red", margin: "0", padding: "5px" }}>
                         {errors.doctorId.message}
@@ -355,10 +370,10 @@ const Appointment = () => {
                     )}
                   />
                   {errors.note && (
-                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
-                        {errors.note.message}
-                      </p>
-                    )}
+                    <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                      {errors.note.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

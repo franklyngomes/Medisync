@@ -4,7 +4,8 @@ export const endPoints = {
     appointment_list: "/all-appointment",
     appointment_details: "/appointment-details/",
     appointment_update: "/appointment-update/",
-    appointment_delete: "/appointment-delete/"
+    appointment_delete: "/appointment-delete/",
+    appointment_group: "/appointment-group/"
   },
   patients: {
     patient_create: "/patient-create",

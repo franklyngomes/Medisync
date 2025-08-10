@@ -18,7 +18,7 @@ const ROLE_PERMISSIONS={
     "create_invoice", "read_invoice","update_invoice", "delete_invoice","user_profile"
   ],
   [ROLES.RECEPTIONIST]: [
-     "create_patient", "update_patient","read_patient",
+    "create_patient", "update_patient","read_patient",
     "create_appointment", "update_appointment","read_appointment",
     "read_doctor","read_invoice","user_profile"
   ],

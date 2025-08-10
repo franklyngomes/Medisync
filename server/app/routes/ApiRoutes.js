@@ -42,6 +42,7 @@ router.get('/all-appointment', AuthCheck,CheckPermissions(["read_appointment"]),
 router.get('/appointment-details/:id', AuthCheck,CheckPermissions(["read_appointment"]),AppointmentController.AppointmentDetails)
 router.post('/appointment-update/:id',AuthCheck,CheckPermissions(["update_appointment"]),upload.none(), AppointmentController.UpdateAppointment)
 router.post('/appointment-delete/:id', AuthCheck,CheckPermissions(["delete_appointment"]),AppointmentController.DeleteAppointment)
+router.get('/appointment-group/:id',AuthCheck,CheckPermissions(["read_appointment"]), AppointmentController.GroupAppointment)
 
 //Room Routes
 router.post('/room-create',AuthCheck,CheckPermissions(["create_room"]),upload.none(),RoomController.CreateRoom)

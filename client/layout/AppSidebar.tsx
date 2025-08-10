@@ -16,6 +16,7 @@ import {
   RoomIcon,
   RadiologyIcon,
   PathologyIcon,
+  ScheduleIcon,
   // OutpatientIcon
 } from "../icons/index";
 
@@ -47,6 +48,11 @@ const navItems: NavItem[] = [
   //   name: "Outpatient - OPD",
   //   path: "/outpatient",
   // },
+    {
+    icon: <ScheduleIcon />,
+    name: "Schedule",
+    path: "/schedule",
+  },
   {
     icon: <DoctorIcon />,
     name: "Doctor",

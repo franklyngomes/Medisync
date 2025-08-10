@@ -20,7 +20,6 @@ const AppHeader: React.FC = () => {
   const cookies = new Cookies()
   const {user, setUser} = useStore()
   const { data } = UserProfileQuery()
-  console.log(user)
 
   const handleToggle = () => {
     if (window.innerWidth >= 1024) {
