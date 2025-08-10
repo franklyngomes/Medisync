@@ -63,6 +63,7 @@ import RadiologyIcon from "./radiology.svg"
 import OutpatientIcon from "./outpatient.svg"
 import AccountIcon from "./account.svg"
 import ScheduleIcon from "./schedule.svg"
+import UsersIcon from "./users.svg"
 
 export {
   DownloadIcon,
@@ -129,5 +130,6 @@ export {
   PathologyIcon,
   RadiologyIcon,
   AccountIcon,
-  ScheduleIcon
+  ScheduleIcon,
+  UsersIcon
 };

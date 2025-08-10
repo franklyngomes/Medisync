@@ -1,7 +1,6 @@
 "use client";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
 import NotificationDropdown from "../components/header/NotificationDropdown";
-import UserDropdown from "../components/header/UserDropdown";
 import { useSidebar } from "../context/SidebarContext";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,7 +10,7 @@ import { UserProfileQuery } from "../api/query/UserQuery";
 import { Cookies } from "react-cookie";
 import { DropdownItem } from "../components/ui/dropdown/DropdownItem";
 import { Dropdown } from "../components/ui/dropdown/Dropdown";
-import { AccountIcon, InfoIcon } from "../icons";
+import { AccountIcon, InfoIcon, UsersIcon } from "../icons";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
@@ -267,6 +266,21 @@ const AppHeader: React.FC = () => {
                     Support
                   </DropdownItem>
                 </li>
+                {
+                  user?.role === "Admin"? 
+                  <li>
+                  <DropdownItem
+                    onItemClick={closeDropdown}
+                    tag="a"
+                    href="/signup"
+                    className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                    >
+                 <UsersIcon/>
+                    Create New User
+                  </DropdownItem>
+                </li>
+                 : null
+                  }
               </ul>
               <Link
                 href="/signin"

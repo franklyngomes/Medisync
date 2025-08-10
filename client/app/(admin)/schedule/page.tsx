@@ -12,6 +12,8 @@ import {
 } from "@fullcalendar/core";
 import { useModal } from "../../../hooks/useModal";
 import { Modal } from "../../../components/ui/modal"
+import { useStore } from "../../../store/store";
+import { AppointmentGroupQuery } from "../../../api/query/AppointmentQuery";
 
 interface CalendarEvent extends EventInput {
   extendedProps: {
@@ -23,12 +25,18 @@ const Schedule = () => {
     null
   );
   const [eventTitle, setEventTitle] = useState("");
+  const [patientName, setPatientName] = useState("")
   const [eventStartDate, setEventStartDate] = useState("");
   const [eventEndDate, setEventEndDate] = useState("");
   const [eventLevel, setEventLevel] = useState("");
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const calendarRef = useRef<FullCalendar>(null);
   const { isOpen, openModal, closeModal } = useModal();
+  const { user } = useStore()
+  const doctorId = (user?.role === "Doctor" ? user?.doctorId : "")
+  const { data: doctorAppointment } = AppointmentGroupQuery(doctorId, !!doctorId)
+  const specificAppointments = doctorAppointment?.data?.data
+  console.log(specificAppointments)
 
   const calendarsEvents = {
     Danger: "danger",
@@ -39,28 +47,21 @@ const Schedule = () => {
 
   useEffect(() => {
     // Initialize with some events
-    setEvents([
-      {
-        id: "1",
-        title: "Event Conf.",
-        start: new Date().toISOString().split("T")[0],
-        extendedProps: { calendar: "Danger" },
-      },
-      {
-        id: "2",
-        title: "Meeting",
-        start: new Date(Date.now() + 86400000).toISOString().split("T")[0],
-        extendedProps: { calendar: "Success" },
-      },
-      {
-        id: "3",
-        title: "Workshop",
-        start: new Date(Date.now() + 172800000).toISOString().split("T")[0],
-        end: new Date(Date.now() + 259200000).toISOString().split("T")[0],
-        extendedProps: { calendar: "Primary" },
-      },
-    ]);
-  }, []);
+    if (!specificAppointments) return;
+    const newEvents: CalendarEvent[] = specificAppointments?.map((item, index) => {
+      const appointmentStart = new Date(item?.appointmentDate)
+      const appointmentEnd = new Date(appointmentStart.getTime() + 30 * 60 * 1000)
+      return {
+        id: index,
+        title: `${item.patient.name} - Appointment`,
+        start: appointmentStart.toISOString(),
+        end: appointmentEnd.toISOString(),
+        allDay: false,
+        extendedProps: { calendar: `${item.status === "Scheduled" ? "Warning" : item.status === "Scheduled" }` }
+      }
+    })
+    setEvents(newEvents)
+  }, [specificAppointments]);
 
   const handleDateSelect = (selectInfo: DateSelectArg) => {
     resetModalFields();
@@ -102,7 +103,7 @@ const Schedule = () => {
         title: eventTitle,
         start: eventStartDate,
         end: eventEndDate,
-        allDay: true,
+        allDay: false,
         extendedProps: { calendar: eventLevel },
       };
       setEvents((prevEvents) => [...prevEvents, newEvent]);
@@ -138,7 +139,7 @@ const Schedule = () => {
           eventContent={renderEventContent}
           customButtons={{
             addEventButton: {
-              text: "Add Appointment",
+              text: "Add Event",
               click: openModal,
             },
           }}
@@ -152,7 +153,7 @@ const Schedule = () => {
         <div className="flex flex-col px-2 overflow-y-auto custom-scrollbar">
           <div>
             <h5 className="mb-2 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-2xl">
-              {selectedEvent ? "Edit Appointment" : "Add Appointment"}
+              {selectedEvent ? "Edit Event" : "Add Event"}
             </h5>
           </div>
           <div className="mt-8">
@@ -226,12 +227,12 @@ const renderEventContent = (eventInfo: EventContentArg) => {
   const colorClass = `fc-bg-${eventInfo.event.extendedProps.calendar.toLowerCase()}`;
   return (
     <div
-      className={`event-fc-color flex fc-event-main ${colorClass} p-1 rounded-sm`}
+      className={`event-fc-color flex w-full  fc-event-main ${colorClass} p-1 rounded-sm`}
     >
       <div className="fc-daygrid-event-dot"></div>
-      <div className="fc-event-time">{eventInfo.timeText}</div>
       <div className="fc-event-title">{eventInfo.event.title}</div>
     </div>
   );
 };
 export default Schedule
+

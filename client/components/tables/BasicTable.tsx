@@ -24,6 +24,7 @@ export default function BasicTable({ tableColumns, data, onDelete, billOption, b
   const { openModal, closeModal } = useModal();
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
   const { mutateAsync: submit } = BillGenerateQuery()
+  const { user } = useStore()
 
   const onClick = (data) => {
     const billData = data
@@ -32,8 +33,8 @@ export default function BasicTable({ tableColumns, data, onDelete, billOption, b
       }
     })
   }
-  const previewBill = (invoice : string) => {
-    if(!invoice){
+  const previewBill = (invoice: string) => {
+    if (!invoice) {
       toast.error("No invoice found!")
       return
     }
@@ -151,15 +152,18 @@ export default function BasicTable({ tableColumns, data, onDelete, billOption, b
                                 Generate Invoice
                               </DropdownItem>
                             }
-                            <DropdownItem
-                              onItemClick={() => {
-                                onDelete(item._id)
-                                closeDropdown()
-                              }}
-                              className="flex w-full font-normal text-left rounded-lg text-red-500 hover:text-red-500 hover:bg-gray-100 dark:hover:bg-white/5"
-                            >
-                              Delete
-                            </DropdownItem>
+                            {
+                              user?.role === "Admin" ?
+                                <DropdownItem
+                                  onItemClick={() => {
+                                    onDelete(item._id)
+                                    closeDropdown()
+                                  }}
+                                  className="flex w-full font-normal text-left rounded-lg text-red-500 hover:text-red-500 hover:bg-gray-100 dark:hover:bg-white/5"
+                                >
+                                  Delete
+                                </DropdownItem>
+                                : null}
                           </Dropdown>
                         </div>
                       </td>

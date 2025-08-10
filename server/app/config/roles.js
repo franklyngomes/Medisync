@@ -20,7 +20,7 @@ const ROLE_PERMISSIONS={
   [ROLES.RECEPTIONIST]: [
     "create_patient", "update_patient","read_patient",
     "create_appointment", "update_appointment","read_appointment",
-    "read_doctor","read_invoice","user_profile"
+    "read_doctor","read_invoice","user_profile","create_invoice"
   ],
   [ROLES.DOCTOR]: [
     "create_appointment", "read_appointment", "update_appointment","read_patient",

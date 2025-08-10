@@ -13,12 +13,13 @@ import {
   PatientIcon,
   // InpatientIcon,
   PaymentIcon,
-  RoomIcon,
+  // RoomIcon,
   RadiologyIcon,
   PathologyIcon,
   ScheduleIcon,
   // OutpatientIcon
 } from "../icons/index";
+import { useStore } from "../store/store";
 
 type NavItem = {
   name: string;
@@ -27,7 +28,7 @@ type NavItem = {
   subItems?: { path: string; pro?: boolean; new?: boolean }[];
 };
 
-const navItems: NavItem[] = [
+const AdminNavItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
@@ -73,10 +74,96 @@ const navItems: NavItem[] = [
     name: "Radiology",
     path: "/radiology",
   },
+  // {
+  //   icon: <RoomIcon />,
+  //   name: "Rooms",
+  //   path: "/rooms",
+  // },
   {
-    icon: <RoomIcon />,
-    name: "Rooms",
-    path: "/rooms",
+    icon: <PaymentIcon />,
+    name: "Billing",
+    path: "/billing",
+  },
+];
+const ReceptionistNavItems: NavItem[] = [
+  {
+    icon: <GridIcon />,
+    name: "Dashboard",
+    path: "/",
+  },
+  {
+    icon: <PatientIcon />,
+    name: "Patient",
+    path: "/patient",
+  },
+  {
+    icon: <DoctorIcon />,
+    name: "Doctor",
+    path: "/doctor",
+  },
+  {
+    icon: <AppointmentIcon />,
+    name: "Appointments",
+    path: "/appointments",
+  },
+  {
+    icon: <PaymentIcon />,
+    name: "Billing",
+    path: "/billing",
+  },
+];
+const DoctorNavItems: NavItem[] = [
+  {
+    icon: <GridIcon />,
+    name: "Dashboard",
+    path: "/",
+  },
+  {
+    icon: <PatientIcon />,
+    name: "Patient",
+    path: "/patient",
+  },
+  // {
+  //   icon: <InpatientIcon />,
+  //   name: "Inpatient - IPD",
+  //   path: "/inpatient",
+  // },
+  // {
+  //   icon: <OutpatientIcon />,
+  //   name: "Outpatient - OPD",
+  //   path: "/outpatient",
+  // },
+    {
+    icon: <ScheduleIcon />,
+    name: "Schedule",
+    path: "/schedule",
+  },
+  {
+    icon: <AppointmentIcon />,
+    name: "Appointments",
+    path: "/appointments",
+  },
+];
+const LabStaffNavItems: NavItem[] = [
+  {
+    icon: <GridIcon />,
+    name: "Dashboard",
+    path: "/",
+  },
+  {
+    icon: <PatientIcon />,
+    name: "Patient",
+    path: "/patient",
+  },
+  {
+    icon: <PathologyIcon />,
+    name: "Pathology",
+    path: "/pathology",
+  },
+  {
+    icon: <RadiologyIcon />,
+    name: "Radiology",
+    path: "/radiology",
   },
   {
     icon: <PaymentIcon />,
@@ -95,6 +182,7 @@ const othersItems: NavItem[] = [
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
+  const {user} = useStore()
 
   const renderMenuItems = (
     navItems: NavItem[],
@@ -276,7 +364,7 @@ const AppSidebar: React.FC = () => {
                   null
                 )}
               </h2>
-              {renderMenuItems(navItems, "main")}
+              {renderMenuItems(user?.role === "Admin" ? AdminNavItems :user?.role === "Doctor" ? DoctorNavItems : user?.role === "Receptionist" ? ReceptionistNavItems : LabStaffNavItems, "main")}
             </div>
 
             <div className="">

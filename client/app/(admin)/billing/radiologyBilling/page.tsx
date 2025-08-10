@@ -136,9 +136,13 @@ const RadiologyBilling = () => {
     formdata.append("source", source)
     formdata.append("paymentMethod", paymentMethod)
     mutateAsync(formdata, {
-      onSuccess: () => {
-        reset()
-        closeModal()
+      onSuccess: (res) => {
+        if (res?.data?.status === true) {
+          toast.success(res?.data?.message)
+          closeModal()
+        } else {
+          toast.error(res?.response?.data.message)
+        }
       }
     })
   }
@@ -150,12 +154,12 @@ const RadiologyBilling = () => {
     };
     update({ editId, payload }, {
       onSuccess: (res) => {
-        if (res.data.status === true) {
-          toast.success(res.data.message)
+        if (res?.data?.status === true) {
+          toast.success(res?.data?.message)
           closeModal()
           setIsEditing(false)
         } else {
-          toast.error(res.data.message)
+          toast.error(res?.response?.data.message)
         }
       }
     })
@@ -163,12 +167,12 @@ const RadiologyBilling = () => {
   const onDelete = (id: string) => {
     deletePayment(id, {
       onSuccess: (res) => {
-        if (res.data.status === true) {
-          toast.success(res.data.message)
+        if (res?.data?.status === true) {
+          toast.success(res?.data?.message)
           closeModal()
           setIsEditing(false)
         } else {
-          toast.error(res.data.message)
+          toast.error(res?.response?.data.message)
         }
       }
     })

@@ -51,7 +51,6 @@ const Appointment = () => {
   const doctorId = (user?.role === "Doctor" ? user?.doctorId : "")
   const {data: doctorAppointment} = AppointmentGroupQuery(doctorId, !!doctorId)
   const specificAppointments = doctorAppointment?.data?.data
-  console.log(specificAppointments)
 
   const tableColumns = [
     { label: "Appointment No.", key: "appointmentNo" },
