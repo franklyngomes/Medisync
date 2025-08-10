@@ -1,6 +1,5 @@
 const AppointmentModel = require("../model/AppointmentModel");
 const HttpCode = require("../helper/HttpCode");
-const mongoose = require('mongoose')
 const {ObjectId} = require('mongodb')
 
 class AppointmentController {
