@@ -77,7 +77,7 @@ const AppointmentBilling = () => {
   const tableColumns = [
     { label: "Appointment No.", key: "appointmentId.appointmentNo" },
     {
-      label: "Date", key: "date", render: (item: any) => item.date ? format(new Date(item.date), "dd-MM-yyyy") : "---"
+      label: "Date", key: "date", render: (item: AppointmentBillTableItem) => item.date ? format(new Date(item.date), "dd-MM-yyyy") : "---"
     },
     { label: "Patient", key: "appointmentId.patientId.name" },
     { label: "Doctor", key: "appointmentId.doctorId.name" },

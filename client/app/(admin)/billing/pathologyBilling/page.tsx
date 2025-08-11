@@ -80,7 +80,7 @@ const PathologyBilling = () => {
   const tableColumns = [
     { label: "Bill No.", key: "billNo" },
     {
-      label: "Date", key: "date", render: (item: any) => item.date ? format(new Date(item.date), "dd-MM-yyyy") : "---"
+      label: "Date", key: "date", render: (item: PathologyBillTableItem) => item.date ? format(new Date(item.date), "dd-MM-yyyy") : "---"
     },
     { label: "Patient", key: "patientId.name" },
     { label: "Reference Doctor", key: "referenceDoctor.name" },

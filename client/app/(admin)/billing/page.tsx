@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import { AppointmentIcon, ArrowRightIcon, InpatientIcon, OutpatientIcon, PathologyIcon, RadiologyIcon } from '../../../icons'
+import { AppointmentIcon, ArrowRightIcon,PathologyIcon, RadiologyIcon } from '../../../icons'
 import Button from "../../../components/ui/button/Button";
 import PageBreadcrumb from '../../../components/common/PageBreadCrumb';
 import Link from 'next/link';

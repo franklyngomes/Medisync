@@ -27,7 +27,7 @@ const Room = () => {
   const rooms = data?.data
   console.log(rooms)
   const { isOpen, openModal, closeModal } = useModal();
-  const { handleSubmit, reset, control, setValue } = useForm();
+  const { handleSubmit, reset, control } = useForm();
   const { mutateAsync } = CreateRoomQuery()
   const { editId, isEditing, setIsEditing } = useStore();
   const { data: details } = RoomDetailsQuery(editId, !!editId)
@@ -42,7 +42,7 @@ const Room = () => {
     {
       label: "Status",
       key: "status",
-      render: (item: any) => (
+      render: (item: RoomFormProps) => (
         <Badge
           size="sm"
           color={

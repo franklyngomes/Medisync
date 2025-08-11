@@ -34,7 +34,7 @@ export default function SignIn() {
     formData.append('email', email)
     formData.append('password', password)
     await mutateAsync(formData, {
-      onSuccess: (res: any) => {
+      onSuccess: (res) => {
         if (res?.data?.status === true) {
           toast.success(res?.data?.message)
           const token = res?.data?.token
