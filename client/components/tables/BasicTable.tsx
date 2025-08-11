@@ -49,7 +49,7 @@ interface BasicTableProps<T extends{_id:string; invoice?:string}>{
   data: BillDataProps ;
   onDelete: (id:string) => void;
   billOption?: boolean;
-  billType: string;
+  billType?: string;
 }
 
 export default function BasicTable<T extends{_id: string; invoice?:string}>({ tableColumns, data, onDelete, billOption, billType }: BasicTableProps<T>) {
@@ -72,7 +72,7 @@ export default function BasicTable<T extends{_id: string; invoice?:string}>({ ta
       toast.error("No invoice found!")
       return
     }
-    router.push(`http://localhost:5000${invoice}`)
+    router.push(`https://medisync-backend-ybge.onrender.com${invoice}`)
   }
 
   function toggleDropdown(index: number) {

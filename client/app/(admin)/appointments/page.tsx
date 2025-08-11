@@ -229,7 +229,7 @@ type AppointmentFormData = {
           </Button>
         </div>
         <div className="space-y-6">
-          <BasicTable data={user?.role === "Doctor" ? specificAppointments : appointments} tableColumns={tableColumns} onDelete={onDelete} />
+          <BasicTable data={user?.role === "Doctor" ? specificAppointments : appointments} tableColumns={tableColumns} onDelete={onDelete}/>
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={() => {
