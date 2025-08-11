@@ -9,7 +9,7 @@ import { useModal } from "../../../hooks/useModal";
 import { Modal } from "../../../components/ui/modal";
 import Label from "../../../components/form/Label";
 import Select from "../../../components/form/Select";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import Badge from "../../../components/ui/badge/Badge";
 import { useStore } from "../../../store/store";
 import Input from "../../../components/form/input/InputField";
@@ -19,6 +19,29 @@ import FileInput from "../../../components/form/input/FileInput";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
+interface DoctorFormInputs {
+  name: string;
+  specialization: string;
+  email: string;
+  consultation: number;
+  surgery: number;
+  phone: string;
+  image?: File | null;
+  status?: string;
+}
+
+interface DoctorTableItem {
+  _id: string;
+  name: string;
+  specialization: string;
+  phone: string;
+  fees: {
+    consultation: number;
+    surgery: number;
+  };
+  status: string;
+  image?: string;
+}
 
 const Doctor = () => {
   const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
@@ -72,7 +95,7 @@ const Doctor = () => {
     {
       label: "Status",
       key: "status",
-      render: (item: any) => (
+      render: (item: DoctorTableItem) => (
         <Badge
           size="sm"
           color={
@@ -144,15 +167,15 @@ const Doctor = () => {
       value: "Obstetrician-gynecologist"
     },
   ]
-  const onSubmit = (data: any) => {
+  const onSubmit:SubmitHandler<DoctorFormInputs> = (data) => {
     const { name, specialization, phone, email, consultation, surgery, image } = data
     const formdata = new FormData()
     formdata.append("name", name)
     formdata.append("specialization", specialization)
     formdata.append("phone", phone)
     formdata.append("email", email)
-    formdata.append("consultation", consultation)
-    formdata.append("surgery", surgery)
+    formdata.append("consultation", consultation.toString())
+    formdata.append("surgery", surgery.toString())
     if (image) formdata.append("image", image)
     mutateAsync(formdata, {
       onSuccess: (res) => {
@@ -167,7 +190,7 @@ const Doctor = () => {
       }
     })
   }
-  const onUpdate = (data: any) => {
+  const onUpdate: SubmitHandler<DoctorFormInputs> = (data) => {
     const { name, specialization, phone, email, consultation, surgery, status } = data
     const formData = new FormData()
     formData.append("name", name)
@@ -175,12 +198,12 @@ const Doctor = () => {
     formData.append("phone", phone)
     formData.append("email", email)
     formData.append("status", status)
-    formData.append("consultation", consultation)
-    formData.append("surgery", surgery)
+    formData.append("consultation", consultation.toString())
+    formData.append("surgery", surgery.toString())
 
     if (image) formData.append("image", image)
     update({ editId, formData }, {
-      onSuccess: (res: any) => {
+      onSuccess: (res) => {
         if (res?.data?.status === true) {
           toast.success(res?.data?.message)
           closeModal()
@@ -193,7 +216,7 @@ const Doctor = () => {
   }
   const onDelete = (id: string) => {
     deleteDoctor(id, {
-      onSuccess: (res: any) => {
+      onSuccess: (res) => {
         if (res?.data?.status === true) {
           toast.success(res?.data?.message)
           closeModal()

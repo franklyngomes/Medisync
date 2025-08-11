@@ -1,11 +1,11 @@
 import axios from 'axios'
 
-const baseURL = "https://medisync-backend-ybge.onrender.com/api"
+const baseURL = "http://localhost:5000/api"
 
 export const axiosInstance = axios.create({
   baseURL
 })
 
 export const reportApi = axios.create({
-  baseURL: "https://medisync-backend-ybge.onrender.com/report"
+  baseURL: "http://localhost:5000/report"
 })

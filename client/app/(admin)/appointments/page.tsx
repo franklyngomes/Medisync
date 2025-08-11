@@ -52,6 +52,33 @@ const Appointment = () => {
   const {data: doctorAppointment} = AppointmentGroupQuery(doctorId, !!doctorId)
   const specificAppointments = doctorAppointment?.data?.data
 
+  type Patient = {
+  _id: string;
+  name: string;
+};
+
+type Doctor = {
+  _id: string;
+  name: string;
+};
+
+type AppointmentType = {
+  _id: string;
+  appointmentNo: string;
+  patientId: Patient;
+  doctorId: Doctor;
+  appointmentDate: string;
+  note: string;
+  status: "Scheduled" | "Completed" | "Cancelled";
+};
+type AppointmentFormData = {
+  patientId: string;
+  doctorId: string;
+  appointmentDate: string;
+  note: string;
+  status: "Scheduled" | "Completed" | "Cancelled";
+};
+
   const tableColumns = [
     { label: "Appointment No.", key: "appointmentNo" },
     { label: "Patient Name", key:`${user?.role === "Doctor" ? "patient.name" :"patientId.name"}` },
@@ -59,11 +86,11 @@ const Appointment = () => {
     { label: "Doctor Name", key: `${user?.role === "Doctor"? "doctor.name" : "doctorId.name"}` },
     {
       label: "Appointment Date",
-      render: (item: any) => format(new Date(item.appointmentDate), "dd-MM-yyyy")
+      render: (item: AppointmentType) => format(new Date(item.appointmentDate), "dd-MM-yyyy")
     },
     {
       label: "Appointment Time",
-      render: (item: any) =>
+      render: (item: AppointmentType) =>
         new Date(item.appointmentDate).toLocaleTimeString('en-IN', {
           hour: "2-digit",
           minute: "2-digit",
@@ -74,7 +101,7 @@ const Appointment = () => {
     {
       label: "Status",
       key: "status",
-      render: (item: any) => (
+      render: (item: AppointmentType) => (
         <Badge
           size="sm"
           color={
@@ -104,7 +131,7 @@ const Appointment = () => {
       value: "Cancelled"
     }
   ]
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: AppointmentFormData) => {
     const { patientId, doctorId, appointmentDate, note } = data
     const formdata = new FormData()
     formdata.append("patientId", patientId)
@@ -123,7 +150,7 @@ const Appointment = () => {
       }
     })
   }
-  const onUpdate = (data: any) => {
+  const onUpdate = (data: AppointmentFormData) => {
     const { note, status, appointmentDate } = data
     const formdata = new FormData()
     formdata.append("note", note)

@@ -1,5 +1,6 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { Signup, Signin, VerifyEmail, RestPassword, ForgotPassword } from "../functions/AuthFunc"
+import { queryClient } from "../../app/(admin)/provider"
 
 type SignupPayload = {
   firstName: string,
@@ -35,7 +36,7 @@ export const SigninQuery = () => {
   return useMutation({
     mutationFn: (payload : SigninPayload) => Signin(payload),
     onSuccess: () => {
-
+      queryClient.invalidateQueries({queryKey:["UserProfile"]})
     }
   })
 }

@@ -283,7 +283,7 @@ class UserController {
           designation: user.designation,
         },
         process.env.JWT_SECRET_KEY,
-        { expiresIn: "5hr" }
+        { expiresIn: "5d" }
       );
       return res.status(HttpCode.success).json({
         status: true,
@@ -451,6 +451,7 @@ class UserController {
         data: userDetails,
       });
     } catch (error) {
+      console.log(error)
       return res.status(HttpCode.serverError).json({
         status: false,
         message: error.message,

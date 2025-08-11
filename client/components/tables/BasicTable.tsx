@@ -65,7 +65,12 @@ export default function BasicTable<T extends{_id: string; invoice?:string}>({ ta
 
   //Function to dynamically access nested object values
   function getValueByKeyPath(obj: T, path: string) : unknown {
-    return path.split('.').reduce<unknown>((acc, key) => acc?.[key], obj);
+    return path.split(".").reduce<unknown>((acc, key) => {
+      if (typeof acc === "object" && acc !== null && key in acc) {
+        return (acc as Record<string, unknown>)[key];
+      }
+      return undefined;
+    }, obj);
   }
   return (
     <div className="overflow-hidden border border-gray-100 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -109,14 +114,16 @@ export default function BasicTable<T extends{_id: string; invoice?:string}>({ ta
               {data && data.length > 0 ? (
                 data.map((item, index: number) => (
                   <TableRow key={index} className="dark:hover:bg-gray-700 hover:bg-gray-100">
-                    {tableColumns.map((col: any, colIndex: number) => (
+                    {tableColumns.map((col, colIndex) => (
                       <TableCell
                         key={colIndex}
                         className="px-3 py-3 text-gray-800 text-start text-theme-xs dark:text-gray-200"
                       >
                         {col.render
                           ? col.render(item, index)
-                          : getValueByKeyPath(item, col.key || "")}
+                          : col.key
+                          ? String(getValueByKeyPath(item, col.key.toString()) ?? "")
+                          : ""}
                       </TableCell>
                     ))}
                     {
