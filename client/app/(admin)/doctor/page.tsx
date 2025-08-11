@@ -238,7 +238,7 @@ const Doctor = () => {
     if (isEditing) {
       openModal()
     }
-  }, [isEditing])
+  }, [isEditing, openModal])
 
   // useEffect to reset form values when editing
   React.useEffect(() => {
