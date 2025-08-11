@@ -23,13 +23,33 @@ type TableColumn<T>= {
   key?: keyof T | string;
   render?: (row:T, index: number) => React.ReactNode
 }
+interface BillDataProps {
+  appointmentId?: string;
+  patientId?: string;
+  doctorId?: string;
+  referenceDoctor?: string;
+  testId?: string
+  billNo?: string;
+  chargeType?: string;
+  noOfHour?: number;
+  charge?: number;
+  standardCharge?: number;
+  appliedCharge?: number;
+  discount: number;
+  tax: number;
+  source: string;
+  paymentMethod: string;
+  date: Date;
+  status?: string;
+}
+
 
 interface BasicTableProps<T extends{_id:string; invoice?:string}>{
   tableColumns: TableColumn<T>[];
-  data: T[];
+  data: BillDataProps ;
   onDelete: (id:string) => void;
   billOption?: boolean;
-  billType?: string;
+  billType: string;
 }
 
 export default function BasicTable<T extends{_id: string; invoice?:string}>({ tableColumns, data, onDelete, billOption, billType }: BasicTableProps<T>) {
@@ -40,9 +60,9 @@ export default function BasicTable<T extends{_id: string; invoice?:string}>({ ta
   const { mutateAsync: submit } = BillGenerateQuery()
   const { user } = useStore()
 
-  const onClick = (data:T) => {
+  const onClick = (data:BillDataProps) => {
     const billData = data
-    submit({ billType, billData }, {
+    submit({ billType, billData}, {
       onSuccess: () => {
       }
     })
