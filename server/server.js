@@ -27,7 +27,7 @@ app.use("/api", apiRouter);
 const reportRouter = require("./app/routes/ReportRoutes");
 app.use("/report", reportRouter);
 
-const port = 5000;
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log("Server is running on http://localhost:5000");
 });
