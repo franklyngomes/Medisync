@@ -2,6 +2,7 @@ import { axiosInstance } from "../axios/axiosInstance";
 import { endPoints } from "../endPoints/endPoints";
 import { Cookies } from "react-cookie";
 
+
 export const ListDoctor = () => {
   try {
     const cookies = new Cookies()
@@ -16,11 +17,11 @@ export const ListDoctor = () => {
     return error
   }
 }
-export const CreateDoctor = (formdata: FormData) => {
+export const CreateDoctor = async (formdata: FormData) => {
   try {
     const cookies = new Cookies()
     const token = cookies.get("token")
-    const response = axiosInstance.post(endPoints.doctors.doctor_create, formdata, {
+    const response = await axiosInstance.post(endPoints.doctors.doctor_create, formdata, {
       headers: {
         Authorization: `Bearer ${token}`
       }

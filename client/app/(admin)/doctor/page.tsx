@@ -167,7 +167,7 @@ const Doctor = () => {
       value: "Obstetrician-gynecologist"
     },
   ]
-  const onSubmit: SubmitHandler<DoctorFormInputs> = (data) => {
+  const onSubmit: SubmitHandler<DoctorFormInputs> = (data :DoctorFormInputs) => {
     const { name, specialization, phone, email, consultation, surgery, image } = data
     const formdata = new FormData()
     formdata.append("name", name)
