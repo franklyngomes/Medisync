@@ -50,7 +50,7 @@ export const Signin = async (payload: SigninPayload) => {
 }
 export const VerifyEmail = async (token: string) => {
   try {
-    const response = await axios.get(`http://localhost:5000/api${endPoints.auth.verify_email}`,
+    const response = await axios.get(`https://medisync-backend-ybge.onrender.com/api${endPoints.auth.verify_email}`,
       {
         params: { token },
       })

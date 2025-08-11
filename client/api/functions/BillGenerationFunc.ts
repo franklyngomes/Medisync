@@ -7,7 +7,7 @@ export const BillGenerationFunc = async (billType: string, billData: any) => {
     const {reportPath} = response?.data;
 
     const filename = reportPath.split("/").pop();
-    const printUrl = `http://localhost:5000/report/print/${filename}`
+    const printUrl = `https://medisync-backend-ybge.onrender.com/report/print/${filename}`
 
     window.open(printUrl, "_blank")
     return response
