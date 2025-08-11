@@ -17,6 +17,14 @@ import { CreatePatientQuery, PatientDeleteQuery, PatientDetailsQuery, PatientLis
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
+interface PatientFormProps {
+  name: string;
+  gender: string;
+  age: number;
+  bloodType: string;
+  address: string;
+  phone: string;
+}
 
 
 const Patient = () => {
@@ -28,10 +36,10 @@ const Patient = () => {
     bloodType: yup.string().required("Blood Type is required"),
     address: yup.string().required("Note is required").max(50),
     phone: yup.string()
-  .required("Phone number required")
-  .matches(phoneRegExp, 'Phone number is not valid')
-  .min(10, "too short")
-  .max(10, "too long"),
+      .required("Phone number required")
+      .matches(phoneRegExp, 'Phone number is not valid')
+      .min(10, "too short")
+      .max(10, "too long"),
   });
   const { data } = PatientListQuery()
   const patients = data?.data?.data
@@ -104,7 +112,7 @@ const Patient = () => {
     },
 
   ]
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: PatientFormProps) => {
     const { name, gender, age, bloodType, address, phone } = data
     const formdata = new FormData()
     formdata.append("name", name)
@@ -125,7 +133,7 @@ const Patient = () => {
       }
     })
   }
-  const onUpdate = (data: any) => {
+  const onUpdate = (data: PatientFormProps) => {
     const { name, gender, age, bloodType, address, phone } = data
     const formData = new FormData()
     formData.append("name", name)
@@ -232,10 +240,10 @@ const Patient = () => {
                         )}
                       />
                       {errors.name && (
-                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
-                        {errors.name.message}
-                      </p>
-                    )}
+                        <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                          {errors.name.message}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div>
@@ -252,10 +260,10 @@ const Patient = () => {
                         )}
                       />
                       {errors.age && (
-                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
-                        {errors.age.message}
-                      </p>
-                    )}
+                        <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                          {errors.age.message}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div>
@@ -323,10 +331,10 @@ const Patient = () => {
                         )}
                       />
                       {errors.address && (
-                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
-                        {errors.address.message}
-                      </p>
-                    )}
+                        <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                          {errors.address.message}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div>
@@ -342,7 +350,7 @@ const Patient = () => {
                         )}
                       />
                     </div>
-                      {errors.phone && (
+                    {errors.phone && (
                       <p style={{ color: "red", margin: "0", padding: "5px" }}>
                         {errors.phone.message}
                       </p>

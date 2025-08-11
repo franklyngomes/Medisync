@@ -20,7 +20,30 @@ import Badge from "../../../../components/ui/badge/Badge";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-
+interface AppointmentBillFormProps {
+  appointmentId: string;
+  noOfHour: number;
+  discount: number;
+  chargeType: string;
+  source: string;
+  paymentMethod: string;
+  status?: string;
+}
+interface AppointmentBillTableItem {
+  appointmentId: string;
+  patientId: string;
+  doctorId: string;
+  chargeType: string;
+  noOfHour: number;
+  standardCharge: number;
+  appliedCharge: number;
+  discount: number;
+  tax: number;
+  source: string;
+  paymentMethod: string;
+  date: Date;
+  status?: string;
+}
 const AppointmentBilling = () => {
   const schema = yup.object({
     appointmentId: yup.string().required("Patient is required"),
@@ -69,7 +92,7 @@ const AppointmentBilling = () => {
     {
       label: "Status",
       key: "status",
-      render: (item: any) => (
+      render: (item: AppointmentBillTableItem) => (
         <Badge
           size="sm"
           color={
@@ -133,7 +156,7 @@ const AppointmentBilling = () => {
       value: "Card",
     },
   ]
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: AppointmentBillFormProps) => {
     const { appointmentId, noOfHour, discount, chargeType, source, paymentMethod } = data
     const formdata = new FormData()
     formdata.append("appointmentId", appointmentId)
@@ -149,7 +172,7 @@ const AppointmentBilling = () => {
       }
     })
   }
-  const onUpdate = (data: any) => {
+  const onUpdate = (data: AppointmentBillFormProps) => {
     const { chargeType, noOfHour, discount, status, source, paymentMethod } = data;
 
     const payload = {

@@ -17,6 +17,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 
+interface PathologyFormProps {
+  testName: string;
+  category: string;
+  method: string;
+  reportDays: number;
+  charge: number;
+}
 const Pathology = () => {
   const schema = yup.object({
     testName: yup.string().required("Name is required"),
@@ -64,7 +71,7 @@ const Pathology = () => {
     { label: "Report Days", key: "reportDays" },
     { label: "Charge(₹)", key: "charge" },
   ]
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: PathologyFormProps) => {
     const { testName, category, method, reportDays, charge } = data
     const formdata = new FormData()
     formdata.append("testName", testName)
@@ -84,7 +91,7 @@ const Pathology = () => {
       }
     })
   }
-  const onUpdate = (data: any) => {
+  const onUpdate = (data: PathologyFormProps) => {
     const { testName, category, method, reportDays, charge } = data
     const formdata = new FormData()
     formdata.append("testName", testName)

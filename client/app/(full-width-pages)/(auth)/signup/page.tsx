@@ -12,6 +12,16 @@ import { DoctorListQuery } from "../../../../api/query/DoctorQuery"
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
+interface SignupFormProps {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  phone: string;
+  designation: string;
+  doctorId?: string;
+  role: string;
+}
 const roleOptions = [
   {
     label: "Admin",
@@ -49,13 +59,12 @@ const schema = yup.object({
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [doctorOptions, setDoctorOptions] = React.useState<{ label: string, value: string }[]>([])
-  const [role, setRole] = useState("");
   const { data } = DoctorListQuery()
   const doctors = data?.data?.data
   const { handleSubmit, reset, control, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(schema) });
   const { mutateAsync } = SignupQuery()
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data : SignupFormProps) => {
     const { firstName, lastName, email, password, phone, designation, doctorId, role } = data
     const formData = new FormData()
     formData.append('firstName', firstName)
@@ -67,7 +76,7 @@ export default function SignUp() {
     formData.append('doctorId', doctorId)
     formData.append('role', role)
     await mutateAsync(formData, {
-      onSuccess: (res: any) => {
+      onSuccess: (res) => {
         if (res?.data?.status === true) {
           toast.success(res?.data?.message)
           reset()

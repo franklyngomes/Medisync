@@ -22,7 +22,28 @@ import { RadiologyTestListQuery } from "../../../../api/query/RadiologyTestQuery
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-
+interface RadiologyBillFormProps {
+  patientId: string;
+  testId: string
+  referenceDoctor: string;
+  discount: number;
+  source: string;
+  paymentMethod: string;
+  status?:string;
+}
+interface RadiologyBillTableItem {
+  billNo: string;
+  patientId: string;
+  testId: string
+  referenceDoctor: string;
+  charge: number;
+  discount: number;
+  tax: number;
+  source: string;
+  paymentMethod: string;
+  date: Date;
+  status?: string;
+}
 const RadiologyBilling = () => {
   const schema = yup.object({
     billNo: yup.string(),
@@ -59,7 +80,7 @@ const RadiologyBilling = () => {
   const tableColumns = [
     { label: "Bill No.", key: "billNo" },
     {
-      label: "Date", key: "date", render: (item: any) => item.date ? format(new Date(item.date), "dd-MM-yyyy") : "---"
+      label: "Date", key: "date", render: (item: RadiologyBillTableItem) => item.date ? format(new Date(item.date), "dd-MM-yyyy") : "---"
     },
     { label: "Patient", key: "patientId.name" },
     { label: "Reference Doctor", key: "referenceDoctor.name" },
@@ -72,7 +93,7 @@ const RadiologyBilling = () => {
     {
       label: "Status",
       key: "status",
-      render: (item: any) => (
+      render: (item: RadiologyBillTableItem) => (
         <Badge
           size="sm"
           color={
@@ -126,7 +147,7 @@ const RadiologyBilling = () => {
       value: "Offline"
     },
   ]
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: RadiologyBillFormProps) => {
     const { testId, patientId, referenceDoctor, discount, source, paymentMethod } = data
     const formdata = new FormData()
     formdata.append("testId", testId)
@@ -146,11 +167,11 @@ const RadiologyBilling = () => {
       }
     })
   }
-  const onUpdate = (data: any) => {
-    const { testId, chargeType, discount, status, source, paymentMethod } = data;
+  const onUpdate = (data: RadiologyBillFormProps) => {
+    const { testId, discount, status, source, paymentMethod } = data;
 
     const payload = {
-      testId, chargeType, discount, status, source, paymentMethod
+      testId, discount, status, source, paymentMethod
     };
     update({ editId, payload }, {
       onSuccess: (res) => {

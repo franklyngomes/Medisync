@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation} from "@tanstack/react-query"
 import { Signup, Signin, VerifyEmail, RestPassword, ForgotPassword } from "../functions/AuthFunc"
 import { queryClient } from "../../app/(admin)/provider"
 

@@ -16,7 +16,14 @@ import { RadiologyTestCreateQuery, RadiologyTestListQuery, RadiologyTestDeleteQu
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-
+interface RadiologyFormProps {
+  testName: string;
+  testType:string;
+  category: string;
+  method: string;
+  reportDays: number;
+  charge: number;
+}
 const Radiology = () => {
   const schema = yup.object({
       testName: yup.string().required("Name is required"),
@@ -56,7 +63,7 @@ const Radiology = () => {
     { label: "Report Days", key: "reportDays" },
     { label: "Charge(₹)", key: "charge" },
   ]
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: RadiologyFormProps) => {
     const { testName, category, testType, reportDays, charge } = data
     const formdata = new FormData()
     formdata.append("testName", testName)
@@ -76,7 +83,7 @@ const Radiology = () => {
       }
     })
   }
-  const onUpdate = (data: any) => {
+  const onUpdate = (data: RadiologyFormProps) => {
     const { testName, category, testType, reportDays, charge } = data
     const formdata = new FormData()
     formdata.append("testName", testName)

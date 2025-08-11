@@ -70,7 +70,7 @@ export const RadiologyTestDelete = async (id: string) => {
   try {
     const cookies = new Cookies()
     const token = cookies.get("token")
-    const response = await axiosInstance.post(endPoints.radiologyTest.radiologyTest_delete + id, {
+    const response = await axiosInstance.post(endPoints.radiologyTest.radiologyTest_delete + id,{}, {
       headers: {
         Authorization: `Bearer ${token}`
       }

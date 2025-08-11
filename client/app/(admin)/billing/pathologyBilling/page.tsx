@@ -22,10 +22,31 @@ import { PathologyTestListQuery } from "../../../../api/query/PathologyTestQuery
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-
+interface PathologyBillFormProps {
+  patientId: string;
+  testId: string
+  referenceDoctor: string;
+  discount: number;
+  source: string;
+  paymentMethod: string;
+  status?:string;
+}
+interface PathologyBillTableItem {
+  billNo: string;
+  patientId: string;
+  testId: string
+  referenceDoctor: string;
+  charge: number;
+  discount: number;
+  tax: number;
+  source: string;
+  paymentMethod: string;
+  date: Date;
+  status?: string;
+}
 const PathologyBilling = () => {
   const schema = yup.object({
-    billNo:yup.string(),
+    billNo: yup.string(),
     patientId: yup.string().required("Patient is required"),
     testId: yup.string().required("Test is required"),
     referenceDoctor: yup.string().required("Doctor is required"),
@@ -72,7 +93,7 @@ const PathologyBilling = () => {
     {
       label: "Status",
       key: "status",
-      render: (item: any) => (
+      render: (item: PathologyBillTableItem) => (
         <Badge
           size="sm"
           color={
@@ -126,7 +147,7 @@ const PathologyBilling = () => {
       value: "Offline"
     },
   ]
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: PathologyBillFormProps) => {
     const { testId, patientId, referenceDoctor, discount, source, paymentMethod } = data
     const formdata = new FormData()
     formdata.append("testId", testId)
@@ -147,11 +168,11 @@ const PathologyBilling = () => {
       }
     })
   }
-  const onUpdate = (data: any) => {
-    const { testId, chargeType, discount, status, source, paymentMethod } = data;
+  const onUpdate = (data: PathologyBillFormProps) => {
+    const { testId, discount, status, source, paymentMethod } = data;
 
     const payload = {
-      testId, chargeType, discount, status, source, paymentMethod
+      testId, discount, status, source, paymentMethod
     };
     update({ editId, payload }, {
       onSuccess: (res) => {
@@ -441,10 +462,10 @@ const PathologyBilling = () => {
                         </>
                       </div>
                       {errors.status && (
-                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
-                        {errors.status.message}
-                      </p>
-                    )}
+                        <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                          {errors.status.message}
+                        </p>
+                      )}
                     </div>
                   }
                   {isEditing &&
@@ -467,10 +488,10 @@ const PathologyBilling = () => {
                         )}
                       />
                       {errors.date && (
-                      <p style={{ color: "red", margin: "0", padding: "5px" }}>
-                        {errors.date.message}
-                      </p>
-                    )}
+                        <p style={{ color: "red", margin: "0", padding: "5px" }}>
+                          {errors.date.message}
+                        </p>
+                      )}
                     </div>
                   }
                 </div>

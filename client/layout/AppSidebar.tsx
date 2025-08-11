@@ -193,7 +193,10 @@ const AppSidebar: React.FC = () => {
         <li key={nav.name}>
           {nav.subItems ? (
             <button
-              onClick={() => handleSubmenuToggle(index, menuType)}
+              onClick={() =>{
+                handleSubmenuToggle(index, menuType)
+                
+              }}
               className={`menu-item group  ${openSubmenu?.type === menuType && openSubmenu?.index === index
                 ? "menu-item-active"
                 : "menu-item-inactive"

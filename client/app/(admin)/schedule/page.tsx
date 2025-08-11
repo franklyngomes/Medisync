@@ -20,12 +20,27 @@ interface CalendarEvent extends EventInput {
     calendar: string;
   };
 }
+interface AppointmentFormData {
+  doctorId: string;
+  appointmentDate: string;
+  note: string;
+  patient: {
+    address: string;
+    age: number;
+    bloodType: string;
+    gender: string;
+    name: string;
+    phone: string;
+    updatedAt: string;
+    _id: string;
+  };
+  status: "Scheduled" | "Completed" | "Cancelled";
+};
 const Schedule = () => {
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
     null
   );
   const [eventTitle, setEventTitle] = useState("");
-  const [patientName, setPatientName] = useState("")
   const [eventStartDate, setEventStartDate] = useState("");
   const [eventEndDate, setEventEndDate] = useState("");
   const [eventLevel, setEventLevel] = useState("");
@@ -36,28 +51,20 @@ const Schedule = () => {
   const doctorId = (user?.role === "Doctor" ? user?.doctorId : "")
   const { data: doctorAppointment } = AppointmentGroupQuery(doctorId, !!doctorId)
   const specificAppointments = doctorAppointment?.data?.data
-  console.log(specificAppointments)
-
-  const calendarsEvents = {
-    Danger: "danger",
-    Success: "success",
-    Primary: "primary",
-    Warning: "warning",
-  };
 
   useEffect(() => {
     // Initialize with some events
     if (!specificAppointments) return;
-    const newEvents: CalendarEvent[] = specificAppointments?.map((item, index) => {
+    const newEvents: CalendarEvent[] = specificAppointments?.map((item: AppointmentFormData, index: number) => {
       const appointmentStart = new Date(item?.appointmentDate)
       const appointmentEnd = new Date(appointmentStart.getTime() + 30 * 60 * 1000)
       return {
         id: index,
-        title: `${item.patient.name} - Appointment`,
+        title: `${item?.patient.name} - Appointment`,
         start: appointmentStart.toISOString(),
         end: appointmentEnd.toISOString(),
         allDay: false,
-        extendedProps: { calendar: `${item.status === "Scheduled" ? "Warning" : item.status === "Scheduled" }` }
+        extendedProps: { calendar: `${item.status === "Scheduled" ? "Warning" : item.status === "Scheduled"}` }
       }
     })
     setEvents(newEvents)

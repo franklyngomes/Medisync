@@ -62,7 +62,7 @@ export const RoomDelete = async (id: string) => {
   try {
     const cookies = new Cookies()
     const token = cookies.get("token")
-    const response = await axiosInstance.post(endPoints.rooms.room_delete + id, {
+    const response = await axiosInstance.post(endPoints.rooms.room_delete + id,{}, {
       headers: {
         Authorization: `Bearer ${token}`
       }

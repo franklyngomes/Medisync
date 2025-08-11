@@ -12,9 +12,11 @@ import { SigninQuery } from "../../../../api/query/AuthQuery";
 import toast from "react-hot-toast";
 import {Cookies} from "react-cookie"
 import { useRouter } from "next/navigation";
-import { useStore } from "../../../../store/store";
-import { UserProfileQuery } from "../../../../api/query/UserQuery";
 
+interface SigninFormProps {
+  email: string;
+  password: string;
+}
 const schema = yup.object({
   email: yup.string().email().required("Email is required"),
   password: yup.string().required("Password is required").min(8).max(15),
@@ -26,7 +28,7 @@ export default function SignIn() {
   const cookies = new Cookies()
   const router = useRouter()
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: SigninFormProps) => {
     const { email, password} = data
     const formData = new FormData()
     formData.append('email', email)

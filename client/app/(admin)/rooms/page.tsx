@@ -16,7 +16,12 @@ import { useStore } from "../../../store/store";
 import Input from "../../../components/form/input/InputField";
 import toast from "react-hot-toast";
 
-
+interface RoomFormProps {
+  roomNo: string;
+  roomName: string;
+  roomType: string;
+  status?:string;
+}
 const Room = () => {
   const { data } = AllRoomQuery()
   const rooms = data?.data
@@ -81,7 +86,7 @@ const Room = () => {
       value: "ICU"
     }
   ]
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: RoomFormProps) => {
     const { roomNo, roomName, roomType } = data
     const formdata = new FormData()
     formdata.append("roomNo", roomNo)
@@ -99,7 +104,7 @@ const Room = () => {
       }
     })
   }
-  const onUpdate = (data: any) => {
+  const onUpdate = (data: RoomFormProps) => {
     const { roomNo, roomName, roomType, status } = data
     const formData = new FormData()
     formData.append("roomNo", roomNo)
@@ -147,7 +152,7 @@ const Room = () => {
         roomType: roomDetails.roomType,
         status: roomDetails.status,
       });
-    }else{
+    } else {
       reset({
         roomNo: "",
         roomName: "",

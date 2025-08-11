@@ -63,8 +63,9 @@ export const AppointmentUpdate = async ({ editId, formdata }: { editId: string, 
 export const AppointmentDelete = async (id: string) => {
   const cookies = new Cookies()
   const token = cookies.get("token")
+  console.log(token)
   try {
-    const response = await axiosInstance.post(endPoints.appointments.appointment_delete + id, {
+    const response = await axiosInstance.post(endPoints.appointments.appointment_delete + id,{}, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -78,7 +79,7 @@ export const AppointmentGroup = async (id: string) => {
   const cookies = new Cookies()
   const token = cookies.get("token")
   try {
-    const response = await axiosInstance.get(endPoints.appointments.appointment_group + id, {
+    const response = await axiosInstance.get(endPoints.appointments.appointment_group + id,{
       headers: {
         Authorization: `Bearer ${token}`
       }

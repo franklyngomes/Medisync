@@ -45,7 +45,7 @@ interface DoctorTableItem {
 
 const Doctor = () => {
   const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
-  const schemaWithContext = ({isEditing}: {isEditing: boolean})  =>  yup.object({
+  const schemaWithContext = ({ isEditing }: { isEditing: boolean }) => yup.object({
     name: yup.string().required("Name is required"),
     specialization: yup.string().required("Specialization is required"),
     email: yup.string().email().required("Email is required"),
@@ -56,7 +56,7 @@ const Doctor = () => {
       .matches(phoneRegExp, 'Phone number is not valid')
       .min(10, "too short")
       .max(10, "too long"),
-    image:yup.mixed().test("image-validation", "Image is required", function (value) {
+    image: yup.mixed().test("image-validation", "Image is required", function (value) {
       const { path, createError } = this;
       if (!isEditing) {
         if (!value) {
@@ -167,7 +167,7 @@ const Doctor = () => {
       value: "Obstetrician-gynecologist"
     },
   ]
-  const onSubmit:SubmitHandler<DoctorFormInputs> = (data) => {
+  const onSubmit: SubmitHandler<DoctorFormInputs> = (data) => {
     const { name, specialization, phone, email, consultation, surgery, image } = data
     const formdata = new FormData()
     formdata.append("name", name)
@@ -176,7 +176,9 @@ const Doctor = () => {
     formdata.append("email", email)
     formdata.append("consultation", consultation.toString())
     formdata.append("surgery", surgery.toString())
-    if (image) formdata.append("image", image)
+    if (image && data.image instanceof File) {
+      formdata.append("image", data.image);
+    }
     mutateAsync(formdata, {
       onSuccess: (res) => {
         if (res?.data?.status === true) {
@@ -197,11 +199,15 @@ const Doctor = () => {
     formData.append("specialization", specialization)
     formData.append("phone", phone)
     formData.append("email", email)
-    formData.append("status", status)
+    if (status) {
+      formData.append("status", status);
+    }
     formData.append("consultation", consultation.toString())
     formData.append("surgery", surgery.toString())
 
-    if (image) formData.append("image", image)
+    if (image && data.image instanceof File) {
+      formData.append("image", data.image);
+    }
     update({ editId, formData }, {
       onSuccess: (res) => {
         if (res?.data?.status === true) {

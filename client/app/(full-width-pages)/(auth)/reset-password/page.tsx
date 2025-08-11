@@ -14,6 +14,11 @@ import { useRouter } from "next/navigation";
 import OtpInput from 'react-otp-input';
 import { RestPasswordQuery } from "../../../../api/query/AuthQuery";
 
+interface ResetPaswordFormProps {
+  email: string;
+  newPassword: string;
+  code: number
+}
 const schema = yup.object({
   email: yup.string().email().required("Email is required"),
   newPassword: yup.string().required("Password is required").min(8).max(15),
@@ -25,14 +30,14 @@ export default function RestPassword() {
   const { handleSubmit, reset, control, formState: { errors } } = useForm({ resolver: yupResolver(schema) });
   const {mutateAsync} = RestPasswordQuery()
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: ResetPaswordFormProps) => {
     const { email, newPassword} = data
     const formData = new FormData()
     formData.append('email', email)
     formData.append('newPassword', newPassword)
     formData.append('code', code)
     await mutateAsync(formData, {
-      onSuccess: (res: any) => {
+      onSuccess: (res) => {
         if (res?.data?.status === true) {
           toast.success(res?.data?.message)
           reset()
