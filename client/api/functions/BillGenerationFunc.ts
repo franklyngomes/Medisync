@@ -22,7 +22,7 @@ interface BillProps {
 }
 export const BillGenerationFunc = async (billType: string, billData: BillProps) => {
   try {
-    const response = await reportApi.post(endPoints.generateBill, billType, billData)
+    const response = await reportApi.post(endPoints.generateBill, {billType, billData})
     const {reportPath} = response?.data;
 
     const filename = reportPath.split("/").pop();
