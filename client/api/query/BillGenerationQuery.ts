@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query"
-import { BillGenerationFunc, BillPreviewFunc } from "../functions/BillGenerationFunc"
+import { BillGenerationFunc} from "../functions/BillGenerationFunc"
 
 export const BillGenerateQuery = () => {
   return useMutation({
