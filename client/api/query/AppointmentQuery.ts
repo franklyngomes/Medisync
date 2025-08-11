@@ -1,7 +1,21 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { AppointmentDelete, AppointmentDetails, AppointmentGroup, AppointmentUpdate, CreateAppointment, ListAppointment } from "../functions/AppointmentsFunc"
 import { queryClient } from "../../app/(admin)/provider"
+import { AxiosResponse } from "axios";
 
+interface AppointmentResponse {
+  status: boolean;
+  message: string;
+  data: {
+    _id: string;
+    appointmentNo: string;
+    patientId: string;
+    doctorId: string;
+    appointmentDate: string;
+    note: string;
+    status: string;
+  };
+};
 
 export const AppointmentListQuery = () => {
   return useQuery({
@@ -12,7 +26,7 @@ export const AppointmentListQuery = () => {
 
 export const AppointmentCreateQuery = () => {
   return useMutation({
-    mutationFn: (formData: any) => CreateAppointment(formData),
+    mutationFn: (formData: FormData) => CreateAppointment(formData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["AppointmentList"] })
       queryClient.invalidateQueries({ queryKey: ["AppointmentGroupList"] })

@@ -1,7 +1,7 @@
-import { AppointmentListProps } from "../../types/types";
 import { axiosInstance } from "../axios/axiosInstance";
 import { endPoints } from "../endPoints/endPoints";
 import { Cookies } from "react-cookie";
+
 
 export const ListAppointment = async () => {
   const cookies = new Cookies()
@@ -17,7 +17,7 @@ export const ListAppointment = async () => {
     return error
   }
 }
-export const CreateAppointment = async (formData: AppointmentListProps) => {
+export const CreateAppointment = async (formData: FormData) => {
   const cookies = new Cookies()
   const token = cookies.get("token")
   try {
