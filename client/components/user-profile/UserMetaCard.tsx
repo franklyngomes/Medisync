@@ -1,10 +1,6 @@
 "use client";
 import React from "react";
 import { useModal } from "../../hooks/useModal";
-import { Modal } from "../ui/modal";
-import Button from "../ui/button/Button";
-import Input from "../form/input/InputField";
-import Label from "../form/Label";
 import Image from "next/image";
 import { useStore } from "../../store/store";
 
@@ -12,7 +8,7 @@ import { useStore } from "../../store/store";
 export default function UserMetaCard() {
   const {user} = useStore()
   console.log(user)
-  const { isOpen, openModal, closeModal } = useModal();
+  const { closeModal } = useModal();
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");

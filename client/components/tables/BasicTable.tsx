@@ -18,22 +18,36 @@ import toast from "react-hot-toast";
 import Button from "../ui/button/Button";
 import { useRouter } from "next/navigation";
 
-export default function BasicTable({ tableColumns, data, onDelete, billOption, billType }: { tableColumns: any, data: any, onDelete: any, billOption?: boolean, billType?: string }) {
+type TableColumn<T>= {
+  label: string;
+  key?: keyof T | string;
+  render?: (row:T, index: number) => React.ReactNode
+}
+
+interface BasicTableProps<T extends{_id:string; invoice?:string}>{
+  tableColumns: TableColumn<T>[];
+  data: T[];
+  onDelete: (id:string) => void;
+  billOption?: boolean;
+  billType?: string;
+}
+
+export default function BasicTable<T extends{_id: string; invoice?:string}>({ tableColumns, data, onDelete, billOption, billType }: BasicTableProps<T>) {
   const router = useRouter()
   const { setIsEditing, setEditId } = useStore();
-  const { openModal, closeModal } = useModal();
+  const { openModal} = useModal();
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
   const { mutateAsync: submit } = BillGenerateQuery()
   const { user } = useStore()
 
-  const onClick = (data) => {
+  const onClick = (data:T) => {
     const billData = data
     submit({ billType, billData }, {
-      onSuccess: (res) => {
+      onSuccess: () => {
       }
     })
   }
-  const previewBill = (invoice: string) => {
+  const previewBill = (invoice?: string) => {
     if (!invoice) {
       toast.error("No invoice found!")
       return
@@ -50,8 +64,8 @@ export default function BasicTable({ tableColumns, data, onDelete, billOption, b
   }
 
   //Function to dynamically access nested object values
-  function getValueByKeyPath(obj: any, path: string) {
-    return path.split('.').reduce((acc, key) => acc?.[key], obj);
+  function getValueByKeyPath(obj: T, path: string) : unknown {
+    return path.split('.').reduce<unknown>((acc, key) => acc?.[key], obj);
   }
   return (
     <div className="overflow-hidden border border-gray-100 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -62,7 +76,7 @@ export default function BasicTable({ tableColumns, data, onDelete, billOption, b
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
                 {
-                  tableColumns.map((item: any, index: number) => (
+                  tableColumns.map((item, index) => (
                     <TableCell
                       key={index}
                       isHeader
