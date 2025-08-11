@@ -117,7 +117,7 @@ const Patient = () => {
     const formdata = new FormData()
     formdata.append("name", name)
     formdata.append("gender", gender)
-    formdata.append("age", age)
+    formdata.append("age", String(age))
     formdata.append("bloodType", bloodType)
     formdata.append("address", address)
     formdata.append("phone", phone)

@@ -77,8 +77,8 @@ const Pathology = () => {
     formdata.append("testName", testName)
     formdata.append("category", category)
     formdata.append("method", method)
-    formdata.append("reportDays", reportDays)
-    formdata.append("charge", charge)
+    formdata.append("reportDays", String(reportDays))
+    formdata.append("charge", String(charge))
     mutateAsync(formdata, {
       onSuccess: (res) => {
         if (res?.data?.status === true) {
@@ -97,8 +97,8 @@ const Pathology = () => {
     formdata.append("testName", testName)
     formdata.append("category", category)
     formdata.append("method", method)
-    formdata.append("reportDays", reportDays)
-    formdata.append("charge", charge)
+    formdata.append("reportDays", String(reportDays))
+    formdata.append("charge", String(charge))
     update({ editId, formdata }, {
       onSuccess: (res) => {
         if (res?.data?.status === true) {

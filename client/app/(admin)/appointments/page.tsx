@@ -67,14 +67,14 @@ type AppointmentType = {
   appointmentNo: string;
   patientId: Patient;
   doctorId: Doctor;
-  appointmentDate: string;
+  appointmentDate: Date;
   note: string;
   status: "Scheduled" | "Completed" | "Cancelled";
 };
 type AppointmentFormData = {
-  patientId: string;
-  doctorId: string;
-  appointmentDate: string;
+  patientId?: string;
+  doctorId?: string;
+  appointmentDate: Date;
   note: string;
   status: "Scheduled" | "Completed" | "Cancelled";
 };
@@ -136,7 +136,7 @@ type AppointmentFormData = {
     const formdata = new FormData()
     formdata.append("patientId", patientId)
     formdata.append("doctorId", doctorId)
-    formdata.append("appointmentDate", appointmentDate)
+    formdata.append("appointmentDate", appointmentDate.toISOString())
     formdata.append("note", note)
     mutateAsync(formdata, {
       onSuccess: (res) => {
@@ -155,7 +155,7 @@ type AppointmentFormData = {
     const formdata = new FormData()
     formdata.append("note", note)
     formdata.append("status", status)
-    formdata.append("appointmentDate", appointmentDate)
+    formdata.append("appointmentDate", appointmentDate.toISOString())
     update({ editId, formdata }, {
       onSuccess: (res) => {
         if (res?.data?.status === true) {

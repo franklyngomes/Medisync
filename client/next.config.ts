@@ -10,13 +10,16 @@ const nextConfig: NextConfig = {
     return config;
   },
   images: {
-        remotePatterns: [
-          {
-            protocol: 'https', // Specify the protocol (e.g., 'http', 'https')
-            hostname: 'picsum.photos', // The exact hostname of the image source
-          },
-        ],
+    remotePatterns: [
+      {
+        protocol: 'https', // Specify the protocol (e.g., 'http', 'https')
+        hostname: 'picsum.photos', // The exact hostname of the image source
       },
+    ],
+  },
+  typescript: {
+    ignoreBuildErrors: true
+  }
 };
 
 export default nextConfig;

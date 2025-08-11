@@ -157,11 +157,11 @@ const AppointmentBilling = () => {
     },
   ]
   const onSubmit = (data: AppointmentBillFormProps) => {
-    const { appointmentId, noOfHour, discount, chargeType, source, paymentMethod } = data
+    const { appointmentId, noOfHour, chargeType, source, paymentMethod } = data
     const formdata = new FormData()
     formdata.append("appointmentId", appointmentId)
-    formdata.append("noOfHour", noOfHour)
-    formdata.append("discount", discount)
+    formdata.append("noOfHour", String(noOfHour))
+    formdata.append("discount", String(noOfHour))
     formdata.append("chargeType", chargeType)
     formdata.append("source", source)
     formdata.append("paymentMethod", paymentMethod)

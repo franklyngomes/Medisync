@@ -153,7 +153,7 @@ const RadiologyBilling = () => {
     formdata.append("testId", testId)
     formdata.append("patientId", patientId)
     formdata.append("referenceDoctor", referenceDoctor)
-    formdata.append("discount", discount)
+    formdata.append("discount", String(discount))
     formdata.append("source", source)
     formdata.append("paymentMethod", paymentMethod)
     mutateAsync(formdata, {
