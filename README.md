@@ -69,16 +69,16 @@ It comes with **role-based access control (RBAC)** for Admin, Doctor, Receptioni
 
 ## 🔐 Demo Credentials
 
-To explore please login as Admin Operator:
+For Admin access please login as Admin Operator:
 
 - **Email:** `wenejeippemo-7240@yopmail.com`  
 - **Password:** `abcdefgh`
 
-To explore please login as Doctor:
+For Doctor access please login as Doctor:
 - **Email:** `quokoivecoussoi-1913@yopmail.com`  
 - **Password:** `abcdefgh`
   
-To check out other roles please create and account with admin access:
+To check out other roles please create an account with admin access:
 
 ---
 
