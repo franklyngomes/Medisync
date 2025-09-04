@@ -49,11 +49,6 @@ const AdminNavItems: NavItem[] = [
   //   name: "Outpatient - OPD",
   //   path: "/outpatient",
   // },
-    {
-    icon: <ScheduleIcon />,
-    name: "Schedule",
-    path: "/schedule",
-  },
   {
     icon: <DoctorIcon />,
     name: "Doctor",
