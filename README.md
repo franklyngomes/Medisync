@@ -20,6 +20,11 @@ It comes with **role-based access control (RBAC)** for Admin, Doctor, Receptioni
   - **Receptionist**: Create/update patients & appointments, view invoices
   - **Lab Staff**: Generate invoices only
 
+- **Admin-Only User Management**
+  - Only **Admin** can create user accounts
+  - New users automatically receive their **login credentials via email**
+  - Public sign-up is disabled for security
+
 - **Core Modules**
   - Patient Management (registration, updates)
   - Doctor Management (availability, appointments)
@@ -64,10 +69,16 @@ It comes with **role-based access control (RBAC)** for Admin, Doctor, Receptioni
 
 ## 🔐 Demo Credentials
 
-To explore the **Admin Dashboard**:
+To explore please login as Admin Operator:
 
 - **Email:** `wenejeippemo-7240@yopmail.com`  
-- **Password:** `abcdefgh`  
+- **Password:** `abcdefgh`
+
+To explore please login as Doctor:
+- **Email:** `quokoivecoussoi-1913@yopmail.com`  
+- **Password:** `abcdefgh`
+  
+To check out other roles please create and account with admin access:
 
 ---
 
