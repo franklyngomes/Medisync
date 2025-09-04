@@ -11,8 +11,8 @@ const outfit = Outfit({
 });
 export const metadata: Metadata = {
   title:
-    "Placerly | Wealth management made easy",
-  description: "Wealth Management System",
+    "Medisync | Patient management made easy",
+  description: "Patient management made easy",
 };
 
 export default function RootLayout({
