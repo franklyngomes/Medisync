@@ -268,6 +268,7 @@ export default function SignUp() {
                         render={({ field }) => (
                           <Select
                             {...field}
+                            value={field.value ?? ""}
                             options={doctorOptions}
                             placeholder="Select Doctor"
                             className="dark:bg-dark-900"
